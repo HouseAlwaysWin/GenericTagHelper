@@ -2,7 +2,8 @@
 
 <br />
 <form generic model="@Model"
-      custom-property-class='@new Dictionary<string,string>{ ["IsAdmin"]=" "}'
+      form-title="<h3>Customer</h3>"
+      property-class-input='@new Dictionary<string,string>{ ["IsAdmin"]=" "}'
       cancel-link-action="Index"
       method="post"
       asp-action="CreateGenericForm"></form>

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
 
+
 namespace GenericFormTagHelper.Form
 {
     [HtmlTargetElement("form", Attributes = "generic")]
@@ -85,9 +86,13 @@ namespace GenericFormTagHelper.Form
 
         public string FormTitle { get; set; } = "Form";
 
-        public string FormGroupClass { get; set; } = "form-group";
+        public string FormTitleClass { get; set; } = "";
 
-        public string FormInputClass { get; set; } = "form-control";
+
+
+        public string AllFormGroupClass { get; set; } = "form-group";
+
+        public string AllFormInputClass { get; set; } = "form-control";
 
         public string SubmitBtnClass { get; set; } = "btn btn-primary";
 
@@ -95,20 +100,35 @@ namespace GenericFormTagHelper.Form
 
         public string CancelLinkAction { get; set; }
 
-        public Dictionary<string,string> CustomPropertyClass { get; set; }
-        
+        // Change Property's class 
+        // { [PropertyName] = "Your custom class" }
+        public Dictionary<string, string> PropertyClassFormGroup { get; set; } = new Dictionary<string, string> { [""] = "" };
+        public Dictionary<string, string> PropertyClassInput { get; set; } = new Dictionary<string, string> { [""] = "", };
+        public Dictionary<string, string> PropertyClassLabel { get; set; } = new Dictionary<string, string> { [""] = "", };
+
 
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
         {
             TagBuilder form = new TagBuilder("form");
-            TagBuilder title = new TagBuilder("title");
+            TagBuilder title = new TagBuilder("div");
             title.InnerHtml.SetHtmlContent(FormTitle);
+
             form.InnerHtml.AppendHtml(title);
+
             foreach (var property in Model.ModelExplorer.Properties)
             {
+                var property_name = property.Metadata.PropertyName;
                 TagBuilder form_group = new TagBuilder("div");
-                form_group.AddCssClass(FormGroupClass);
+
+                if (PropertyClassFormGroup.ContainsKey(property.Metadata.PropertyName))
+                {
+                    form_group.AddCssClass(PropertyClassFormGroup.Values.ToString());
+                }
+                else
+                {
+                    form_group.AddCssClass(AllFormGroupClass);
+                }
 
                 TagBuilder label = Generator.GenerateLabel(
                     ViewContext,
@@ -117,15 +137,20 @@ namespace GenericFormTagHelper.Form
                     labelText: null,
                     htmlAttributes: null);
 
+                if (PropertyClassLabel.ContainsKey(property.Metadata.PropertyName))
+                {
+                    label.AddCssClass(PropertyClassLabel.Values.ToString());
+                }
+
                 TagBuilder input = GenerateInputType(property);
 
-                if (CustomPropertyClass.ContainsKey(property.Metadata.PropertyName))
+                if (PropertyClassInput.ContainsKey(property_name))
                 {
-                    input.AddCssClass(CustomPropertyClass.Values.ToString());
+                    input.AddCssClass(PropertyClassInput.Values.ToString());
                 }
                 else
                 {
-                    input.AddCssClass(FormInputClass);
+                    input.AddCssClass(AllFormInputClass);
                 }
 
 
