@@ -4,36 +4,57 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using GenericFormTagHelperExample.Models;
+using GenericFormTagHelperExample.Data;
 
 namespace GenericFormTagHelperExample.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public GenericFormDbContext context;
+        public HomeController(GenericFormDbContext context)
         {
-            var customer = new Customer
-            {
-                Id = 1,
-                Name = "martin"
-            };
-
-            var viewModel = new CustomerViewModel
-            {
-                Customer = customer
-            };
-            return View(viewModel);
+            this.context = context;
         }
 
-        public IActionResult About()
+        public IActionResult Index()
         {
-            ViewData["Message"] = "Your application description page.";
+            return View();
+        }
+
+        public IActionResult CreateGenericForm()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateGenericForm(Customer model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("CreateGenericForm");
+            }
+
+            context.Customers.Add(model);
+            context.SaveChanges();
 
             return View();
         }
 
-        public IActionResult Contact()
+        public IActionResult CreateForm()
         {
-            ViewData["Message"] = "Your contact page.";
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateForm(Customer model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            context.Customers.Add(model);
+            context.SaveChanges();
 
             return View();
         }

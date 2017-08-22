@@ -1,0 +1,10 @@
+﻿@model Customer
+
+<br />
+<form generic model="@Model"
+      custom-property-class='@new Dictionary<string,string>{ ["IsAdmin"]=" "}'
+      cancel-link-action="Index"
+      method="post"
+      asp-action="CreateGenericForm"></form>
+
+
