@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericFormTagHelper", "Gen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericFormTagHelperExample", "GenericFormTagHelperExample\GenericFormTagHelperExample.csproj", "{21EBB81D-50C4-42C9-AE61-86108F0E3C6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompatibleTest", "CompatibleTest\CompatibleTest.csproj", "{F4CA9C8E-24D3-4F20-8444-FD1836DE67D1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{21EBB81D-50C4-42C9-AE61-86108F0E3C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21EBB81D-50C4-42C9-AE61-86108F0E3C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21EBB81D-50C4-42C9-AE61-86108F0E3C6C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4CA9C8E-24D3-4F20-8444-FD1836DE67D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4CA9C8E-24D3-4F20-8444-FD1836DE67D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4CA9C8E-24D3-4F20-8444-FD1836DE67D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4CA9C8E-24D3-4F20-8444-FD1836DE67D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
