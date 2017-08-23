@@ -31,6 +31,11 @@
         <input asp-for="RegisteredDate" class="form-control" />
         <span asp-validation-for="RegisteredDate"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Addresses.AddressLine1"></label>
+        <input asp-for="Addresses.AddressLine1" class="form-control" />
+        <span asp-validation-for="Addresses.AddressLine1"></span>
+    </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
     <a asp-action="Index" class="btn btn-default">Cancel</a>

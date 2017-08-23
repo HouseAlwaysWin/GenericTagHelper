@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using GenericFormTagHelperExample.Models;
-using GenericFormTagHelperExample.Data;
+using GenericTagHelperExample.Models;
+using GenericTagHelperExample.Data;
 
-namespace GenericFormTagHelperExample.Controllers
+namespace GenericTagHelperExample.Controllers
 {
     public class HomeController : Controller
     {

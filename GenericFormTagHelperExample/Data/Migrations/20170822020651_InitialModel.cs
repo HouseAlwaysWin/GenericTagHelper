@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace GenericFormTagHelperExample.Data.Migrations
+namespace GenericTagHelperExample.Data.Migrations
 {
     public partial class InitialModel : Migration
     {

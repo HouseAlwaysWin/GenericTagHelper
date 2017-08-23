@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>GenericTagHelper</RootNamespace>
+    <PackageId>GenericTagHelper</PackageId>
+    <Authors>GenericTagHelper</Authors>
+    <Company>GenericTagHelper</Company>
+    <Product>GenericTagHelper</Product>
+    <AssemblyName>GenericTagHelper</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

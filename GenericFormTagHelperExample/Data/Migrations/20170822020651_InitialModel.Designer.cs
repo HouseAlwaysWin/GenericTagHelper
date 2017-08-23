@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace GenericFormTagHelperExample.Data.Migrations
+namespace GenericTagHelperExample.Data.Migrations
 {
     [DbContext(typeof(GenericFormDbContext))]
     [Migration("20170822020651_InitialModel")]

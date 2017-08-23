@@ -9,8 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using GenericFormTagHelperExample.Data;
 using Microsoft.EntityFrameworkCore;
+using GenericTagHelperExample.Data;
 
-namespace GenericFormTagHelperExample
+namespace GenericTagHelperExample
 {
     public class Startup
     {

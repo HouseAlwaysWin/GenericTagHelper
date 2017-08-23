@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GenericFormTagHelper.Form
+namespace GenericTagHelper.Form
 {
     [HtmlTargetElement("form", Attributes = "generic")]
     public class GenericFormTagHelper : TagHelper
@@ -105,6 +105,19 @@ namespace GenericFormTagHelper.Form
 
         public string CancelLinkReturnAction { get; set; } = "";
 
+        public ModelExpression LoadComplexModel { get; set; } = null;
+        public ModelExpression LoadComplexModel1 { get; set; } = null;
+        public ModelExpression LoadComplexModel2 { get; set; } = null;
+        public ModelExpression LoadComplexModel3 { get; set; } = null;
+        public ModelExpression LoadComplexModel4 { get; set; } = null;
+        public ModelExpression LoadComplexModel5 { get; set; } = null;
+        public ModelExpression LoadComplexModel6 { get; set; } = null;
+        public ModelExpression LoadComplexModel7 { get; set; } = null;
+        public ModelExpression LoadComplexModel8 { get; set; } = null;
+        public ModelExpression LoadComplexModel9 { get; set; } = null;
+
+
+
         // Add Json string to match form-group class 
         public string PropertyClassFormGroup { get; set; }
         private Dictionary<string, string> PropertyClassFormGroupDict
@@ -190,102 +203,117 @@ namespace GenericFormTagHelper.Form
             title.InnerHtml.SetHtmlContent(FormTitle);
 
             form.InnerHtml.AppendHtml(title);
-
-            // Loop your Form Model
-            foreach (var property in FormModel.ModelExplorer.Properties)
+            bool restart = true;
+            do
             {
-                var property_name = property.Metadata.PropertyName;
-
-                TagBuilder form_group = new TagBuilder("div");
-
-
-                if (IsContainsPropertyKey(
-                        PropertyClassFormGroupDict, property_name))
+                // Loop your Form Model
+                foreach (ModelExplorer property in FormModel.ModelExplorer.Properties)
                 {
-                    AddingClass(form_group, PropertyClassFormGroupDict, property_name);
+                    var property_name = property.Metadata.PropertyName;
+
+                    if (property.ModelType.IsClass && !(property.ModelType == typeof(string)))
+                    {
+
+                        FormModel = LoadComplexModel;
+                        restart = true;
+                        break;
+                    }
+                    else
+                    {
+                        restart = false;
+                    }
+
+                    TagBuilder form_group = new TagBuilder("div");
+
+
+                    if (IsContainsPropertyKey(
+                            PropertyClassFormGroupDict, property_name))
+                    {
+                        AddClass(form_group, PropertyClassFormGroupDict, property_name);
+                    }
+                    else
+                    {
+                        form_group.AddCssClass(AllFormGroupClass);
+                    }
+
+                    if (IsContainsPropertyKey(
+                            PropertyAttributeFormGroupDict, property_name))
+                    {
+                        AddAttribute(form_group, PropertyAttributeFormGroupDict, property_name);
+                    }
+
+
+                    TagBuilder label = Generator.GenerateLabel(
+                        ViewContext,
+                        property,
+                        property.Metadata.PropertyName,
+                        labelText: null,
+                        htmlAttributes: null);
+
+                    // Add Label class with Json string case insenstives
+
+                    if (IsContainsPropertyKey(
+                            PropertyClassLabelDict, property_name))
+                    {
+                        AddClass(label, PropertyClassLabelDict, property_name);
+                    }
+
+
+
+                    if (IsContainsPropertyKey(
+                            PropertyAttributeLabelDict, property_name))
+                    {
+                        AddAttribute(label, PropertyAttributeLabelDict, property_name);
+                    }
+
+                    TagBuilder input = GenerateInputType(property);
+
+                    // Add form_group class with Json string case insenstives
+
+                    if (IsContainsPropertyKey(
+                            PropertyClassInputDict, property_name))
+                    {
+                        AddClass(input, PropertyClassInputDict, property_name);
+                    }
+                    else
+                    {
+                        input.AddCssClass(AllFormInputClass);
+                    }
+
+                    if (IsContainsPropertyKey(
+                            PropertyAttributeInputDict, property_name))
+                    {
+                        AddAttribute(input, PropertyAttributeInputDict, property_name);
+                    }
+
+                    TagBuilder span = Generator.GenerateValidationMessage(
+                        ViewContext,
+                        property,
+                        property.Metadata.PropertyName,
+                        message: null,
+                        tag: null,
+                        htmlAttributes: null);
+
+
+                    if (IsContainsPropertyKey(
+                            PropertyClassSpanDict, property_name))
+                    {
+                        AddClass(span, PropertyClassSpanDict, property_name);
+                    }
+
+
+                    if (IsContainsPropertyKey(
+                            PropertyAttributeSpanDict, property_name))
+                    {
+                        AddAttribute(span, PropertyAttributeSpanDict, property_name);
+                    }
+
+                    form_group.InnerHtml.AppendHtml(label);
+                    form_group.InnerHtml.AppendHtml(input);
+                    form_group.InnerHtml.AppendHtml(span);
+                    form.InnerHtml.AppendHtml(form_group);
                 }
-                else
-                {
-                    form_group.AddCssClass(AllFormGroupClass);
-                }
-
-                if (IsContainsPropertyKey(
-                        PropertyAttributeFormGroupDict, property_name))
-                {
-                    AddingAttribute(form_group, PropertyAttributeFormGroupDict, property_name);
-                }
-
-
-                TagBuilder label = Generator.GenerateLabel(
-                    ViewContext,
-                    property,
-                    property.Metadata.PropertyName,
-                    labelText: null,
-                    htmlAttributes: null);
-
-                // Add Label class with Json string case insenstives
-
-                if (IsContainsPropertyKey(
-                        PropertyClassLabelDict, property_name))
-                {
-                    AddingClass(label, PropertyClassLabelDict, property_name);
-                }
-
-
-
-                if (IsContainsPropertyKey(
-                        PropertyAttributeLabelDict, property_name))
-                {
-                    AddingAttribute(label, PropertyAttributeLabelDict, property_name);
-                }
-
-                TagBuilder input = GenerateInputType(property);
-
-                // Add form_group class with Json string case insenstives
-
-                if (IsContainsPropertyKey(
-                        PropertyClassInputDict, property_name))
-                {
-                    AddingClass(input, PropertyClassInputDict, property_name);
-                }
-                else
-                {
-                    input.AddCssClass(AllFormInputClass);
-                }
-
-                if (IsContainsPropertyKey(
-                        PropertyAttributeInputDict, property_name))
-                {
-                    AddingAttribute(input, PropertyAttributeInputDict, property_name);
-                }
-
-                TagBuilder span = Generator.GenerateValidationMessage(
-                    ViewContext,
-                    property,
-                    property.Metadata.PropertyName,
-                    message: null,
-                    tag: null,
-                    htmlAttributes: null);
-
-
-                if (IsContainsPropertyKey(
-                        PropertyClassSpanDict, property_name))
-                {
-                    AddingClass(span, PropertyClassSpanDict, property_name);
-                }
-
-
-                if (IsContainsPropertyKey(
-                        PropertyAttributeSpanDict, property_name))
-                {
-                    AddingAttribute(span, PropertyAttributeSpanDict, property_name);
-                }
-
-                form_group.InnerHtml.AppendHtml(label);
-                form_group.InnerHtml.AppendHtml(input);
-                form_group.InnerHtml.AppendHtml(span);
-                form.InnerHtml.AppendHtml(form_group);
-            }
+            } while (restart);
 
             TagBuilder submitBtn = new TagBuilder("button");
             submitBtn.MergeAttribute("type", "submit");
@@ -348,6 +376,7 @@ namespace GenericFormTagHelper.Form
                         inputType);
                     break;
             }
+
             if (!Input.Attributes.ContainsKey("type"))
             {
                 Input.MergeAttribute("type", inputType);
@@ -502,7 +531,8 @@ namespace GenericFormTagHelper.Form
                 propertyName, StringComparison.OrdinalIgnoreCase));
         }
 
-        private void AddingClass(
+
+        private void AddClass(
             TagBuilder tag,
             Dictionary<string, string> tagClassDict,
             string propertyName)
@@ -513,7 +543,7 @@ namespace GenericFormTagHelper.Form
                     StringComparison.OrdinalIgnoreCase)).Value);
         }
 
-        private void AddingAttribute(
+        private void AddAttribute(
             TagBuilder tag,
             Dictionary<string, Dictionary<string, string>> tagAttributeDict,
             string propertyName)
@@ -523,6 +553,8 @@ namespace GenericFormTagHelper.Form
                     p => p.Key.Equals(propertyName,
                     StringComparison.OrdinalIgnoreCase)).Value);
         }
+
+
 
         private Dictionary<string, string> ClassJsonStringConvert(
             string classString)
@@ -542,6 +574,16 @@ namespace GenericFormTagHelper.Form
                 return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(attributeString);
             }
             return new Dictionary<string, Dictionary<string, string>>();
+        }
+
+        private Dictionary<string, ModelExpression> ModelExpJsonStringConvert(
+            string modelExpString)
+        {
+            if (!String.IsNullOrEmpty(modelExpString))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, ModelExpression>>(modelExpString);
+            }
+            return new Dictionary<string, ModelExpression>();
         }
 
         #endregion

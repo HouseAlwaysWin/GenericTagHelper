@@ -1,11 +1,11 @@
-﻿using GenericFormTagHelperExample.Models;
+﻿using GenericTagHelperExample.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GenericFormTagHelperExample.Data
+namespace GenericTagHelperExample.Data
 {
     public class GenericFormDbContext : DbContext
     {

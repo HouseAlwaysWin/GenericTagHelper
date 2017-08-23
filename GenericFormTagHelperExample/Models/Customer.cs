@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GenericFormTagHelperExample.Models
+namespace GenericTagHelperExample.Models
 {
     public class Customer
     {
         [Required]
         public int Id { get; set; }
+        public Address Addresses { get; set; }
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -25,5 +26,16 @@ namespace GenericFormTagHelperExample.Models
         public string Password { get; set; }
         [Required]
         public DateTime RegisteredDate { get; set; }
+
+
+
+
+        public enum Level
+        {
+            Bronze,
+            Silver,
+            Gold,
+            Patinum
+        }
     }
 }

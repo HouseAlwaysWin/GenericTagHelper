@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericFormTagHelper", "GenericFormTagHelper\GenericFormTagHelper.csproj", "{BCA9AE1F-7906-448F-9772-9C64A4BB2808}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericTagHelper", "GenericFormTagHelper\GenericTagHelper.csproj", "{BCA9AE1F-7906-448F-9772-9C64A4BB2808}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericFormTagHelperExample", "GenericFormTagHelperExample\GenericFormTagHelperExample.csproj", "{21EBB81D-50C4-42C9-AE61-86108F0E3C6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericTagHelperExample", "GenericFormTagHelperExample\GenericTagHelperExample.csproj", "{21EBB81D-50C4-42C9-AE61-86108F0E3C6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
