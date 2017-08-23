@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace GenericFormTagHelper.Form
 {
@@ -82,13 +85,11 @@ namespace GenericFormTagHelper.Form
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public ModelExpression Model { get; set; }
+        public ModelExpression FormModel { get; set; }
 
         public string FormTitle { get; set; } = "Form";
 
         public string FormTitleClass { get; set; } = "";
-
-
 
         public string AllFormGroupClass { get; set; } = "form-group";
 
@@ -100,11 +101,87 @@ namespace GenericFormTagHelper.Form
 
         public string CancelLinkAction { get; set; }
 
-        // Change Property's class 
-        // { [PropertyName] = "Your custom class" }
-        public Dictionary<string, string> PropertyClassFormGroup { get; set; } = new Dictionary<string, string> { [""] = "" };
-        public Dictionary<string, string> PropertyClassInput { get; set; } = new Dictionary<string, string> { [""] = "", };
-        public Dictionary<string, string> PropertyClassLabel { get; set; } = new Dictionary<string, string> { [""] = "", };
+        // Add Json string to match form-group class 
+        public string PropertyClassFormGroup { get; set; }
+        private Dictionary<string, string> PropertyClassFormGroupDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(PropertyClassFormGroup))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, string>>(PropertyClassFormGroup);
+                }
+
+                return new Dictionary<string, string>();
+            }
+        }
+
+        // Add Json string to match input class
+        public string PropertyClassInput { get; set; }
+        private Dictionary<string, string> PropertyClassInputDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(PropertyClassInput))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, string>>(PropertyClassInput);
+                }
+                return new Dictionary<string, string>();
+            }
+        }
+
+        // Add Json string to match label class
+        public string PropertyClassLabel { get; set; }
+        private Dictionary<string, string> PropertyClassLabelDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(PropertyClassLabel))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, string>>(PropertyClassLabel);
+                }
+                return new Dictionary<string, string>();
+            }
+        }
+
+        public string PropertyAttributeFormGroup { get; set; }
+        private Dictionary<string, Dictionary<string, string>> PropertyAttributeFormGroupDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(PropertyAttributeFormGroup))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(PropertyAttributeFormGroup);
+                }
+                return new Dictionary<string, Dictionary<string, string>>();
+            }
+        }
+
+        public string PropertyAttributeInput { get; set; }
+        private Dictionary<string, Dictionary<string, string>> PropertyAttributeInputDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(PropertyAttributeInput))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(PropertyAttributeInput);
+                }
+                return new Dictionary<string, Dictionary<string, string>>();
+            }
+        }
+
+        public string PropertyAttributeLabel { get; set; }
+        private Dictionary<string, Dictionary<string, string>> PropertyAttributeLabelDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(PropertyAttributeLabel))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(PropertyAttributeLabel);
+                }
+                return new Dictionary<string, Dictionary<string, string>>();
+            }
+        }
 
 
         public override void Process(
@@ -116,19 +193,35 @@ namespace GenericFormTagHelper.Form
 
             form.InnerHtml.AppendHtml(title);
 
-            foreach (var property in Model.ModelExplorer.Properties)
+            // Loop your Form Model
+            foreach (var property in FormModel.ModelExplorer.Properties)
             {
                 var property_name = property.Metadata.PropertyName;
+
                 TagBuilder form_group = new TagBuilder("div");
 
-                if (PropertyClassFormGroup.ContainsKey(property.Metadata.PropertyName))
+                // Add form_group class with Json string case insenstives
+                if (PropertyClassFormGroupDict.Any(fg => fg.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    form_group.AddCssClass(PropertyClassFormGroup.Values.ToString());
+                    form_group.AddCssClass(
+                        PropertyClassFormGroupDict.FirstOrDefault(
+                            fg => fg.Key.Equals(property_name,
+                            StringComparison.OrdinalIgnoreCase)).Value);
                 }
                 else
                 {
                     form_group.AddCssClass(AllFormGroupClass);
                 }
+
+                if (PropertyAttributeFormGroupDict.Any(p => p.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    form_group.MergeAttributes(
+                        PropertyAttributeFormGroupDict
+                        .FirstOrDefault(
+                            p => p.Key.Equals(property_name,
+                            StringComparison.OrdinalIgnoreCase)).Value);
+                }
+
 
                 TagBuilder label = Generator.GenerateLabel(
                     ViewContext,
@@ -137,22 +230,48 @@ namespace GenericFormTagHelper.Form
                     labelText: null,
                     htmlAttributes: null);
 
-                if (PropertyClassLabel.ContainsKey(property.Metadata.PropertyName))
+                // Add Label class with Json string case insenstives
+                if (PropertyClassLabelDict.Any(ld => ld.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    label.AddCssClass(PropertyClassLabel.Values.ToString());
+                    label.AddCssClass(
+                        PropertyClassLabelDict.FirstOrDefault(
+                            lb => lb.Key.Equals(property_name,
+                            StringComparison.OrdinalIgnoreCase)).Value);
+                }
+
+
+                if (PropertyAttributeLabelDict.Any(p => p.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    label.MergeAttributes(
+                        PropertyAttributeLabelDict
+                        .FirstOrDefault(
+                            p => p.Key.Equals(property_name,
+                            StringComparison.OrdinalIgnoreCase)).Value);
                 }
 
                 TagBuilder input = GenerateInputType(property);
 
-                if (PropertyClassInput.ContainsKey(property_name))
+                // Add form_group class with Json string case insenstives
+                if (PropertyClassInputDict.Any(p => p.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    input.AddCssClass(PropertyClassInput.Values.ToString());
+                    input.AddCssClass(
+                        PropertyClassInputDict.FirstOrDefault(
+                            p => p.Key.Equals(property_name,
+                            StringComparison.OrdinalIgnoreCase)).Value);
                 }
                 else
                 {
                     input.AddCssClass(AllFormInputClass);
                 }
 
+                if (PropertyAttributeInputDict.Any(p => p.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    input.MergeAttributes(
+                        PropertyAttributeInputDict
+                        .FirstOrDefault(
+                            p=>p.Key.Equals(property_name,
+                            StringComparison.OrdinalIgnoreCase)).Value);
+                }
 
                 TagBuilder span = Generator.GenerateValidationMessage(
                     ViewContext,
@@ -365,4 +484,17 @@ namespace GenericFormTagHelper.Form
             return format;
         }
     }
+
+    class CamelCaseExceptDictionaryKeysResolver : CamelCasePropertyNamesContractResolver
+    {
+        protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
+        {
+            JsonDictionaryContract contract = base.CreateDictionaryContract(objectType);
+
+            contract.DictionaryKeyResolver = propertyName => propertyName;
+
+            return contract;
+        }
+    }
+
 }

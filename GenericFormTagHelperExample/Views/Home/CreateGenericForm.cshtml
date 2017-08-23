@@ -1,9 +1,22 @@
 ﻿@model Customer
 
 <br />
-<form generic model="@Model"
+<form generic form-model="@Model"
       form-title="<h3>Customer</h3>"
-      property-class-input='@new Dictionary<string,string>{ ["IsAdmin"]=" "}'
+      property-class-input='{
+      isadmin:"",
+      }'
+      property-attribute-input='{
+        isadmin:{
+            hello:"world",
+            game:"of throne"
+        }
+      }'
+      property-attribute-form-group='{
+        isadmin:{
+            donot:"fuck up"
+        }
+      }'
       cancel-link-action="Index"
       method="post"
       asp-action="CreateGenericForm"></form>
