@@ -5,20 +5,34 @@
       form-title="<h3>Customer</h3>"
       property-class-input='{
       isadmin:"",
+      isadmin:""
       }'
       property-attribute-input='{
         isadmin:{
-            hello:"world",
-            game:"of throne"
+            isadmin:"input",
         }
       }'
       property-attribute-form-group='{
         isadmin:{
-            donot:"fuck up"
+            isadmin:"form group"
         }
       }'
+
+      property-attribute-label='{
+        isadmin:{
+            isadmin:"label"
+        }
+      }'
+      property-attribute-span='{
+        isadmin:{
+            isadmin:"span"
+        }
+      }'
+
       cancel-link-action="Index"
       method="post"
-      asp-action="CreateGenericForm"></form>
+      asp-action="CreateGenericForm"
+      asp-antiforgery="true"
+      ></form>
 
 
