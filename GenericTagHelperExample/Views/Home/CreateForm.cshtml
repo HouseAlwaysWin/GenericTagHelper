@@ -36,6 +36,11 @@
         <input asp-for="Addresses.AddressLine1" class="form-control" />
         <span asp-validation-for="Addresses.AddressLine1"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Levels"></label>
+        <select asp-for="Levels" asp-items="Html.GetEnumSelectList<Level>()" class="form-control"></select>
+        <span asp-validation-for="Levels"></span>
+    </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
     <a asp-action="Index" class="btn btn-default">Cancel</a>

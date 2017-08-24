@@ -34,7 +34,8 @@ namespace GenericTagHelperExample.Models
         [Required]
         public DateTime RegisteredDate { get; set; }
 
-        public Level Level { get; set; }
+        [Required]
+        public Level Levels { get; set; }
 
         public Address Addresses { get; set; }
 

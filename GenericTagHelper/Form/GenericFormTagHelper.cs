@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.TagHelpers.Internal;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -10,8 +11,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace GenericTagHelper.Form
 {
@@ -55,6 +58,7 @@ namespace GenericTagHelper.Form
                 { nameof(Boolean), InputType.CheckBox.ToString().ToLowerInvariant() },
                 { nameof(Decimal), InputType.Text.ToString().ToLowerInvariant() },
                 { nameof(String), InputType.Text.ToString().ToLowerInvariant() },
+                { nameof(Enum),"select" },
                 { nameof(IFormFile), "file" },
                 { TemplateRenderer.IEnumerableOfIFormFileName, "file" },
             };
@@ -70,6 +74,7 @@ namespace GenericTagHelper.Form
             };
 
         private IHtmlGenerator Generator { get; }
+
 
 
         [HtmlAttributeNotBound]
@@ -101,9 +106,15 @@ namespace GenericTagHelper.Form
 
         public string SubmitBtnClass { get; set; } = "btn btn-primary";
 
+        public string SubmitBtnContent { get; set; } = "Submit";
+
         public string CancelBtnClass { get; set; } = "btn btn-default";
 
+        public string CancelBtnContent { get; set; } = "Cancel";
+
         public string CancelLinkReturnAction { get; set; } = "";
+
+        public IEnumerable<SelectListItem> SelectItems { get; set; } 
 
         public string ComplexModels { get; set; } = "";
         private List<string> ComplexModelsList
@@ -292,7 +303,7 @@ namespace GenericTagHelper.Form
                         AddAttribute(label, PropertyAttributeLabelDict, property_name);
                     }
 
-                    TagBuilder input = GenerateInputType(property/*propertyList[i]*/);
+                    TagBuilder input = GenerateInputType(property);
 
                     // Add form_group class with Json string case insenstives
 
@@ -351,7 +362,7 @@ namespace GenericTagHelper.Form
                 }
 
                 if (model_counter < ComplexModelsList.Count())
-                { 
+                {
                     LoadModel(LoadComplexModel1, model_counter);
                     LoadModel(LoadComplexModel2, model_counter);
                     LoadModel(LoadComplexModel3, model_counter);
@@ -360,7 +371,7 @@ namespace GenericTagHelper.Form
                     LoadModel(LoadComplexModel6, model_counter);
                     LoadModel(LoadComplexModel7, model_counter);
                     LoadModel(LoadComplexModel8, model_counter);
-                    LoadModel(LoadComplexModel9, model_counter);                   
+                    LoadModel(LoadComplexModel9, model_counter);
                 };
 
             } while (restart);
@@ -368,13 +379,15 @@ namespace GenericTagHelper.Form
             TagBuilder submitBtn = new TagBuilder("button");
             submitBtn.MergeAttribute("type", "submit");
             submitBtn.AddCssClass(SubmitBtnClass);
-            submitBtn.InnerHtml.SetContent("Submit");
+            submitBtn.InnerHtml.SetContent(SubmitBtnContent);
 
             TagBuilder cancelBtn = new TagBuilder("a");
             cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction);
             cancelBtn.AddCssClass(CancelBtnClass);
             cancelBtn.MergeAttribute("style", "margin-left:10px;");
-            cancelBtn.InnerHtml.Append("Cancel");
+            cancelBtn.InnerHtml.Append(CancelBtnContent);
+
+
 
             form.InnerHtml.AppendHtml(submitBtn);
             form.InnerHtml.AppendHtml(cancelBtn);
@@ -418,6 +431,9 @@ namespace GenericTagHelper.Form
                         value: modelExplorer.Metadata.PropertyGetter,
                         isChecked: null,
                         htmlAttributes: null);
+                    break;
+                case "select": 
+                    Input = GenerateSelectList(modelExplorer, SelectItems);
                     break;
                 default:
                     Input = GenerateTextBox(
@@ -533,6 +549,47 @@ namespace GenericTagHelper.Form
                 htmlAttributes: htmlAttributes);
         }
 
+        public TagBuilder GenerateSelectList(ModelExplorer modelExplorer, IEnumerable<SelectListItem> selectItems)
+        {
+            // Base allowMultiple on the instance or declared type of the expression to avoid a
+            // "SelectExpressionNotEnumerable" InvalidOperationException during generation.
+            // Metadata.IsEnumerableType is similar but does not take runtime type into account.
+            var realModelType = modelExplorer.Metadata.ModelType;
+            var _allowMultiple = typeof(string) != realModelType &&
+                typeof(IEnumerable).IsAssignableFrom(realModelType);
+            var _currentValues = Generator.GetCurrentValues(
+                ViewContext,
+                modelExplorer,
+                expression: modelExplorer.Properties.Take(1).ToString(),
+                allowMultiple: true);
+            // Whether or not (not being highly unlikely) we generate anything, could update contained <option/>
+            // elements. Provide selected values for <option/> tag helpers.
+            var currentValues = _currentValues == null ? null : new CurrentValues(_currentValues);
+            // Ensure GenerateSelect() _never_ looks anything up in ViewData.
+            var items = selectItems ?? Enumerable.Empty<SelectListItem>();
+
+
+            //if (modelExplorer == null)
+            //{
+            //    var options = Generator.GenerateGroupsAndOptions(
+            //        optionLabel: null, selectList: items);
+            //    output.PostContent.AppendHtml(options);
+            //    return;
+            //}
+
+            var tagBuilder = Generator.GenerateSelect(
+                ViewContext,
+                modelExplorer,
+                optionLabel: null,
+                expression: modelExplorer.Metadata.PropertyName,
+                selectList: items,
+                currentValues: _currentValues,
+                allowMultiple: _allowMultiple,
+                htmlAttributes: null);
+
+            return tagBuilder;
+        }
+
         // Get a fall-back format based on the metadata.
         private string GetFormat(ModelExplorer modelExplorer, string inputTypeHint, string inputType)
         {
@@ -636,7 +693,7 @@ namespace GenericTagHelper.Form
             return new Dictionary<string, ModelExpression>();
         }
 
-        private void LoadModel(ModelExpression modelExpression,int modelCounter)
+        private void LoadModel(ModelExpression modelExpression, int modelCounter)
         {
             if (modelExpression != null)
             {
