@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace GenericTagHelperExample.Models
 {
+    public enum Level
+    {
+        Bronze,
+        Silver,
+        Gold,
+        Patinum
+    }
     public class Customer
     {
         [Required]
         public int Id { get; set; }
-        public Address Addresses { get; set; }
+
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
@@ -27,15 +34,11 @@ namespace GenericTagHelperExample.Models
         [Required]
         public DateTime RegisteredDate { get; set; }
 
+        public Level Level { get; set; }
 
+        public Address Addresses { get; set; }
 
+        public Gender Gender { get; set; }
 
-        public enum Level
-        {
-            Bronze,
-            Silver,
-            Gold,
-            Patinum
-        }
     }
 }

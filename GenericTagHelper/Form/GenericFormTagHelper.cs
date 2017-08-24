@@ -105,6 +105,19 @@ namespace GenericTagHelper.Form
 
         public string CancelLinkReturnAction { get; set; } = "";
 
+        public string ComplexModels { get; set; } = "";
+        private List<string> ComplexModelsList
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(ComplexModels))
+                {
+                    return JsonConvert.DeserializeObject<List<string>>(ComplexModels);
+                }
+                return new List<string>();
+            }
+        }
+
         public ModelExpression LoadComplexModel { get; set; } = null;
         public ModelExpression LoadComplexModel1 { get; set; } = null;
         public ModelExpression LoadComplexModel2 { get; set; } = null;
@@ -203,25 +216,38 @@ namespace GenericTagHelper.Form
             title.InnerHtml.SetHtmlContent(FormTitle);
 
             form.InnerHtml.AppendHtml(title);
-            bool restart = true;
+
+            bool restart;
+            int model_counter = 0;
+
             do
             {
+                var property_counter = 0;
+                restart = false;
+
                 // Loop your Form Model
                 foreach (ModelExplorer property in FormModel.ModelExplorer.Properties)
                 {
+                    property_counter++;
+
                     var property_name = property.Metadata.PropertyName;
 
-                    if (property.ModelType.IsClass && !(property.ModelType == typeof(string)))
+                    if (property.ModelType.IsClass &&
+                        !(property.ModelType == typeof(string)))
                     {
+                        if (LoadComplexModel != null)
+                        {
 
-                        FormModel = LoadComplexModel;
-                        restart = true;
-                        break;
+                            FormModel = LoadComplexModel;
+                            restart = true;
+                            break;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
-                    else
-                    {
-                        restart = false;
-                    }
+
 
                     TagBuilder form_group = new TagBuilder("div");
 
@@ -266,7 +292,7 @@ namespace GenericTagHelper.Form
                         AddAttribute(label, PropertyAttributeLabelDict, property_name);
                     }
 
-                    TagBuilder input = GenerateInputType(property);
+                    TagBuilder input = GenerateInputType(property/*propertyList[i]*/);
 
                     // Add form_group class with Json string case insenstives
 
@@ -312,7 +338,31 @@ namespace GenericTagHelper.Form
                     form_group.InnerHtml.AppendHtml(input);
                     form_group.InnerHtml.AppendHtml(span);
                     form.InnerHtml.AppendHtml(form_group);
+
+                    if (property_counter > FormModel.Metadata.Properties.Count() - 1)
+                    {
+                        model_counter++;
+                        if (model_counter < ComplexModelsList.Count())
+                        {
+                            restart = true;
+                        }
+                        break;
+                    }
                 }
+
+                if (model_counter < ComplexModelsList.Count())
+                { 
+                    LoadModel(LoadComplexModel1, model_counter);
+                    LoadModel(LoadComplexModel2, model_counter);
+                    LoadModel(LoadComplexModel3, model_counter);
+                    LoadModel(LoadComplexModel4, model_counter);
+                    LoadModel(LoadComplexModel5, model_counter);
+                    LoadModel(LoadComplexModel6, model_counter);
+                    LoadModel(LoadComplexModel7, model_counter);
+                    LoadModel(LoadComplexModel8, model_counter);
+                    LoadModel(LoadComplexModel9, model_counter);                   
+                };
+
             } while (restart);
 
             TagBuilder submitBtn = new TagBuilder("button");
@@ -584,6 +634,18 @@ namespace GenericTagHelper.Form
                 return JsonConvert.DeserializeObject<Dictionary<string, ModelExpression>>(modelExpString);
             }
             return new Dictionary<string, ModelExpression>();
+        }
+
+        private void LoadModel(ModelExpression modelExpression,int modelCounter)
+        {
+            if (modelExpression != null)
+            {
+                if (ComplexModelsList[modelCounter].Equals(
+                     modelExpression.Metadata.PropertyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    FormModel = modelExpression;
+                }
+            }
         }
 
         #endregion
