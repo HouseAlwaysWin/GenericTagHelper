@@ -88,6 +88,7 @@ And you can add json string to class-label in your generic form tag
               class-label='{
                 name:"form-control"
               }'
+</form>
 ```
 
 The key is your model property's name and is <string>case-insenstive</strong>.
@@ -108,6 +109,7 @@ And you can add json string to attributes-label in your generic form tag
                     custom_attr:"this is custom attribute"
                 }
               }'
+</form>
 ```
 
 For other customizale attributes,please see this table...
@@ -250,3 +252,116 @@ For other customizale attributes,please see this table...
         </tr>
     </tbody>
 </table>
+
+## Complex Type Property Supported
+
+If you want to use complex type (Not default complex type String or DateTime)with generic form taghelper,you must put your complex type properties under the primary type properties
+<br/>
+### For Example
+Your model or viewmodel must be like this...
+
+``` c#
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Email { get; set; }
+
+        public bool IsAdmin { get; set; }
+
+        public string Password { get; set; }
+
+        public DateTime RegisteredDate { get; set; }
+
+/*-----------------complex properties type under the primary type properties---------------------------*/
+        public Address Addresses { get; set; }
+```
+
+### Load Your Complex Type Model
+
+Add complex-models attribute with contant array...it may look like this..
+
+```html
+<form generic form-model="@Model"
+              complex-models='["complexModel1","complexModel2"]'
+</form>
+```
+
+complex-models attribute is counting number of your form print and also compare with load-complex-model attributes.
+the purpose of complex-models attribute is to load your complex type property correctly.
+
+so with load-complex-model your attribute will be likes this...
+
+```html
+<form generic form-model="@Model"
+
+              complex-models='[
+              "ComplexProperty",
+              "ComplexProperty1",
+              "ComplexProperty2",
+              "ComplexProperty3",
+              "ComplexProperty4",
+              "ComplexProperty5",
+              "ComplexProperty6",
+              "ComplexProperty7".
+              "ComplexProperty8",
+              "ComplexProperty9"]'
+              
+              load-complex-model="ComplexProperty"
+              load-complex-model1="ComplexProperty1"
+              load-complex-model2="ComplexProperty2"
+              load-complex-model3="ComplexProperty3"
+              load-complex-model4="ComplexProperty4"
+              load-complex-model5="ComplexProperty5"
+              load-complex-model6="ComplexProperty6"
+              load-complex-model7="ComplexProperty7"
+              load-complex-model8="ComplexProperty8"
+              load-complex-model9="ComplexProperty9"
+```
+
+<strong>Notice</strong> the load-complex-model is must be used to active you complex type property
+
+<h4>Strong suggested add your complex type properties sequence with attribute numbers</h4>
+
+The generic form taghelper has 10 load-complex-model attributes which means <strong>you can only load 10 complex type models in your form</strong>
+
+## Enum Type Property Supported
+
+The enum type is suppored in form.
+so if your model enum is like this...
+
+```c#
+public enum Level
+{
+    Bronze,
+    Silver,
+    Gold,
+    Patinum
+}
+
+public class Customer{
+    public Level Level { get; set; }
+}
+```
+
+And your form will generate html like this...
+
+```html
+<div class="form-group">
+        <label for="Levels">Levels</label>
+        <select class="form-control valid" data-val="true" 
+        data-val-required="The Levels field is required." id="Levels" 
+        name="Levels" aria-required="true" aria-invalid="false" 
+        aria-describedby="Levels-error">
+        
+        <option value="0">Bronze</option>
+        <option value="1">Silver</option>
+        <option value="2">Gold</option>
+        <option value="3">Patinum</option>
+        
+        </select>
+        <span class="field-validation-valid" data-valmsg-for="Levels" data-valmsg-replace="true"></span>
+    </div>
+```
+
+<hr/>
