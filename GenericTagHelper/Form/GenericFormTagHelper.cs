@@ -246,7 +246,7 @@ namespace GenericTagHelper.Form
                     var property_name = property.Metadata.PropertyName;
 
                     // distinguish property between complex type and primary type
-                    if (property.ModelType.IsClass &&
+                    if (property.Metadata.IsComplexType &&
                         !(property.ModelType == typeof(string)))
                     {
                         // if LoadComplexModel has model
@@ -331,7 +331,7 @@ namespace GenericTagHelper.Form
                         }
                         break;
                     }
-                } 
+                }
             } while (restart);
 
             TagBuilder submitBtn = new TagBuilder("button");

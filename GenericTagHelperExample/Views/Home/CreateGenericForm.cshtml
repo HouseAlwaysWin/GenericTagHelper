@@ -3,20 +3,29 @@
 <br />
 <form generic form-model="@Model"
       form-title="<h3>Customer</h3>"
+      class-form-group='{
+            id:"jon snow"
+      }'
+
       class-label='{
-        id:"hello"
+        id:"tyrion"
       }'
       class-input='{
-      isadmin:" ",
+      isadmin:"form-control ",
       isadmin:""
       }'
+
+      class-span='{
+        name:"jamie"
+      }'
+ 
       attributes-input='{
         isadmin:{
             isadmin:"input",
             harry:"potter"
         },
         id:{
-            comeon:"cj fool"
+            comeon:"cj is best"
         }
       }'
       attributes-form-group='{
@@ -24,7 +33,7 @@
             isadmin:"form group"
         },
         id:{
-            asshole:"my shit"
+           asshole :"my shit"
         }
       }'
       attributes-label='{
@@ -45,10 +54,5 @@
 
       asp-action="CreateGenericForm"
       asp-antiforgery="true"></form>
-
-
-<form generic form-model="@Model">
-
-</form>
 
 
