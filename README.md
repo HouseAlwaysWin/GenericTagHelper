@@ -240,7 +240,7 @@ For other customizale attributes,please see this table...
         </tr>
         <tr>
             <td>
-                <strong>cancel-btn-class/strong>
+                <strong>cancel-btn-class</strong>
             </td>
             <td>Add your custom class to your cancel button tag.<strong>the default is <em>btn btn-efault</em></strong></td>
         </tr>
@@ -252,7 +252,7 @@ For other customizale attributes,please see this table...
         </tr>
         <tr>
             <td>
-                <strong>cabcel-link-return-action/strong>
+                <strong>cabcel-link-return-action</strong>
             </td>
             <td>Add action to your link with cancel tag.<strong>the default is <em>Empty</em></strong></td>
         </tr>
