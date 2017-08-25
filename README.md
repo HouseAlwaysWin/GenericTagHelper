@@ -46,7 +46,7 @@ public class Customer
 }
 ```
 
-And when you load your model with generic form taghelper it will be as same as this code:
+And when you load your model with generic form taghelper the html code will be as same as this code:
 ```html
 
 <form asp-action="CreateForm">
