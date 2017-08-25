@@ -252,9 +252,15 @@ For other customizale attributes,please see this table...
         </tr>
         <tr>
             <td>
-                <strong>cabcel-link-return-action</strong>
+                <strong>cancel-link-return-action</strong>
             </td>
             <td>Add action to your link with cancel tag.<strong>the default is <em>Empty</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>cancel-link-return-controller</strong>
+            </td>
+            <td>Add controller to your link with cancel tag.<strong>the default is <em>Empty</em></strong></td>
         </tr>
     </tbody>
 </table>
