@@ -267,26 +267,10 @@ namespace GenericTagHelper.Form
 
                     TagBuilder form_group = new TagBuilder("div");
 
-                    //if (IsContainsPropertyKey(
-                    //        ClassFormGroupDict, property_name))
-                    //{
-                    //    AddClass(form_group, ClassFormGroupDict, property_name);
-                    //}
-                    //else
-                    //{
-                    //    form_group.AddCssClass(AllClassFormGroup);
-                    //}
-
-                    //if (IsContainsPropertyKey(
-                    //        AttributesFormGroupDict, property_name))
-                    //{
-                    //    AddAttribute(form_group, AttributesFormGroupDict, property_name);
-                    //}
                     AddClassAndAttrToTag(
                         form_group, ClassFormGroupDict,
                         AttributesFormGroupDict, property_name,
                         AllClassFormGroup);
-
 
                     TagBuilder label = Generator.GenerateLabel(
                         ViewContext,
@@ -295,46 +279,12 @@ namespace GenericTagHelper.Form
                         labelText: null,
                         htmlAttributes: null);
 
-                    //if (IsContainsPropertyKey(
-                    //        ClassLabelDict, property_name))
-                    //{
-                    //    AddClass(label, ClassLabelDict, property_name);
-                    //}
-                    //else
-                    //{
-                    //    label.AddCssClass(AllClassLabel);
-                    //}
-
-                    //if (IsContainsPropertyKey(
-                    //        AttributesLabelDict, property_name))
-                    //{
-                    //    AddAttribute(label, AttributesLabelDict, property_name);
-                    //}
-
                     AddClassAndAttrToTag(
                         label, ClassLabelDict,
                         AttributesLabelDict, property_name,
                         AllClassLabel);
 
                     TagBuilder input = GenerateInputType(property);
-
-                    //Add form_group class with Json string case insenstives
-
-                    //if (IsContainsPropertyKey(
-                    //        ClassInputDict, property_name))
-                    //{
-                    //    AddClass(input, ClassInputDict, property_name);
-                    //}
-                    //else
-                    //{
-                    //    input.AddCssClass(AllClassInput);
-                    //}
-
-                    //if (IsContainsPropertyKey(
-                    //        AttributesInputDict, property_name))
-                    //{
-                    //    AddAttribute(input, AttributesInputDict, property_name);
-                    //}
 
                     AddClassAndAttrToTag(
                         input, ClassInputDict,
@@ -349,27 +299,10 @@ namespace GenericTagHelper.Form
                                             tag: null,
                                             htmlAttributes: null);
 
-
-                    if (IsContainsPropertyKey(
-                            ClassSpanDict, property_name))
-                    {
-                        AddClass(span, ClassSpanDict, property_name);
-                    }
-                    else
-                    {
-                        span.AddCssClass(AllClassSpan);
-                    }
-
-
-                    if (IsContainsPropertyKey(
-                            AttributesSpanDict, property_name))
-                    {
-                        AddAttribute(span, AttributesSpanDict, property_name);
-                    }
-                    //AddClassAndAttrToTag(
-                    //    span, ClassSpanDict,
-                    //    AttributesSpanDict, property_name,
-                    //    AllClassSpan);
+                    AddClassAndAttrToTag(
+                        span, ClassSpanDict,
+                        AttributesSpanDict, property_name,
+                        AllClassSpan);
 
                     /*---------------End print your model----------------*/
 
@@ -378,30 +311,27 @@ namespace GenericTagHelper.Form
                     form_group.InnerHtml.AppendHtml(span);
                     form.InnerHtml.AppendHtml(form_group);
 
+                    // End loop according your number of properties
                     if (property_counter > FormModel.Metadata.Properties.Count() - 1)
                     {
                         complex_type_counter++;
+                        // According your ComplexModelsList to decide restarting
                         if (complex_type_counter < ComplexModelsList.Count())
                         {
                             restart = true;
+                            LoadModel(LoadComplexModel1, complex_type_counter);
+                            LoadModel(LoadComplexModel2, complex_type_counter);
+                            LoadModel(LoadComplexModel3, complex_type_counter);
+                            LoadModel(LoadComplexModel4, complex_type_counter);
+                            LoadModel(LoadComplexModel5, complex_type_counter);
+                            LoadModel(LoadComplexModel6, complex_type_counter);
+                            LoadModel(LoadComplexModel7, complex_type_counter);
+                            LoadModel(LoadComplexModel8, complex_type_counter);
+                            LoadModel(LoadComplexModel9, complex_type_counter);
                         }
                         break;
                     }
-                }
-
-                if (complex_type_counter < ComplexModelsList.Count())
-                {
-                    LoadModel(LoadComplexModel1, complex_type_counter);
-                    LoadModel(LoadComplexModel2, complex_type_counter);
-                    LoadModel(LoadComplexModel3, complex_type_counter);
-                    LoadModel(LoadComplexModel4, complex_type_counter);
-                    LoadModel(LoadComplexModel5, complex_type_counter);
-                    LoadModel(LoadComplexModel6, complex_type_counter);
-                    LoadModel(LoadComplexModel7, complex_type_counter);
-                    LoadModel(LoadComplexModel8, complex_type_counter);
-                    LoadModel(LoadComplexModel9, complex_type_counter);
-                };
-
+                } 
             } while (restart);
 
             TagBuilder submitBtn = new TagBuilder("button");
@@ -435,6 +365,7 @@ namespace GenericTagHelper.Form
                 case "hidden":
                     Input = GenerateHidden(modelExplorer);
                     break;
+
                 case "checkbox":
                     Input = Generator.GenerateCheckBox(
                         ViewContext,
@@ -443,6 +374,7 @@ namespace GenericTagHelper.Form
                         isChecked: null,
                         htmlAttributes: null);
                     break;
+
                 case "password":
                     Input = Generator.GeneratePassword(
                         ViewContext,
@@ -451,6 +383,7 @@ namespace GenericTagHelper.Form
                         value: null,
                         htmlAttributes: null);
                     break;
+
                 case "radio":
                     Input = Generator.GenerateRadioButton(
                         ViewContext,
@@ -460,9 +393,11 @@ namespace GenericTagHelper.Form
                         isChecked: null,
                         htmlAttributes: null);
                     break;
+
                 case "select":
                     Input = GenerateSelectList(modelExplorer);
                     break;
+
                 default:
                     Input = GenerateTextBox(
                         modelExplorer,
