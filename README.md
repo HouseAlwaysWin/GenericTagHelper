@@ -34,8 +34,6 @@ public class Customer
 
     public string Email { get; set; }
 
-    public bool IsAdmin { get; set; }
-
     public string Password { get; set; }
 
     public DateTime RegisteredDate { get; set; }
@@ -67,11 +65,6 @@ And when you load your model with generic form taghelper it will be as same as t
         <span asp-validation-for="Password"></span>
     </div>
     <div class="form-group">
-        <label asp-for="IsAdmin"></label>
-        <input asp-for="IsAdmin" class="form-control" />
-        <span asp-validation-for="IsAdmin"></span>
-    </div>
-    <div class="form-group">
         <label asp-for="RegisteredDate"></label>
         <input asp-for="RegisteredDate" class="form-control" />
         <span asp-validation-for="RegisteredDate"></span>
@@ -81,4 +74,179 @@ And when you load your model with generic form taghelper it will be as same as t
     <a asp-action="Index" class="btn btn-default">Cancel</a>
 </form>
 ```
+## Customizable Attributes
 
+You can customize your form tag's attributes by Json format string
+
+## For Example
+<h4><strong>Add Class to your tag</strong></h4>
+You want to change class of your Name label's content
+And you can add json string to class-label in your generic form tag
+
+```html
+<form generic form-model="@Model"
+              class-label='{
+                name:"form-control"
+              }'
+```
+
+The key is your model property's name and is <string>case-insenstive</strong>.
+<br/>
+The value is your class attribute's content
+<br/>
+
+<h4><strong>Add Attributes to your tag</strong></h4>
+You want to add attribute of your Name label
+And you can add json string to attributes-label in your generic form tag
+
+<br/>
+
+```html
+<form generic form-model="@Model"
+              attributes-label='{
+                name:{
+                    custom_attr:"this is custom attribute"
+                }
+              }'
+```
+
+For other customizale attributes,please see this table...
+
+<table>
+    <thead>
+        <tr>
+            <th>Attributes</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong>class-form-group</strong>
+            </td>
+            <td>Customize your form group's div tag class attribute.</td>
+        </tr>
+         <tr>
+            <td>
+                <strong>class-label</strong>
+            </td>
+            <td>Customize your label tag class attribute.</td>
+        </tr>
+         <tr>
+            <td>
+                <strong>class-input</strong>
+            </td>
+            <td>Customize your input tag class attribute.</td>
+        </tr>
+         <tr>
+            <td>
+                <strong>class-span</strong>
+            </td>
+            <td>Customize your validation message span tag class attribute.</em></td>
+        </tr>
+         <tr>
+            <td>
+                <strong>attributes-form-group</strong>
+            </td>
+            <td>Customize your form group's div tag attribute.</td>
+        </tr>
+         <tr>
+            <td>
+                <strong>attributes-label</strong>
+            </td>
+            <td>Customize your label tag attribute.</td>
+        </tr>
+         <tr>
+            <td>
+                <strong>attributes-input</strong>
+            </td>
+            <td>Customize your input tag attribute.</td>
+        </tr>
+         <tr>
+            <td>
+                <strong>attributes-span</strong>
+            </td>
+            <td>Customize your span tag attribute.</td>
+        </tr>
+    </tbody>
+</table>
+
+<hr/>
+<h4><strong>Other Customizable Attributes</strong></h4>
+
+<table>
+    <thead>
+       <tr>
+            <th>Attributes</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong>form-title</strong>
+            </td>
+            <td>Customize your form title by html string.<strong>the default is <em>Form</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>form-title-class</strong>
+            </td>
+            <td>Customize your form title's class.<strong>the default is <em>Empty</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>all-class-form-group</strong>
+            </td>
+            <td>Add your custom class to your form-group's tag.<strong>the default is <em>form-group</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>all-class-label</strong>
+            </td>
+            <td>Add your custom class to your label tag.<strong>the default is <em>Empty</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>all-class-input</strong>
+            </td>
+            <td>Add your custom class to your input tag.<strong>the default is <em>form-group</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>all-class-span</strong>
+            </td>
+            <td>Add your custom class to your span tag.<strong>the default is <em>Empty</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>submit-btn-class</strong>
+            </td>
+            <td>Add your custom class to your submit button tag.<strong>the default is <em>btn btn-primary</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>submit-btn-contant</strong>
+            </td>
+            <td>Add your custom class to your submit button tag.<strong>the default is <em>Submit</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>cancel-btn-class/strong>
+            </td>
+            <td>Add your custom class to your cancel button tag.<strong>the default is <em>btn btn-efault</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>cabcel-btn-contant</strong>
+            </td>
+            <td>Add your contant to your cancel button tag.<strong>the default is <em>Cancel</em></strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>cabcel-link-return-action/strong>
+            </td>
+            <td>Add your link to your cancel tag.<strong>the default is <em>btn btn-default</em></strong></td>
+        </tr>
+    </tbody>
+</table>
