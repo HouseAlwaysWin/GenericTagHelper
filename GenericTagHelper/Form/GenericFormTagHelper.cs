@@ -114,6 +114,8 @@ namespace GenericTagHelper.Form
 
         public string CancelLinkReturnAction { get; set; } = "";
 
+        public string CancelLinkReturnController { get; set; } = "";
+
 
         public string ComplexModels { get; set; } = "";
         private List<string> ComplexModelsList
@@ -340,7 +342,14 @@ namespace GenericTagHelper.Form
             submitBtn.InnerHtml.SetContent(SubmitBtnContent);
 
             TagBuilder cancelBtn = new TagBuilder("a");
-            cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction);
+            if (CancelLinkReturnAction != "" && CancelLinkReturnController == "")
+            {
+                cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction);
+            }
+            else
+            {
+                cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction, CancelLinkReturnController);
+            }
             cancelBtn.AddCssClass(CancelBtnClass);
             cancelBtn.MergeAttribute("style", "margin-left:10px;");
             cancelBtn.InnerHtml.Append(CancelBtnContant);
