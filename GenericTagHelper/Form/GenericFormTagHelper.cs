@@ -114,7 +114,6 @@ namespace GenericTagHelper.Form
 
         public string CancelLinkReturnAction { get; set; } = "";
 
-        public IEnumerable<SelectListItem> SelectItems { get; set; } 
 
         public string ComplexModels { get; set; } = "";
         private List<string> ComplexModelsList
@@ -432,8 +431,8 @@ namespace GenericTagHelper.Form
                         isChecked: null,
                         htmlAttributes: null);
                     break;
-                case "select": 
-                    Input = GenerateSelectList(modelExplorer, SelectItems);
+                case "select":
+                    Input = GenerateSelectList(modelExplorer);
                     break;
                 default:
                     Input = GenerateTextBox(
@@ -549,8 +548,9 @@ namespace GenericTagHelper.Form
                 htmlAttributes: htmlAttributes);
         }
 
-        public TagBuilder GenerateSelectList(ModelExplorer modelExplorer, IEnumerable<SelectListItem> selectItems)
+        public TagBuilder GenerateSelectList(ModelExplorer modelExplorer)
         {
+
             // Base allowMultiple on the instance or declared type of the expression to avoid a
             // "SelectExpressionNotEnumerable" InvalidOperationException during generation.
             // Metadata.IsEnumerableType is similar but does not take runtime type into account.
@@ -566,18 +566,9 @@ namespace GenericTagHelper.Form
             // elements. Provide selected values for <option/> tag helpers.
             var currentValues = _currentValues == null ? null : new CurrentValues(_currentValues);
             // Ensure GenerateSelect() _never_ looks anything up in ViewData.
-            var items = selectItems ?? Enumerable.Empty<SelectListItem>();
+            var items = Enumerable.Empty<SelectListItem>();
 
-
-            //if (modelExplorer == null)
-            //{
-            //    var options = Generator.GenerateGroupsAndOptions(
-            //        optionLabel: null, selectList: items);
-            //    output.PostContent.AppendHtml(options);
-            //    return;
-            //}
-
-            var tagBuilder = Generator.GenerateSelect(
+            var selectTag = Generator.GenerateSelect(
                 ViewContext,
                 modelExplorer,
                 optionLabel: null,
@@ -587,7 +578,17 @@ namespace GenericTagHelper.Form
                 allowMultiple: _allowMultiple,
                 htmlAttributes: null);
 
-            return tagBuilder;
+
+            var names = Enum.GetNames(modelExplorer.ModelType);
+            for (int i = 0; i < names.Length; i++)
+            {
+                TagBuilder selectList = new TagBuilder("option");
+                selectList.MergeAttribute("value", i.ToString());
+                selectList.InnerHtml.SetContent(names[i]);
+                selectTag.InnerHtml.AppendHtml(selectList);
+            }
+
+            return selectTag;
         }
 
         // Get a fall-back format based on the metadata.
