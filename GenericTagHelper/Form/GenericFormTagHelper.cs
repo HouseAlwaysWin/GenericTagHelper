@@ -110,7 +110,7 @@ namespace GenericTagHelper.Form
 
         public string CancelBtnClass { get; set; } = "btn btn-default";
 
-        public string CancelBtnContent { get; set; } = "Cancel";
+        public string CancelBtnContant { get; set; } = "Cancel";
 
         public string CancelLinkReturnAction { get; set; } = "";
 
@@ -343,7 +343,7 @@ namespace GenericTagHelper.Form
             cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction);
             cancelBtn.AddCssClass(CancelBtnClass);
             cancelBtn.MergeAttribute("style", "margin-left:10px;");
-            cancelBtn.InnerHtml.Append(CancelBtnContent);
+            cancelBtn.InnerHtml.Append(CancelBtnContant);
 
 
 
