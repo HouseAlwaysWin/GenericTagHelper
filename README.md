@@ -248,7 +248,7 @@ For other customizale attributes,please see this table...
             <td>
                 <strong>cabcel-link-return-action/strong>
             </td>
-            <td>Add your link to your cancel tag.<strong>the default is <em>btn btn-default</em></strong></td>
+            <td>Add action to your link with cancel tag.<strong>the default is <em>Empty</em></strong></td>
         </tr>
     </tbody>
 </table>
