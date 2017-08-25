@@ -124,7 +124,7 @@ For other customizale attributes,please see this table...
     <thead>
         <tr>
             <th>Attributes</th>
-            <th>Comment</th>
+            <th>Description</th>
         </tr>
     </thead>
     <tbody>
@@ -186,7 +186,7 @@ For other customizale attributes,please see this table...
     <thead>
        <tr>
             <th>Attributes</th>
-            <th>Comment</th>
+            <th>Description</th>
         </tr>
     </thead>
     <tbody>
