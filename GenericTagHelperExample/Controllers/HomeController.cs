@@ -10,8 +10,8 @@ namespace GenericTagHelperExample.Controllers
 {
     public class HomeController : Controller
     {
-        public GenericFormDbContext context;
-        public HomeController(GenericFormDbContext context)
+        public GenericDbContext context;
+        public HomeController(GenericDbContext context)
         {
             this.context = context;
         }
@@ -27,33 +27,41 @@ namespace GenericTagHelperExample.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateGenericForm(Customer model)
+        public IActionResult CreateGenericForm(FormModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View("CreateGenericForm");
             }
 
-            context.Customers.Add(model);
+            context.FormModels.Add(model);
             context.SaveChanges();
 
             return View();
         }
 
-        public IActionResult CreateForm()
+        public IActionResult CreateNormalForm()
         {
-            return View();
+            var radio = new FormModel
+            {
+                RadioBoxes = new List<RadioBox>
+                {
+                    new RadioBox { Id=1,Name="Male" },
+                    new RadioBox { Id=2,Name="Female" }
+                }
+            };
+            return View(radio);
         }
 
         [HttpPost]
-        public IActionResult CreateForm(Customer model)
+        public IActionResult CreateNormalForm(FormModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            context.Customers.Add(model);
+            context.FormModels.Add(model);
             context.SaveChanges();
 
             return View();

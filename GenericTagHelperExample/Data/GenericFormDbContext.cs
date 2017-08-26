@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace GenericTagHelperExample.Data
 {
-    public class GenericFormDbContext : DbContext
+    public class GenericDbContext : DbContext
     {
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<FormModel> FormModels { get; set; }
 
-        public GenericFormDbContext(DbContextOptions<GenericFormDbContext> options)
+        public GenericDbContext(DbContextOptions<GenericDbContext> options)
             : base(options)
         {
         }

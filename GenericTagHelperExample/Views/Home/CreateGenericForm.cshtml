@@ -1,59 +1,32 @@
-﻿@model Customer
+﻿@model FormModel
 
 <br />
 <form generic form-model="@Model"
-      form-title="<h3>Customer</h3>"
-      class-form-group='{
-            id:"jon snow"
-      }'
-
-      class-label='{
-        id:"tyrion"
-      }'
+      form-title="<h3>FormModel</h3>"
       class-input='{
-      isadmin:"form-control ",
-      isadmin:""
+      checkbox:"form-control ",
+      checkbox:"",
       }'
-
-      class-span='{
-        name:"jamie"
-      }'
- 
       attributes-input='{
-        isadmin:{
-            isadmin:"input",
-            harry:"potter"
+        SelectRadio:{
+            type:"radio",
+            hello:"world"
         },
-        id:{
-            comeon:"cj is best"
-        }
-      }'
-      attributes-form-group='{
-        isadmin:{
-            isadmin:"form group"
+        passwordtextbox:{
+            type:"password",
+            hello:"world",
         },
-        id:{
-           asshole :"my shit"
+        CheckBox:{
+            type:"checkbox",
+            hello:"world"
         }
-      }'
-      attributes-label='{
-        isadmin:{
-            isadmin:"label"
-        }
-      }'
-      attributes-span='{
-        isadmin:{
-            isadmin:"span"
-        }
-      }'
+     }'
       method="post"
-      complex-models='["Addresses","Gender"]' 
       cancel-link-return-action="Index"
       cancel-link-return-controller="Home"
-
-      load-complex-model="Addresses"
-      load-complex-model1="Gender"
-
+      complex-models='["ComplexType1","ComplexType2"]'
+      load-complex-model="ComplexType1"
+      load-complex-model1="ComplexType2"
       asp-action="CreateGenericForm"
       asp-antiforgery="true"></form>
 

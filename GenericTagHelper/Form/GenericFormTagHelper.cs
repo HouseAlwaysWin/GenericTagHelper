@@ -293,6 +293,7 @@ namespace GenericTagHelper.Form
                         AttributesInputDict, property_name,
                         AllClassInput);
 
+
                     TagBuilder span = Generator.GenerateValidationMessage(
                                             ViewContext,
                                             property,
@@ -353,8 +354,6 @@ namespace GenericTagHelper.Form
             cancelBtn.AddCssClass(CancelBtnClass);
             cancelBtn.MergeAttribute("style", "margin-left:10px;");
             cancelBtn.InnerHtml.Append(CancelBtnContant);
-
-
 
             form.InnerHtml.AppendHtml(submitBtn);
             form.InnerHtml.AppendHtml(cancelBtn);
@@ -629,10 +628,12 @@ namespace GenericTagHelper.Form
             Dictionary<string, Dictionary<string, string>> tagAttributeDict,
             string propertyName)
         {
-            tag.MergeAttributes(
-                tagAttributeDict.LastOrDefault(
-                    p => p.Key.Equals(propertyName,
-                    StringComparison.OrdinalIgnoreCase)).Value);
+            // find property if match propertyName then apply attributes.
+            tagAttributeDict.LastOrDefault(
+                prop => prop.Key
+                .Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                .Value
+                .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
         }
 
         private Dictionary<string, string> ClassJsonStringConvert(
@@ -684,7 +685,7 @@ namespace GenericTagHelper.Form
             }
 
             if (IsContainsPropertyKey(
-                    AttributesFormGroupDict, propertyName))
+                    attributeDict, propertyName))
             {
                 AddAttribute(tag, attributeDict, propertyName);
             }

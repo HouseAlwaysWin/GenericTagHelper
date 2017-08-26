@@ -1,0 +1,50 @@
+﻿@model FormModel
+
+<form asp-action="CreateNormalForm">
+    <div class="form-group">
+        <label asp-for="Id"></label>
+        <input asp-for="Id" class="form-control" />
+        <span asp-validation-for="Id"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TextBox"></label>
+        <input asp-for="TextBox" class="form-control" />
+        <span asp-validation-for="TextBox"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EmailTextBox"></label>
+        <input asp-for="EmailTextBox" class="form-control" />
+        <span asp-validation-for="EmailTextBox"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PasswordTextBox"></label>
+        <input asp-for="PasswordTextBox" class="form-control" />
+        <span asp-validation-for="PasswordTextBox"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="CheckBox"></label>
+        <input asp-for="CheckBox"/>
+        <span asp-validation-for="CheckBox"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateTimeTextBox"></label>
+        <input asp-for="DateTimeTextBox" class="form-control" />
+        <span asp-validation-for="DateTimeTextBox"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="RadioBoxes"></label>
+        @foreach (var item in Model.RadioBoxes)
+        {
+            <input asp-for="SelectRadio" type="radio" value="@item.Id" />@item.Name
+        }
+        <span asp-validation-for="RadioBoxes"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="LevelSelectList"></label>
+        <select asp-for="LevelSelectList" asp-items="Html.GetEnumSelectList<Level>()" class="form-control"></select>
+        <span asp-validation-for="LevelSelectList"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a asp-action="Index" class="btn btn-default">Cancel</a>
+</form>
