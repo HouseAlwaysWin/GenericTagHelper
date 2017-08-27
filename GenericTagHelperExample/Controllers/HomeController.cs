@@ -24,32 +24,29 @@ namespace GenericTagHelperExample.Controllers
         public IActionResult CreateGenericForm()
         {
 
-            var radio = new FormModel
+            var radio = new FormViewModel
             {
-                //RadioBoxes = new Dictionary<string, string>
-                //{
-                //    ["1"] = "male",
-                //    ["2"] = "female"
-                //},
-                RadioBoxList = new List<RadioBox>
+                FormModel = new FormModel
                 {
+                    RadioBoxList = new List<RadioBox>
+                    {
                     new RadioBox{ Id=1,Name="male"},
                     new RadioBox {Id=2,Name="female"}
+                    }
                 }
-
             };
             return View(radio);
         }
 
         [HttpPost]
-        public IActionResult CreateGenericForm(FormModel model)
+        public IActionResult CreateGenericForm(FormViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View("CreateGenericForm");
             }
 
-            context.FormModels.Add(model);
+            context.FormModels.Add(model.FormModel);
             context.SaveChanges();
 
             return View();
@@ -57,31 +54,29 @@ namespace GenericTagHelperExample.Controllers
 
         public IActionResult CreateNormalForm()
         {
-            var radio = new FormModel
+            var radio = new FormViewModel
             {
-                //RadioBoxes = new Dictionary<string, string>
-                //{
-                //    ["1"] = "male",
-                //    ["2"] = "female"
-                //},
-                RadioBoxList = new List<RadioBox>
+                FormModel = new FormModel
                 {
+                    RadioBoxList = new List<RadioBox>
+                    {
                     new RadioBox{ Id=1,Name="male"},
                     new RadioBox {Id=2,Name="female"}
+                    }
                 }
             };
             return View(radio);
         }
 
         [HttpPost]
-        public IActionResult CreateNormalForm(FormModel model)
+        public IActionResult CreateNormalForm(FormViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            context.FormModels.Add(model);
+            context.FormModels.Add(model.FormModel);
             context.SaveChanges();
 
             return View();

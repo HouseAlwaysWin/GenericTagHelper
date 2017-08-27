@@ -276,8 +276,23 @@ namespace GenericTagHelper.Helpers
                     var property = FormModel.ModelExplorer.Properties.SingleOrDefault(
                         n => n.Metadata.PropertyName == property_name);
 
+
+
+                    if (property.Metadata.IsEnumerableType &&
+                       complex_type_prop_counter == FormModel.ModelExplorer.Properties.Count())
+                    {
+                        // close complex type loop,because of ending of complex type's properties
+                        start_complex_type_loop = false;
+                        // Set counter for next property, must +1 
+                        // or it will loop previous property.
+                        property_counter = main_model_prop_counter + 1;
+                        // Set model to  main model
+                        FormModel = form_model;
+                        restart = true;
+                        break;
+                    }
                     // Skip EnumerableType
-                    if (property.Metadata.IsEnumerableType)
+                    else if (property.Metadata.IsEnumerableType)
                     {
                         continue;
                     }

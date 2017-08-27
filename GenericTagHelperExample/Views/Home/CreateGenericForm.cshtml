@@ -1,4 +1,4 @@
-﻿@model FormModel
+﻿@model FormViewModel
 
 <br />
 <form generic form-model="@Model"
@@ -6,7 +6,7 @@
       class-input='{
       checkbox:"form-control ",
       checkbox:"",
-      }' 
+      }'
       attributes-input='{
         selectradio:{
             "class":"hello",
@@ -30,7 +30,6 @@
       method="post"
       cancel-link-return-action="Index"
       cancel-link-return-controller="Home"
-     
       asp-action="CreateGenericForm"
       asp-antiforgery="true"></form>
 
