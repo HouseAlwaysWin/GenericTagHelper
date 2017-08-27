@@ -1,6 +1,13 @@
 ﻿@model FormViewModel
+    @{ 
+        var list = new List<string>
+        {
+            "1","Martin",
+        };
+    }
 
 <br />
+
 <form generic form-model="@Model"
       form-title="<h3>FormModel</h3>"
       class-input='{

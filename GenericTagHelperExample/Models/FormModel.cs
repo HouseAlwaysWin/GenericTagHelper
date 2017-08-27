@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace GenericTagHelperExample.Models
         public string TextBox { get; set; }
 
         public byte[] Upload { get; set; }
+        [NotMapped]
         public IFormFile Image { get; set; }
         [DataType(DataType.EmailAddress)]
         public string EmailTextBox { get; set; }

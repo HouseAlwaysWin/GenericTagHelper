@@ -13,7 +13,19 @@ namespace GenericTagHelper.Helpers
     {
         public string TableHeads { get; set; }
 
-        public ModelExpression Items { get; set; }
+        public string Items { get; set; }
+        private List<Dictionary<string,string>> ItemsList
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(Items))
+                    return JsonConvert.DeserializeObject<List<Dictionary<string,string>>>(Items);
+
+                return new List<Dictionary<string,string>>();
+            }
+
+        }
+
 
         private List<string> TableHeadList
         {
@@ -33,27 +45,34 @@ namespace GenericTagHelper.Helpers
             TagBuilder table = new TagBuilder("table");
 
             TagBuilder thead = new TagBuilder("thead");
-            TagBuilder thead_tr = new TagBuilder("thead_tr");
+            TagBuilder thead_tr = new TagBuilder("tr");
 
             foreach (var name in TableHeadList)
             {
                 TagBuilder th = new TagBuilder("th");
-                th.InnerHtml.AppendHtml(th);
+                th.InnerHtml.AppendHtml(name);
                 thead_tr.InnerHtml.AppendHtml(th);
             }
 
+            thead.InnerHtml.AppendHtml(thead_tr);
+            table.InnerHtml.AppendHtml(thead);
+
             TagBuilder tbody = new TagBuilder("tbody");
 
-            foreach (var item in Items.ModelExplorer.Properties)
+            foreach (var items in ItemsList)
             {
                 TagBuilder tbody_tr = new TagBuilder("tbody_tr");
-                TagBuilder td = new TagBuilder("td");
-                td.InnerHtml.AppendHtml(item.Metadata.Placeholder);
-                tbody_tr.InnerHtml.AppendHtml(td);
+                foreach (var item in items)
+                {
+                    TagBuilder td = new TagBuilder("td");
+                    td.InnerHtml.AppendHtml(item.ToString());
+                    tbody_tr.InnerHtml.AppendHtml(td);
+                }
+
                 tbody.InnerHtml.AppendHtml(tbody_tr);
             }
 
-            table.InnerHtml.AppendHtml(thead).AppendHtml(tbody);
+            table.InnerHtml.AppendHtml(tbody);
             output.Content.SetHtmlContent(table);
         }
     }
