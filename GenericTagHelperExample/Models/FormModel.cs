@@ -38,6 +38,7 @@ namespace GenericTagHelperExample.Models
         [DataType("Radio")]
         public int SelectRadio { get; set; }
         public IEnumerable<RadioBox> RadioBoxList { get; set; }
+        public ICollection<RadioBox> RadioBoxList2 { get; set; }
 
     }
 }

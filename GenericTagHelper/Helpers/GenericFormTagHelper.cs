@@ -278,7 +278,7 @@ namespace GenericTagHelper.Helpers
 
 
 
-                    if (property.Metadata.IsEnumerableType &&
+                    if ((property.Metadata.IsEnumerableType || (property.Metadata.IsCollectionType)) &&
                        complex_type_prop_counter == FormModel.ModelExplorer.Properties.Count())
                     {
                         // close complex type loop,because of ending of complex type's properties
