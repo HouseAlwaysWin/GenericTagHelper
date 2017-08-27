@@ -45,7 +45,7 @@ namespace GenericTagHelper.Form
                 { "DateTime", "datetime-local" },
                 { "DateTime-local", "datetime-local" },
                 { "Time", "time" },
-                {"Radio" ,"radio" },
+                { "Radio" ,"radio" },
                 { nameof(Byte), "number" },
                 { nameof(SByte), "number" },
                 { nameof(Int16), "number" },
@@ -156,7 +156,7 @@ namespace GenericTagHelper.Form
             {
                 return AttributeJsonStringConvert(AttributesRadioBtnValue);
             }
-        } 
+        }
 
         public string ClassTitle { get; set; }
 
@@ -284,7 +284,8 @@ namespace GenericTagHelper.Form
 
                     // distinguish property between complex type and primary type
                     if (property.Metadata.IsComplexType &&
-                        (!property.Metadata.IsEnumerableType))
+                        !property.Metadata.IsEnumerableType &&
+                        property.ModelType != typeof(IFormFile))
                     {
                         // Get Complex type model
                         ModelExpression complexType = new ModelExpression(
@@ -333,7 +334,7 @@ namespace GenericTagHelper.Form
                     // if type is radio than use radio button
                     if (property.Metadata.DataTypeName == "Radio")
                     {
-                        
+
                         TagBuilder fieldset = new TagBuilder("fieldset");
                         // According RadioDict's key to match main radio property name
                         // then get the key value pair from Value
@@ -827,7 +828,7 @@ namespace GenericTagHelper.Form
             }
         }
 
-      
+
         #endregion
     }
 }

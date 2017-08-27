@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace GenericTagHelperExample.Models
         public ComplexType2 ComplexType2 { get; set; }
         public string TextBox { get; set; }
 
+        public byte[] Upload { get; set; }
+        public IFormFile Image { get; set; }
         [DataType(DataType.EmailAddress)]
         public string EmailTextBox { get; set; }
 
