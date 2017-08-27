@@ -272,21 +272,30 @@ namespace GenericTagHelper.Form
 
             form.InnerHtml.AppendHtml(title);
 
-
             bool restart;
             // counter for your number of complex type's properties
-            int complex_type_counter = 0;
+            //int complex_type_counter = 0;
+            ModelExpression form_model = FormModel;
+            int property_counter = 0;
+            int main_prop_counter = 0;
+            bool start_complex_type_loop = false;
             do
             {
-                var property_counter = 0;
+                //var property_counter = 0;
                 restart = false;
+                int complex_type_prop_counter = 0;
 
                 // Loop your Form Model
-                foreach (ModelExplorer property in FormModel.ModelExplorer.Properties)
+                //foreach (ModelExplorer property in FormModel.ModelExplorer.Properties)
+                for (int p = property_counter; p < FormModel.ModelExplorer.Properties.Count(); p++)
                 {
-                    property_counter++;
-
-                    var property_name = property.Metadata.PropertyName;
+                    //property_counter++;
+                    if (start_complex_type_loop)
+                        complex_type_prop_counter++;
+                    //var property_name = property.Metadata.PropertyName;
+                    var property_name = FormModel.Metadata.Properties[p].PropertyName;
+                    var property = FormModel.ModelExplorer.Properties.SingleOrDefault(
+                        n => n.Metadata.PropertyName == property_name);
 
                     if (property.Metadata.IsEnumerableType)
                     {
@@ -298,17 +307,22 @@ namespace GenericTagHelper.Form
                         (!property.Metadata.IsEnumerableType))
                     {
                         // if LoadComplexModel has model
-                        if (LoadComplexModel != null)
-                        {
-                            FormModel = LoadComplexModel;
-                            restart = true;
-                            break;
-                        }
-                        else
-                        {
-                            // if not then skip complex property
-                            continue;
-                        }
+                        //if (LoadComplexModel != null)
+                        //{
+                        ModelExpression complexType = new ModelExpression(
+                            property.Metadata.PropertyName, property);
+                        FormModel = complexType;
+                        start_complex_type_loop = true;
+                        property_counter = complex_type_prop_counter;
+                        main_prop_counter = p;
+                        restart = true;
+                        break;
+                        //}
+                        //else
+                        //{
+                        //    // if not then skip complex property
+                        //    continue;
+                        //}
                     }
 
                     /*-------------- Start Print your models-----------*/
@@ -338,7 +352,7 @@ namespace GenericTagHelper.Form
 
                     TagBuilder input;
 
-
+                    // if type is radio than use radio button
                     if (property.Metadata.DataTypeName == "Radio")
                     {
                         TagBuilder fieldset = new TagBuilder("fieldset");
@@ -352,9 +366,10 @@ namespace GenericTagHelper.Form
                                                   input, ClassInputDict,
                                                    AttributesInputDict, property_name,
                                                    AllClassInput);
+
                                  TagBuilder value_div = new TagBuilder("div");
                                  TagBuilder value_span = new TagBuilder("span");
-
+                                 // radio button left
                                  if (RadioLeft &&
                                     !RadioRight &&
                                     !RadioTop &&
@@ -369,7 +384,9 @@ namespace GenericTagHelper.Form
                                          AllClassRadioBtnValue);
                                      fieldset.InnerHtml.AppendHtml(value_span);
                                  }
-                                 else if (!RadioLeft &&
+                                 // radio button right
+                                 else if (
+                                     !RadioLeft &&
                                       RadioRight &&
                                      !RadioTop &&
                                      !RadioBottom)
@@ -383,8 +400,9 @@ namespace GenericTagHelper.Form
 
                                      fieldset.InnerHtml.AppendHtml(input);
                                  }
-
-                                 else if (!RadioLeft &&
+                                 // radio button top
+                                 else if (
+                                     !RadioLeft &&
                                      !RadioRight &&
                                       RadioTop &&
                                      !RadioBottom)
@@ -398,10 +416,12 @@ namespace GenericTagHelper.Form
 
                                      fieldset.InnerHtml.AppendHtml(value_div);
                                  }
-                                 else if (!RadioLeft &&
+                                 // radio button bottom
+                                 else if (
+                                    !RadioLeft &&
                                     !RadioRight &&
-                                     !RadioTop &&
-                                    RadioBottom)
+                                    !RadioTop &&
+                                     RadioBottom)
                                  {
                                      value_div.InnerHtml.AppendHtml(item.Value);
                                      AddClassAndAttrToTag(
@@ -423,26 +443,18 @@ namespace GenericTagHelper.Form
                                         AllClassRadioBtnValue);
                                      fieldset.InnerHtml.AppendHtml(value_span);
                                  }
+
                                  return input;
                              });
                         form_group.InnerHtml.AppendHtml(fieldset);
-                        //    foreach (var item in RadioDict.Values)
-                        //    {
-                        //        input = GenerateInputType(property, item.ToString());
-                        //        AddClassAndAttrToTag(
-                        //                         input, ClassInputDict,
-                        //                          AttributesInputDict, property_name,
-                        //                          AllClassInput);
-                        //        form_group.InnerHtml.AppendHtml(input).AppendHtml(item.Value);
-                        //    }
                     }
                     else
                     {
                         input = GenerateInputType(property);
                         AddClassAndAttrToTag(
-                                              input, ClassInputDict,
-                                               AttributesInputDict, property_name,
-                                               AllClassInput);
+                            input, ClassInputDict,
+                            AttributesInputDict, property_name,
+                            AllClassInput);
                         form_group.InnerHtml.AppendHtml(input);
                     }
 
@@ -465,23 +477,27 @@ namespace GenericTagHelper.Form
                     form.InnerHtml.AppendHtml(form_group);
 
                     // End loop according your number of properties
-                    if (property_counter > FormModel.Metadata.Properties.Count() - 1)
+                    //if (property_counter > FormModel.Metadata.Properties.Count() - 1)
+                    if (complex_type_prop_counter > FormModel.Metadata.Properties.Count() - 1)
                     {
-                        complex_type_counter++;
+                        //complex_type_counter++;
                         // According your ComplexModelsList to decide restarting
-                        if (complex_type_counter < ComplexModelsList.Count())
-                        {
-                            restart = true;
-                            LoadModel(LoadComplexModel1, complex_type_counter);
-                            LoadModel(LoadComplexModel2, complex_type_counter);
-                            LoadModel(LoadComplexModel3, complex_type_counter);
-                            LoadModel(LoadComplexModel4, complex_type_counter);
-                            LoadModel(LoadComplexModel5, complex_type_counter);
-                            LoadModel(LoadComplexModel6, complex_type_counter);
-                            LoadModel(LoadComplexModel7, complex_type_counter);
-                            LoadModel(LoadComplexModel8, complex_type_counter);
-                            LoadModel(LoadComplexModel9, complex_type_counter);
-                        }
+                        //if (complex_type_counter < ComplexModelsList.Count())
+                        //{
+                        start_complex_type_loop = false;
+                        property_counter = main_prop_counter + 1;
+                        FormModel = form_model;
+                        restart = true;
+                        //LoadModel(LoadComplexModel1, complex_type_counter);
+                        //LoadModel(LoadComplexModel2, complex_type_counter);
+                        //LoadModel(LoadComplexModel3, complex_type_counter);
+                        //LoadModel(LoadComplexModel4, complex_type_counter);
+                        //LoadModel(LoadComplexModel5, complex_type_counter);
+                        //LoadModel(LoadComplexModel6, complex_type_counter);
+                        //LoadModel(LoadComplexModel7, complex_type_counter);
+                        //LoadModel(LoadComplexModel8, complex_type_counter);
+                        //LoadModel(LoadComplexModel9, complex_type_counter);
+                        //}
                         break;
                     }
                 }
