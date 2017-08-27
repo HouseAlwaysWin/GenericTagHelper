@@ -139,6 +139,24 @@ namespace GenericTagHelper.Form
         public bool RadioTop { get; set; }
         public bool RadioBottom { get; set; }
 
+        public string ClassRadioBtnValue { get; set; }
+        private Dictionary<string, string> ClassRadioBtnValueDict
+        {
+            get
+            {
+                return ClassJsonStringConvert(ClassRadioBtnValue);
+            }
+        }
+
+        public string AllClassRadioBtnValue { get; set; } = "";
+        public string AttributesRadioBtnValue { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesRadioBtnValueDict
+        {
+            get
+            {
+                return AttributeJsonStringConvert(AttributesRadioBtnValue);
+            }
+        }
 
         public string ComplexModels { get; set; } = "";
         private List<string> ComplexModelsList
@@ -336,14 +354,19 @@ namespace GenericTagHelper.Form
                                                    AllClassInput);
                                  TagBuilder value_div = new TagBuilder("div");
                                  TagBuilder value_span = new TagBuilder("span");
-                   
+
                                  if (RadioLeft &&
                                     !RadioRight &&
                                     !RadioTop &&
                                     !RadioBottom)
                                  {
                                      fieldset.InnerHtml.AppendHtml(input);
+
                                      value_span.InnerHtml.AppendHtml(item.Value);
+                                     AddClassAndAttrToTag(
+                                         value_span, ClassRadioBtnValueDict,
+                                         AttributesRadioBtnValueDict, property_name,
+                                         AllClassRadioBtnValue);
                                      fieldset.InnerHtml.AppendHtml(value_span);
                                  }
                                  else if (!RadioLeft &&
@@ -352,7 +375,12 @@ namespace GenericTagHelper.Form
                                      !RadioBottom)
                                  {
                                      value_span.InnerHtml.AppendHtml(item.Value);
+                                     AddClassAndAttrToTag(
+                                        value_span, ClassRadioBtnValueDict,
+                                        AttributesRadioBtnValueDict, property_name,
+                                        AllClassRadioBtnValue);
                                      fieldset.InnerHtml.AppendHtml(value_span);
+
                                      fieldset.InnerHtml.AppendHtml(input);
                                  }
 
@@ -363,6 +391,11 @@ namespace GenericTagHelper.Form
                                  {
                                      fieldset.InnerHtml.AppendHtml(input);
                                      value_div.InnerHtml.AppendHtml(item.Value);
+                                     AddClassAndAttrToTag(
+                                        value_div, ClassRadioBtnValueDict,
+                                        AttributesRadioBtnValueDict, property_name,
+                                        AllClassRadioBtnValue);
+
                                      fieldset.InnerHtml.AppendHtml(value_div);
                                  }
                                  else if (!RadioLeft &&
@@ -371,13 +404,23 @@ namespace GenericTagHelper.Form
                                     RadioBottom)
                                  {
                                      value_div.InnerHtml.AppendHtml(item.Value);
+                                     AddClassAndAttrToTag(
+                                        value_div, ClassRadioBtnValueDict,
+                                        AttributesRadioBtnValueDict, property_name,
+                                        AllClassRadioBtnValue);
                                      fieldset.InnerHtml.AppendHtml(value_div);
+
                                      fieldset.InnerHtml.AppendHtml(input);
                                  }
                                  else
                                  {
                                      fieldset.InnerHtml.AppendHtml(input);
+
                                      value_span.InnerHtml.AppendHtml(item.Value);
+                                     AddClassAndAttrToTag(
+                                        value_span, ClassRadioBtnValueDict,
+                                        AttributesRadioBtnValueDict, property_name,
+                                        AllClassRadioBtnValue);
                                      fieldset.InnerHtml.AppendHtml(value_span);
                                  }
                                  return input;
