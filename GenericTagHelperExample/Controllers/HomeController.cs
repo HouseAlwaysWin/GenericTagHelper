@@ -23,7 +23,22 @@ namespace GenericTagHelperExample.Controllers
 
         public IActionResult CreateGenericForm()
         {
-            return View();
+
+            var radio = new FormModel
+            {
+                //RadioBoxes = new Dictionary<string, string>
+                //{
+                //    ["1"] = "male",
+                //    ["2"] = "female"
+                //},
+                RadioBoxList = new List<RadioBox>
+                {
+                    new RadioBox{ Id=1,Name="male"},
+                    new RadioBox {Id=2,Name="female"}
+                }
+
+            };
+            return View(radio);
         }
 
         [HttpPost]
@@ -44,10 +59,15 @@ namespace GenericTagHelperExample.Controllers
         {
             var radio = new FormModel
             {
-                RadioBoxes = new List<RadioBox>
+                //RadioBoxes = new Dictionary<string, string>
+                //{
+                //    ["1"] = "male",
+                //    ["2"] = "female"
+                //},
+                RadioBoxList = new List<RadioBox>
                 {
-                    new RadioBox { Id=1,Name="Male" },
-                    new RadioBox { Id=2,Name="Female" }
+                    new RadioBox{ Id=1,Name="male"},
+                    new RadioBox {Id=2,Name="female"}
                 }
             };
             return View(radio);

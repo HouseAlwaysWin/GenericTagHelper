@@ -45,6 +45,7 @@ namespace GenericTagHelper.Form
                 { "DateTime", "datetime-local" },
                 { "DateTime-local", "datetime-local" },
                 { "Time", "time" },
+                {"Radio" ,"radio" },
                 { nameof(Byte), "number" },
                 { nameof(SByte), "number" },
                 { nameof(Int16), "number" },
@@ -115,6 +116,28 @@ namespace GenericTagHelper.Form
         public string CancelLinkReturnAction { get; set; } = "";
 
         public string CancelLinkReturnController { get; set; } = "";
+
+
+        public string RadioButtonDataList { get; set; }
+        private Dictionary<string, Dictionary<string, string>> RadioDict
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(RadioButtonDataList))
+                {
+                    return JsonConvert
+                        .DeserializeObject<
+                            Dictionary<string, Dictionary<string, string>>>(
+                        RadioButtonDataList);
+                }
+                return new Dictionary<string, Dictionary<string, string>>();
+            }
+        }
+
+        public bool RadioLeft { get; set; }
+        public bool RadioRight { get; set; }
+        public bool RadioTop { get; set; }
+        public bool RadioBottom { get; set; }
 
 
         public string ComplexModels { get; set; } = "";
@@ -247,9 +270,14 @@ namespace GenericTagHelper.Form
 
                     var property_name = property.Metadata.PropertyName;
 
+                    if (property.Metadata.IsEnumerableType)
+                    {
+                        continue;
+                    }
                     // distinguish property between complex type and primary type
                     if (property.Metadata.IsComplexType &&
-                        !(property.ModelType == typeof(string)))
+                        //(property.ModelType != typeof(String)) &&
+                        (!property.Metadata.IsEnumerableType))
                     {
                         // if LoadComplexModel has model
                         if (LoadComplexModel != null)
@@ -286,13 +314,94 @@ namespace GenericTagHelper.Form
                         AttributesLabelDict, property_name,
                         AllClassLabel);
 
-                    TagBuilder input = GenerateInputType(property);
+                    form_group.InnerHtml.AppendHtml(label);
 
-                    AddClassAndAttrToTag(
-                        input, ClassInputDict,
-                        AttributesInputDict, property_name,
-                        AllClassInput);
 
+
+                    TagBuilder input;
+
+
+                    if (property.Metadata.DataTypeName == "Radio")
+                    {
+                        TagBuilder fieldset = new TagBuilder("fieldset");
+                        RadioDict.LastOrDefault(
+                             prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
+                             .Value
+                             .ToDictionary(item =>
+                             {
+                                 input = GenerateInputType(property, item.Key);
+                                 AddClassAndAttrToTag(
+                                                  input, ClassInputDict,
+                                                   AttributesInputDict, property_name,
+                                                   AllClassInput);
+                                 TagBuilder value_div = new TagBuilder("div");
+                                 TagBuilder value_span = new TagBuilder("span");
+                   
+                                 if (RadioLeft &&
+                                    !RadioRight &&
+                                    !RadioTop &&
+                                    !RadioBottom)
+                                 {
+                                     fieldset.InnerHtml.AppendHtml(input);
+                                     value_span.InnerHtml.AppendHtml(item.Value);
+                                     fieldset.InnerHtml.AppendHtml(value_span);
+                                 }
+                                 else if (!RadioLeft &&
+                                      RadioRight &&
+                                     !RadioTop &&
+                                     !RadioBottom)
+                                 {
+                                     value_span.InnerHtml.AppendHtml(item.Value);
+                                     fieldset.InnerHtml.AppendHtml(value_span);
+                                     fieldset.InnerHtml.AppendHtml(input);
+                                 }
+
+                                 else if (!RadioLeft &&
+                                     !RadioRight &&
+                                      RadioTop &&
+                                     !RadioBottom)
+                                 {
+                                     fieldset.InnerHtml.AppendHtml(input);
+                                     value_div.InnerHtml.AppendHtml(item.Value);
+                                     fieldset.InnerHtml.AppendHtml(value_div);
+                                 }
+                                 else if (!RadioLeft &&
+                                    !RadioRight &&
+                                     !RadioTop &&
+                                    RadioBottom)
+                                 {
+                                     value_div.InnerHtml.AppendHtml(item.Value);
+                                     fieldset.InnerHtml.AppendHtml(value_div);
+                                     fieldset.InnerHtml.AppendHtml(input);
+                                 }
+                                 else
+                                 {
+                                     fieldset.InnerHtml.AppendHtml(input);
+                                     value_span.InnerHtml.AppendHtml(item.Value);
+                                     fieldset.InnerHtml.AppendHtml(value_span);
+                                 }
+                                 return input;
+                             });
+                        form_group.InnerHtml.AppendHtml(fieldset);
+                        //    foreach (var item in RadioDict.Values)
+                        //    {
+                        //        input = GenerateInputType(property, item.ToString());
+                        //        AddClassAndAttrToTag(
+                        //                         input, ClassInputDict,
+                        //                          AttributesInputDict, property_name,
+                        //                          AllClassInput);
+                        //        form_group.InnerHtml.AppendHtml(input).AppendHtml(item.Value);
+                        //    }
+                    }
+                    else
+                    {
+                        input = GenerateInputType(property);
+                        AddClassAndAttrToTag(
+                                              input, ClassInputDict,
+                                               AttributesInputDict, property_name,
+                                               AllClassInput);
+                        form_group.InnerHtml.AppendHtml(input);
+                    }
 
                     TagBuilder span = Generator.GenerateValidationMessage(
                                             ViewContext,
@@ -309,8 +418,6 @@ namespace GenericTagHelper.Form
 
                     /*---------------End print your model----------------*/
 
-                    form_group.InnerHtml.AppendHtml(label);
-                    form_group.InnerHtml.AppendHtml(input);
                     form_group.InnerHtml.AppendHtml(span);
                     form.InnerHtml.AppendHtml(form_group);
 
@@ -362,12 +469,14 @@ namespace GenericTagHelper.Form
 
         }
 
-        public TagBuilder GenerateInputType(ModelExplorer modelExplorer)
+
+        public TagBuilder GenerateInputType(ModelExplorer modelExplorer, string radioValue = "")
         {
             string inputTypeHint;
             string inputType = GetInputType(modelExplorer, out inputTypeHint);
 
             TagBuilder Input;
+
             switch (inputType)
             {
                 case "hidden":
@@ -394,12 +503,12 @@ namespace GenericTagHelper.Form
 
                 case "radio":
                     Input = Generator.GenerateRadioButton(
-                        ViewContext,
-                        modelExplorer,
-                        modelExplorer.Metadata.PropertyName,
-                        value: modelExplorer.Metadata.PropertyGetter,
-                        isChecked: null,
-                        htmlAttributes: null);
+                                           ViewContext,
+                                           modelExplorer,
+                                           modelExplorer.Metadata.PropertyName,
+                                           value: radioValue,
+                                           isChecked: null,
+                                           htmlAttributes: null);
                     break;
 
                 case "select":
@@ -407,6 +516,7 @@ namespace GenericTagHelper.Form
                     break;
 
                 default:
+
                     Input = GenerateTextBox(
                         modelExplorer,
                         inputTypeHint,
@@ -420,6 +530,8 @@ namespace GenericTagHelper.Form
             }
             return Input;
         }
+
+
 
         private string GetInputType(
             ModelExplorer modelExplorer, out string inputTypeHint)
@@ -438,7 +550,8 @@ namespace GenericTagHelper.Form
             return inputTypeHint;
         }
 
-        private static IEnumerable<string> GetInputTypeHints(ModelExplorer modelExplorer)
+        private static IEnumerable<string> GetInputTypeHints(
+            ModelExplorer modelExplorer)
         {
             if (!string.IsNullOrEmpty(modelExplorer.Metadata.TemplateHint))
             {
@@ -526,18 +639,10 @@ namespace GenericTagHelper.Form
             // Base allowMultiple on the instance or declared type of the expression to avoid a
             // "SelectExpressionNotEnumerable" InvalidOperationException during generation.
             // Metadata.IsEnumerableType is similar but does not take runtime type into account.
-            var realModelType = modelExplorer.Metadata.ModelType;
+            var realModelType = modelExplorer.ModelType;
             var _allowMultiple = typeof(string) != realModelType &&
                 typeof(IEnumerable).IsAssignableFrom(realModelType);
-            var _currentValues = Generator.GetCurrentValues(
-                ViewContext,
-                modelExplorer,
-                expression: modelExplorer.Properties.Take(1).ToString(),
-                allowMultiple: true);
-            // Whether or not (not being highly unlikely) we generate anything, could update contained <option/>
-            // elements. Provide selected values for <option/> tag helpers.
-            var currentValues = _currentValues == null ? null : new CurrentValues(_currentValues);
-            // Ensure GenerateSelect() _never_ looks anything up in ViewData.
+
             var items = Enumerable.Empty<SelectListItem>();
 
             var selectTag = Generator.GenerateSelect(
@@ -546,7 +651,7 @@ namespace GenericTagHelper.Form
                 optionLabel: null,
                 expression: modelExplorer.Metadata.PropertyName,
                 selectList: items,
-                currentValues: _currentValues,
+                currentValues: null,
                 allowMultiple: _allowMultiple,
                 htmlAttributes: null);
 

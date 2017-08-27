@@ -31,8 +31,12 @@ namespace GenericTagHelperExample.Models
         [DataType(DataType.Password)]
         public string PasswordTextBox { get; set; }
 
+        [Required]
+        [DataType("Radio")]
         public int SelectRadio { get; set; }
-        public IEnumerable<RadioBox> RadioBoxes { get; set; }
+        //public Dictionary<string,string> RadioBoxes { get; set; }
+
+        public IEnumerable<RadioBox> RadioBoxList { get; set; }
 
 
         public ComplexType ComplexType { get; set; }
@@ -45,6 +49,5 @@ namespace GenericTagHelperExample.Models
         public ComplexType7 ComplexType7 { get; set; }
         public ComplexType8 ComplexType8 { get; set; }
         public ComplexType9 ComplexType9 { get; set; }
-
     }
 }
