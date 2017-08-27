@@ -4,5 +4,6 @@
     {
         public int ComplexType2Id { get; set; }
         public string ComplexType2Name { get; set; }
+        public string MyProperty { get; set; }
     }
 }

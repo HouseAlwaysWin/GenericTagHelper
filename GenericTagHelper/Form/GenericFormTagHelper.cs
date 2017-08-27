@@ -156,33 +156,7 @@ namespace GenericTagHelper.Form
             {
                 return AttributeJsonStringConvert(AttributesRadioBtnValue);
             }
-        }
-
-        public string ComplexModels { get; set; } = "";
-        private List<string> ComplexModelsList
-        {
-            get
-            {
-                if (!String.IsNullOrEmpty(ComplexModels))
-                {
-                    return JsonConvert.DeserializeObject<List<string>>(ComplexModels);
-                }
-                return new List<string>();
-            }
-        }
-
-        public ModelExpression LoadComplexModel { get; set; } = null;
-        public ModelExpression LoadComplexModel1 { get; set; } = null;
-        public ModelExpression LoadComplexModel2 { get; set; } = null;
-        public ModelExpression LoadComplexModel3 { get; set; } = null;
-        public ModelExpression LoadComplexModel4 { get; set; } = null;
-        public ModelExpression LoadComplexModel5 { get; set; } = null;
-        public ModelExpression LoadComplexModel6 { get; set; } = null;
-        public ModelExpression LoadComplexModel7 { get; set; } = null;
-        public ModelExpression LoadComplexModel8 { get; set; } = null;
-        public ModelExpression LoadComplexModel9 { get; set; } = null;
-
-
+        } 
 
         public string ClassTitle { get; set; }
 
@@ -274,55 +248,59 @@ namespace GenericTagHelper.Form
 
             bool restart;
             // counter for your number of complex type's properties
-            //int complex_type_counter = 0;
-            ModelExpression form_model = FormModel;
+
+            // Temporary counter for complex type and primary type
             int property_counter = 0;
-            int main_prop_counter = 0;
+
+            // Store main model for use in the future
+            ModelExpression form_model = FormModel;
+            // Store main model current counter
+            int main_model_prop_counter = 0;
+            // make sure complex type is start to count
             bool start_complex_type_loop = false;
+
             do
             {
-                //var property_counter = 0;
                 restart = false;
+                // each complex type prop counter start from 0
                 int complex_type_prop_counter = 0;
 
-                // Loop your Form Model
-                //foreach (ModelExplorer property in FormModel.ModelExplorer.Properties)
+                // Loop your Form Model 
                 for (int p = property_counter; p < FormModel.ModelExplorer.Properties.Count(); p++)
                 {
-                    //property_counter++;
                     if (start_complex_type_loop)
                         complex_type_prop_counter++;
-                    //var property_name = property.Metadata.PropertyName;
+                    // Get model property's name
                     var property_name = FormModel.Metadata.Properties[p].PropertyName;
+                    // Get model property
                     var property = FormModel.ModelExplorer.Properties.SingleOrDefault(
                         n => n.Metadata.PropertyName == property_name);
 
+                    // Skip EnumerableType
                     if (property.Metadata.IsEnumerableType)
                     {
                         continue;
                     }
+
                     // distinguish property between complex type and primary type
                     if (property.Metadata.IsComplexType &&
-                        //(property.ModelType != typeof(String)) &&
                         (!property.Metadata.IsEnumerableType))
                     {
-                        // if LoadComplexModel has model
-                        //if (LoadComplexModel != null)
-                        //{
+                        // Get Complex type model
                         ModelExpression complexType = new ModelExpression(
                             property.Metadata.PropertyName, property);
+                        // Set main model to complex for next loop
                         FormModel = complexType;
-                        start_complex_type_loop = true;
+                        // Set start counter for next loop 
                         property_counter = complex_type_prop_counter;
-                        main_prop_counter = p;
+
+                        start_complex_type_loop = true;
+
+                        // Save Main model counter
+                        main_model_prop_counter = p;
+
                         restart = true;
                         break;
-                        //}
-                        //else
-                        //{
-                        //    // if not then skip complex property
-                        //    continue;
-                        //}
                     }
 
                     /*-------------- Start Print your models-----------*/
@@ -355,7 +333,11 @@ namespace GenericTagHelper.Form
                     // if type is radio than use radio button
                     if (property.Metadata.DataTypeName == "Radio")
                     {
+                        
                         TagBuilder fieldset = new TagBuilder("fieldset");
+                        // According RadioDict's key to match main radio property name
+                        // then get the key value pair from Value
+                        // and tnen feed key and value to radio button
                         RadioDict.LastOrDefault(
                              prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
                              .Value
@@ -432,6 +414,7 @@ namespace GenericTagHelper.Form
 
                                      fieldset.InnerHtml.AppendHtml(input);
                                  }
+                                 // default
                                  else
                                  {
                                      fieldset.InnerHtml.AppendHtml(input);
@@ -477,27 +460,16 @@ namespace GenericTagHelper.Form
                     form.InnerHtml.AppendHtml(form_group);
 
                     // End loop according your number of properties
-                    //if (property_counter > FormModel.Metadata.Properties.Count() - 1)
                     if (complex_type_prop_counter > FormModel.Metadata.Properties.Count() - 1)
                     {
-                        //complex_type_counter++;
-                        // According your ComplexModelsList to decide restarting
-                        //if (complex_type_counter < ComplexModelsList.Count())
-                        //{
+                        // close complex type loop,because of ending of complex type's properties
                         start_complex_type_loop = false;
-                        property_counter = main_prop_counter + 1;
+                        // Set counter for next property, must +1 
+                        // or it will loop previous property.
+                        property_counter = main_model_prop_counter + 1;
+                        // Set model to  main model
                         FormModel = form_model;
                         restart = true;
-                        //LoadModel(LoadComplexModel1, complex_type_counter);
-                        //LoadModel(LoadComplexModel2, complex_type_counter);
-                        //LoadModel(LoadComplexModel3, complex_type_counter);
-                        //LoadModel(LoadComplexModel4, complex_type_counter);
-                        //LoadModel(LoadComplexModel5, complex_type_counter);
-                        //LoadModel(LoadComplexModel6, complex_type_counter);
-                        //LoadModel(LoadComplexModel7, complex_type_counter);
-                        //LoadModel(LoadComplexModel8, complex_type_counter);
-                        //LoadModel(LoadComplexModel9, complex_type_counter);
-                        //}
                         break;
                     }
                 }
@@ -855,17 +827,7 @@ namespace GenericTagHelper.Form
             }
         }
 
-        private void LoadModel(ModelExpression modelExpression, int modelCounter)
-        {
-            if (modelExpression != null)
-            {
-                if (ComplexModelsList[modelCounter].Equals(
-                     modelExpression.Metadata.PropertyName, StringComparison.OrdinalIgnoreCase))
-                {
-                    FormModel = modelExpression;
-                }
-            }
-        }
+      
         #endregion
     }
 }
