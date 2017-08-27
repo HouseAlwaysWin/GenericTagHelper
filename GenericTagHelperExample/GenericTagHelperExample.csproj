@@ -16,14 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GenericTagHelper\GenericTagHelper.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GenericTagHelper\GenericTagHelper.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace GenericTagHelper.Form
+namespace GenericTagHelper.Helpers
 {
     [HtmlTargetElement("form", Attributes = "generic")]
     public class GenericFormTagHelper : TagHelper

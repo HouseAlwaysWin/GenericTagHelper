@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GenericTagHelper.Table
+namespace GenericTagHelper.Helpers
 {
     [HtmlTargetElement("table", Attributes = "generic")]
     public class GenericTableTagHelper : TagHelper
