@@ -26,8 +26,12 @@ namespace GenericTagHelper.Helpers
             this.urlHelperFactory = urlHelperFactory;
             Generator = generator;
         }
+
+
+        #region Properties Helper
         private ValidationSummary _validationSummary;
         private IUrlHelperFactory urlHelperFactory;
+        private IHtmlGenerator Generator { get; }
 
         // Mapping from datatype names and data annotation hints to values for the <input/> element's "type" attribute.
         private static readonly Dictionary<string, string> _defaultInputTypes =
@@ -72,8 +76,137 @@ namespace GenericTagHelper.Helpers
                 { "time", "{0:HH:mm:ss.fff}" },
             };
 
-        private IHtmlGenerator Generator { get; }
+        [HtmlAttributeNotBound]
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
 
+        [HtmlAttributeNotBound]
+        private IUrlHelper urlHelper
+        {
+            get
+            {
+                return urlHelperFactory.GetUrlHelper(ViewContext);
+            }
+        }
+        #endregion
+
+        public ModelExpression FormModel { get; set; }
+
+        #region Title
+        public string FormTitle { get; set; } = "Form";
+
+        public string FormTitleClass { get; set; } = "";
+
+        public string ClassTitle { get; set; }
+        #endregion
+
+        #region FormGroup
+        public string AllClassFormGroup { get; set; } = "form-group";
+
+        // Add Json string to match form-group class 
+        public string ClassFormGroup { get; set; }
+        private Dictionary<string, string> ClassFormGroupDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSS(ClassFormGroup);
+            }
+        }
+
+        public string AttributesFormGroup { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesFormGroupDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSDSS(AttributesFormGroup);
+            }
+        }
+        #endregion
+
+        #region Label
+        public string AllClassLabel { get; set; } = "";
+
+        // Add Json string to match label class
+        public string ClassLabel { get; set; }
+        private Dictionary<string, string> ClassLabelDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSS(ClassLabel);
+            }
+        }
+
+        public string AttributesLabel { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesLabelDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSDSS(AttributesLabel);
+            }
+        }
+        #endregion
+
+        #region Input
+        public string AllClassInput { get; set; } = "form-control";
+
+        // Add Json string to match input class
+        public string ClassInput { get; set; }
+        private Dictionary<string, string> ClassInputDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSS(ClassInput);
+            }
+        }
+
+        public string AttributesInput { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesInputDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSDSS(AttributesInput);
+            }
+        }
+        #endregion
+
+        #region Span
+        public string AllClassSpan { get; set; } = "";
+
+        // Add Json string to match span class
+        public string ClassSpan { get; set; }
+        private Dictionary<string, string> ClassSpanDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSS(ClassSpan);
+            }
+        }
+
+        public string AttributesSpan { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesSpanDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSDSS(AttributesSpan);
+            }
+        }
+        #endregion
+
+        #region SubmitGroup
+        public string SubmitBtnClass { get; set; } = "btn btn-primary";
+
+        public string SubmitBtnContent { get; set; } = "Submit";
+
+        public string CancelBtnClass { get; set; } = "btn btn-default";
+
+        public string CancelBtnContant { get; set; } = "Cancel";
+
+        public string CancelLinkReturnAction { get; set; } = "";
+
+        public string CancelLinkReturnController { get; set; } = "";
+        #endregion
+
+        #region ValidationSummary
         /// <summary>
         /// If <see cref="ValidationSummary.All"/> or <see cref="ValidationSummary.ModelOnly"/>, appends a validation
         /// summary. Otherwise (<see cref="ValidationSummary.None"/>, the default), this tag helper does nothing.
@@ -107,69 +240,31 @@ namespace GenericTagHelper.Helpers
             }
         }
 
-
-        [HtmlAttributeName("attributes-validation-summary")]
-        public string AttributeValidation { get; set; }
-
-        [HtmlAttributeNotBound]
-        private IUrlHelper urlHelper
-        {
-            get
-            {
-                return urlHelperFactory.GetUrlHelper(ViewContext);
-            }
-        }
-
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
-
-        public ModelExpression FormModel { get; set; }
-
-        public string FormTitle { get; set; } = "Form";
-
-        public string FormTitleClass { get; set; } = "";
-
-        public string AllClassFormGroup { get; set; } = "form-group";
-
-        public string AllClassLabel { get; set; } = "";
-
-        public string AllClassInput { get; set; } = "form-control";
-
-        public string AllClassSpan { get; set; } = "";
-
-        public string SubmitBtnClass { get; set; } = "btn btn-primary";
-
-        public string SubmitBtnContent { get; set; } = "Submit";
-
-        public string CancelBtnClass { get; set; } = "btn btn-default";
-
-        public string CancelBtnContant { get; set; } = "Cancel";
-
-        public string CancelLinkReturnAction { get; set; } = "";
-
-        public string CancelLinkReturnController { get; set; } = "";
-
-
-        public string AttributesValidationSum{ get; set; }
+        public string AttributesValidationSummary { get; set; }
         private Dictionary<string, string> AttributesValidationSummaryDict
         {
             get
             {
-                return JsonDeserializeConvert_DSS(AttributesValidationSum);
+                return JsonDeserializeConvert_DSS(AttributesValidationSummary);
             }
         }
 
-        public string AttributesValidationSumUl { get; set; }
+        public string AttributesValidationSummaryUl { get; set; }
         private Dictionary<string, string> AttributesValidationSummaryUlDict
         {
             get
             {
-                return JsonDeserializeConvert_DSS(AttributesValidationSumUl);
+                return JsonDeserializeConvert_DSS(AttributesValidationSummaryUl);
             }
         }
+        #endregion
 
-       
+        #region RadioButton
+
+        public bool RadioLeft { get; set; }
+        public bool RadioRight { get; set; }
+        public bool RadioTop { get; set; }
+        public bool RadioBottom { get; set; }
 
         public string RadioButtonDataList { get; set; }
         private Dictionary<string, Dictionary<string, string>> RadioDict
@@ -179,11 +274,6 @@ namespace GenericTagHelper.Helpers
                 return JsonDeserializeConvert_DSDSS(RadioButtonDataList);
             }
         }
-
-        public bool RadioLeft { get; set; }
-        public bool RadioRight { get; set; }
-        public bool RadioTop { get; set; }
-        public bool RadioBottom { get; set; }
 
         public string ClassRadioBtnValue { get; set; }
         private Dictionary<string, string> ClassRadioBtnValueDict
@@ -201,88 +291,6 @@ namespace GenericTagHelper.Helpers
             get
             {
                 return JsonDeserializeConvert_DSDSS(AttributesRadioBtnValue);
-            }
-        }
-
-        #region Class Properties
-        public string ClassTitle { get; set; }
-
-        // Add Json string to match form-group class 
-        public string ClassFormGroup { get; set; }
-        private Dictionary<string, string> ClassFormGroupDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSS(ClassFormGroup);
-            }
-        }
-
-
-        // Add Json string to match label class
-        public string ClassLabel { get; set; }
-        private Dictionary<string, string> ClassLabelDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSS(ClassLabel);
-            }
-        }
-
-        // Add Json string to match input class
-        public string ClassInput { get; set; }
-        private Dictionary<string, string> ClassInputDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSS(ClassInput);
-            }
-        }
-
-        // Add Json string to match span class
-        public string ClassSpan { get; set; }
-        private Dictionary<string, string> ClassSpanDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSS(ClassSpan);
-            }
-        }
-        #endregion
-
-        #region Attributes Property
-        public string AttributesFormGroup { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttributesFormGroupDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSDSS(AttributesFormGroup);
-            }
-        }
-
-        public string AttributesInput { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttributesInputDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSDSS(AttributesInput);
-            }
-        }
-
-        public string AttributesLabel { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttributesLabelDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSDSS(AttributesLabel);
-            }
-        }
-
-        public string AttributesSpan { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttributesSpanDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DSDSS(AttributesSpan);
             }
         }
         #endregion
@@ -571,8 +579,9 @@ namespace GenericTagHelper.Helpers
 
         }
 
+        #region Tag Generators
 
-        public TagBuilder GenerateInputType(ModelExplorer modelExplorer, string radioValue = "")
+        private TagBuilder GenerateInputType(ModelExplorer modelExplorer, string radioValue = "")
         {
             string inputTypeHint;
             string inputType = GetInputType(modelExplorer, out inputTypeHint);
@@ -633,52 +642,6 @@ namespace GenericTagHelper.Helpers
             return Input;
         }
 
-
-
-        private string GetInputType(
-            ModelExplorer modelExplorer, out string inputTypeHint)
-        {
-            foreach (var hint in GetInputTypeHints(modelExplorer))
-            {
-                string inputType;
-                if (_defaultInputTypes.TryGetValue(hint, out inputType))
-                {
-                    inputTypeHint = hint;
-                    return inputType;
-                }
-            }
-
-            inputTypeHint = InputType.Text.ToString().ToLowerInvariant();
-            return inputTypeHint;
-        }
-
-        private static IEnumerable<string> GetInputTypeHints(
-            ModelExplorer modelExplorer)
-        {
-            if (!string.IsNullOrEmpty(modelExplorer.Metadata.TemplateHint))
-            {
-                yield return modelExplorer.Metadata.TemplateHint;
-            }
-
-            if (!string.IsNullOrEmpty(modelExplorer.Metadata.DataTypeName))
-            {
-                yield return modelExplorer.Metadata.DataTypeName;
-            }
-
-            // In most cases, we don't want to search for Nullable<T>. We want to search for T, which should handle
-            // both T and Nullable<T>. However we special-case bool? to avoid turning an <input/> into a <select/>.
-            var fieldType = modelExplorer.ModelType;
-            if (typeof(bool?) != fieldType)
-            {
-                fieldType = modelExplorer.Metadata.UnderlyingOrModelType;
-            }
-
-            foreach (string typeName in TemplateRenderer.GetTypeNames(modelExplorer.Metadata, fieldType))
-            {
-                yield return typeName;
-            }
-        }
-
         // Imitate Generator.GenerateHidden() using Generator.GenerateTextBox(). This adds support for asp-format that
         // is not available in Generator.GenerateHidden().
         private TagBuilder GenerateHidden(ModelExplorer modelExplorer)
@@ -708,7 +671,7 @@ namespace GenericTagHelper.Helpers
         }
 
         private TagBuilder GenerateTextBox(
-            ModelExplorer modelExplorer, string inputTypeHint, string inputType)
+                  ModelExplorer modelExplorer, string inputTypeHint, string inputType)
         {
             var format = modelExplorer.Metadata.DisplayFormatString;
             if (string.IsNullOrEmpty(format))
@@ -769,7 +732,6 @@ namespace GenericTagHelper.Helpers
 
             return selectTag;
         }
-
 
         private TagBuilder GenerateValidationSummary()
 
@@ -893,8 +855,56 @@ namespace GenericTagHelper.Helpers
             return tagBuilder;
         }
 
+        #endregion
+
+        #region Method Helpers
+        private string GetInputType(
+                         ModelExplorer modelExplorer, out string inputTypeHint)
+        {
+            foreach (var hint in GetInputTypeHints(modelExplorer))
+            {
+                string inputType;
+                if (_defaultInputTypes.TryGetValue(hint, out inputType))
+                {
+                    inputTypeHint = hint;
+                    return inputType;
+                }
+            }
+
+            inputTypeHint = InputType.Text.ToString().ToLowerInvariant();
+            return inputTypeHint;
+        }
+       
+        private static IEnumerable<string> GetInputTypeHints(
+            ModelExplorer modelExplorer)
+        {
+            if (!string.IsNullOrEmpty(modelExplorer.Metadata.TemplateHint))
+            {
+                yield return modelExplorer.Metadata.TemplateHint;
+            }
+
+            if (!string.IsNullOrEmpty(modelExplorer.Metadata.DataTypeName))
+            {
+                yield return modelExplorer.Metadata.DataTypeName;
+            }
+
+            // In most cases, we don't want to search for Nullable<T>. We want to search for T, which should handle
+            // both T and Nullable<T>. However we special-case bool? to avoid turning an <input/> into a <select/>.
+            var fieldType = modelExplorer.ModelType;
+            if (typeof(bool?) != fieldType)
+            {
+                fieldType = modelExplorer.Metadata.UnderlyingOrModelType;
+            }
+
+            foreach (string typeName in TemplateRenderer.GetTypeNames(modelExplorer.Metadata, fieldType))
+            {
+                yield return typeName;
+            }
+        }
+
         // Only need a dictionary if htmlAttributes is non-null. TagBuilder.MergeAttributes() is fine with null.
-        private static IDictionary<string, object> GetHtmlAttributeDictionaryOrNull(object htmlAttributes)
+        private static IDictionary<string, object> GetHtmlAttributeDictionaryOrNull(
+            object htmlAttributes)
         {
             IDictionary<string, object> htmlAttributeDictionary = null;
             if (htmlAttributes != null)
@@ -939,7 +949,6 @@ namespace GenericTagHelper.Helpers
 
             return format;
         }
-        #region Helpers
 
         private bool IsContainsPropertyKey(
             Dictionary<string, string> tagClassDict,
@@ -957,7 +966,6 @@ namespace GenericTagHelper.Helpers
                 propertyName, StringComparison.OrdinalIgnoreCase));
         }
 
-
         private void AddClass(
             TagBuilder tag,
             Dictionary<string, string> tagClassDict,
@@ -969,7 +977,8 @@ namespace GenericTagHelper.Helpers
                     StringComparison.OrdinalIgnoreCase)).Value);
         }
 
-        private TagBuilder AddAttributes(TagBuilder tag, Dictionary<string, string> tagAttributeDict)
+        private TagBuilder AddAttributes(
+            TagBuilder tag, Dictionary<string, string> tagAttributeDict)
         {
             foreach (var attr in tagAttributeDict)
             {
@@ -989,7 +998,6 @@ namespace GenericTagHelper.Helpers
                 .Value
                 .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
         }
-
 
         private Dictionary<string, string> JsonDeserializeConvert_DSS(
             string classString)
@@ -1021,7 +1029,6 @@ namespace GenericTagHelper.Helpers
             return new Dictionary<string, ModelExpression>();
         }
 
-
         public void AddClassAndAttrToTag(
             TagBuilder tag,
             Dictionary<string, string> classDict,
@@ -1045,8 +1052,7 @@ namespace GenericTagHelper.Helpers
                 AddAttributes(tag, attributeDict, propertyName);
             }
         }
-
-
         #endregion
     }
 }
+

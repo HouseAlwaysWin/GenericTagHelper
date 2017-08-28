@@ -24,17 +24,7 @@ namespace GenericTagHelperExample.Controllers
         public IActionResult CreateGenericForm()
         {
 
-            //var radio = new FormViewModel
-            //{
-            //    FormModel = new FormModel
-            //    {
-            //        RadioBoxList = new List<RadioBox>
-            //        {
-            //        new RadioBox{ Id=1,Name="male"},
-            //        new RadioBox {Id=2,Name="female"}
-            //        }
-            //    }
-            //};
+           
             return View();
         }
 
