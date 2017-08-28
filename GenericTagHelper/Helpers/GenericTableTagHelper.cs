@@ -55,21 +55,18 @@ namespace GenericTagHelper.Helpers
             }
         }
 
+
+        public string CurrentPageParameter { get; set; } = "page";
         public string QueryList { get; set; }
-        private Dictionary<string, string> QueryListDict
+        private Dictionary<string, string> QueryOptions
         {
             get
             {
-                if (!String.IsNullOrEmpty(QueryList))
-                {
-                    return JsonConvert.DeserializeObject<Dictionary<string, string>>(QueryList);
-                }
-                return new Dictionary<string, string>()
-                {
-                    ["page"] = CurrentPage.ToString()
-                };
+                return JsonConvert.DeserializeObject<Dictionary<string, string>>(QueryList);
             }
         }
+        private Dictionary<string, string> QueryListDict { get; set; } = new Dictionary<string, string>();
+
 
 
 
@@ -92,6 +89,9 @@ namespace GenericTagHelper.Helpers
                     * ItemPerPage).Take(ItemPerPage).ToList();
             }
         }
+
+        public bool ActiveQueryOptions { get; set; }
+
 
         public string PageAction { get; set; } = "";
 
@@ -479,16 +479,29 @@ namespace GenericTagHelper.Helpers
             TagBuilder a,
             int page_action)
         {
+
             if (String.IsNullOrEmpty(PageController))
             {
+                QueryListDict[CurrentPageParameter] = page_action.ToString();
                 a.Attributes["href"] = urlHelper.Action(
                      PageAction, new { page = page_action });
             }
             else
             {
+
+                if (!String.IsNullOrEmpty(QueryList))
+                {
+
+                    foreach (var item in QueryOptions)
+                    {
+                        QueryListDict[item.Key] = item.Value;
+                    }
+                    
+                }
+                QueryListDict[CurrentPageParameter] = page_action.ToString();
                 a.Attributes["href"] = urlHelper.Action(
                                      PageAction, PageController,
-                                     new { page = page_action });
+                                     QueryListDict);
             }
 
             return a;
