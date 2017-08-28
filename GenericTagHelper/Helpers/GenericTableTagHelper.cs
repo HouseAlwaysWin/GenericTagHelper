@@ -37,6 +37,40 @@ namespace GenericTagHelper.Helpers
 
         public string NoItemsMessage { get; set; } = "No Items";
 
+        #region Panel
+        public bool ActivePanel { get; set; }
+        public bool ActivePanelHeading { get; set; }
+        public bool ActivePanelBody { get; set; }
+
+        public string AttributesPanel { get; set; }
+        private Dictionary<string, string> AttributesPanelDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesPanel);
+            }
+        }
+
+        public string AttributesPanelHeading { get; set; }
+        private Dictionary<string, string> AttributesPanelHeadingDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesPanelHeading);
+            }
+        }
+
+        public string AttributesPanelBody { get; set; }
+        private Dictionary<string, string> AttributesPanelBodyDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesPanelBody);
+            }
+        }
+        #endregion 
+
+
         #region Pagination
         public int ItemPerPage { get; set; } = 5;
 
@@ -186,10 +220,14 @@ namespace GenericTagHelper.Helpers
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
         {
-            TagBuilder form = new TagBuilder("form");
-            TagBuilder table = new TagBuilder("table");
-            table.AddCssClass("table table-striped table-hover");
-            table = AddAttributes(table, AttributeTableDict);
+            TagBuilder panel = new TagBuilder("div");
+            panel.AddCssClass("panel panel-default");
+            TagBuilder panel_heading = new TagBuilder("div");
+            panel_heading.AddCssClass("panel-heading");
+            TagBuilder panel_body = new TagBuilder("div");
+            panel_body.AddCssClass("panel-body");
+
+            //TagBuilder table = new TagBuilder("table");
 
             TagBuilder thead = new TagBuilder("thead");
             thead = AddAttributes(thead, AttributeTableHeadDict);
@@ -205,7 +243,7 @@ namespace GenericTagHelper.Helpers
             }
 
             thead.InnerHtml.AppendHtml(thead_tr);
-            table.InnerHtml.AppendHtml(thead);
+            //table.InnerHtml.AppendHtml(thead);
 
             TagBuilder tbody = new TagBuilder("tbody");
             tbody = AddAttributes(tbody, AttributeTableBodyDict);
@@ -244,11 +282,32 @@ namespace GenericTagHelper.Helpers
 
             TagBuilder pagination = GeneratePagination();
 
-            table.InnerHtml.AppendHtml(tbody);
-            form.InnerHtml.AppendHtml(table);
-            form.InnerHtml.AppendHtml(pagination);
+            //table.InnerHtml.AppendHtml(tbody);
+            output.Content.AppendHtml(thead);
+            output.Content.AppendHtml(tbody);
 
-            output.Content.SetHtmlContent(form);
+
+            //if (ActivePanel)
+            //{
+
+            //    if (ActivePanelHeading)
+            //    {
+            //        panel.InnerHtml.AppendHtml(panel_heading);
+            //    }
+
+            //    if (ActivePanelBody)
+            //    {
+            //        panel.InnerHtml.AppendHtml(panel_body);
+            //    }
+            //    panel.InnerHtml.AppendHtml(table);
+            //    output.Content.AppendHtml(table);
+            //    output.Content.SetHtmlContent(panel);
+            //}
+            //else
+            //{
+            //output.Content.SetHtmlContent(table);
+            //}
+            //output.PostContent.AppendHtml(pagination);
         }
 
 
@@ -496,7 +555,7 @@ namespace GenericTagHelper.Helpers
                     {
                         QueryListDict[item.Key] = item.Value;
                     }
-                    
+
                 }
                 QueryListDict[CurrentPageParameter] = page_action.ToString();
                 a.Attributes["href"] = urlHelper.Action(

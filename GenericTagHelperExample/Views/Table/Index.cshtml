@@ -1,16 +1,15 @@
 ﻿@model CustomerViewModel
 
+<br />
 <table generic
+       class="table table-striped"
        table-heads='
        ["Id","Name","Gender"]'
        items="@Model.CustomerList"
-
        attributes-table='{
             class:"table"
        }'
        page-action="Index"
        page-controller="Table"
-      
-       current-page="@Model.CurrentPage"
-       >
-</table>
+       active-panel="true"
+       current-page="@Model.CurrentPage"></table>

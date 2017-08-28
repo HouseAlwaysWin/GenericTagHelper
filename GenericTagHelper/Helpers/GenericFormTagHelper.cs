@@ -298,7 +298,7 @@ namespace GenericTagHelper.Helpers
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
         {
-            TagBuilder form = new TagBuilder("form");
+          
             TagBuilder title = new TagBuilder("div");
             title.InnerHtml.SetHtmlContent(FormTitle);
 
@@ -306,9 +306,9 @@ namespace GenericTagHelper.Helpers
 
             validation_sum = AddAttributes(validation_sum, AttributesValidationSummaryDict);
 
-            form.InnerHtml.AppendHtml(title);
+            output.Content.AppendHtml(title);
 
-            form.InnerHtml.AppendHtml(validation_sum);
+            output.Content.AppendHtml(validation_sum);
 
             bool restart;
 
@@ -536,7 +536,8 @@ namespace GenericTagHelper.Helpers
                     /*---------------End print your model----------------*/
 
                     form_group.InnerHtml.AppendHtml(span);
-                    form.InnerHtml.AppendHtml(form_group);
+                  
+                    output.Content.AppendHtml(form_group);
 
                     // End loop according your number of properties
                     if (complex_type_prop_counter > FormModel.Metadata.Properties.Count() - 1)
@@ -572,10 +573,11 @@ namespace GenericTagHelper.Helpers
             cancelBtn.MergeAttribute("style", "margin-left:10px;");
             cancelBtn.InnerHtml.Append(CancelBtnContant);
 
-            form.InnerHtml.AppendHtml(submitBtn);
-            form.InnerHtml.AppendHtml(cancelBtn);
+         
+            output.Content.AppendHtml(submitBtn);
+            output.Content.AppendHtml(cancelBtn);
 
-            output.Content.SetHtmlContent(form);
+         
 
         }
 
