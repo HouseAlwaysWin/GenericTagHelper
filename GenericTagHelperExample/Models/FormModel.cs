@@ -17,18 +17,24 @@ namespace GenericTagHelperExample.Models
     }
     public class FormModel
     {
+        [Required]
         public int Id { get; set; }
 
+        [Required]
         public string TextBox { get; set; }
+
 
         public byte[] Upload { get; set; }
         [NotMapped]
         public IFormFile Image { get; set; }
+
+        [Required]
         [DataType(DataType.EmailAddress)]
         public string EmailTextBox { get; set; }
 
         public DateTime DateTimeTextBox { get; set; }
 
+        [Required]
         public Level LevelSelectList { get; set; }
 
         public bool CheckBox { get; set; }

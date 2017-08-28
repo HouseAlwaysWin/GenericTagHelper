@@ -24,26 +24,27 @@ namespace GenericTagHelperExample.Controllers
         public IActionResult CreateGenericForm()
         {
 
-            var radio = new FormViewModel
-            {
-                FormModel = new FormModel
-                {
-                    RadioBoxList = new List<RadioBox>
-                    {
-                    new RadioBox{ Id=1,Name="male"},
-                    new RadioBox {Id=2,Name="female"}
-                    }
-                }
-            };
-            return View(radio);
+            //var radio = new FormViewModel
+            //{
+            //    FormModel = new FormModel
+            //    {
+            //        RadioBoxList = new List<RadioBox>
+            //        {
+            //        new RadioBox{ Id=1,Name="male"},
+            //        new RadioBox {Id=2,Name="female"}
+            //        }
+            //    }
+            //};
+            return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateGenericForm(FormViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View("CreateGenericForm");
+                return View();
             }
 
             context.FormModels.Add(model.FormModel);
@@ -60,8 +61,8 @@ namespace GenericTagHelperExample.Controllers
                 {
                     RadioBoxList = new List<RadioBox>
                     {
-                    new RadioBox{ Id=1,Name="male"},
-                    new RadioBox {Id=2,Name="female"}
+                        new RadioBox{ Id=1,Name="male"},
+                        new RadioBox {Id=2,Name="female"}
                     }
                 }
             };
@@ -69,6 +70,7 @@ namespace GenericTagHelperExample.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateNormalForm(FormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -79,7 +81,7 @@ namespace GenericTagHelperExample.Controllers
             context.FormModels.Add(model.FormModel);
             context.SaveChanges();
 
-            return View();
+            return View("Index");
         }
 
         public IActionResult Error()

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -24,7 +26,7 @@ namespace GenericTagHelper.Helpers
             this.urlHelperFactory = urlHelperFactory;
             Generator = generator;
         }
-
+        private ValidationSummary _validationSummary;
         private IUrlHelperFactory urlHelperFactory;
 
         // Mapping from datatype names and data annotation hints to values for the <input/> element's "type" attribute.
@@ -72,7 +74,42 @@ namespace GenericTagHelper.Helpers
 
         private IHtmlGenerator Generator { get; }
 
+        /// <summary>
+        /// If <see cref="ValidationSummary.All"/> or <see cref="ValidationSummary.ModelOnly"/>, appends a validation
+        /// summary. Otherwise (<see cref="ValidationSummary.None"/>, the default), this tag helper does nothing.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// Thrown if setter is called with an undefined <see cref="ValidationSummary"/> value e.g.
+        /// <c>(ValidationSummary)23</c>.
+        /// </exception>
+        [HtmlAttributeName("asp-validation-summary")]
+        public ValidationSummary ValidationSummary
+        {
+            get => _validationSummary;
+            set
+            {
+                switch (value)
+                {
+                    case ValidationSummary.All:
+                    case ValidationSummary.ModelOnly:
+                    case ValidationSummary.None:
+                        _validationSummary = value;
+                        break;
 
+                    default:
+                        throw new ArgumentException(
+                            message: Resources.FormatInvalidEnumArgument(
+                                nameof(value),
+                                value,
+                                typeof(ValidationSummary).FullName),
+                            paramName: nameof(value));
+                }
+            }
+        }
+
+
+        [HtmlAttributeName("attributes-validation-summary")]
+        public string AttributeValidation { get; set; }
 
         [HtmlAttributeNotBound]
         private IUrlHelper urlHelper
@@ -114,19 +151,32 @@ namespace GenericTagHelper.Helpers
         public string CancelLinkReturnController { get; set; } = "";
 
 
+        public string AttributesValidationSum{ get; set; }
+        private Dictionary<string, string> AttributesValidationSummaryDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSS(AttributesValidationSum);
+            }
+        }
+
+        public string AttributesValidationSumUl { get; set; }
+        private Dictionary<string, string> AttributesValidationSummaryUlDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DSS(AttributesValidationSumUl);
+            }
+        }
+
+       
+
         public string RadioButtonDataList { get; set; }
         private Dictionary<string, Dictionary<string, string>> RadioDict
         {
             get
             {
-                if (!String.IsNullOrEmpty(RadioButtonDataList))
-                {
-                    return JsonConvert
-                        .DeserializeObject<
-                            Dictionary<string, Dictionary<string, string>>>(
-                        RadioButtonDataList);
-                }
-                return new Dictionary<string, Dictionary<string, string>>();
+                return JsonDeserializeConvert_DSDSS(RadioButtonDataList);
             }
         }
 
@@ -140,7 +190,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return ClassJsonStringConvert(ClassRadioBtnValue);
+                return JsonDeserializeConvert_DSS(ClassRadioBtnValue);
             }
         }
 
@@ -150,10 +200,11 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return AttributeJsonStringConvert(AttributesRadioBtnValue);
+                return JsonDeserializeConvert_DSDSS(AttributesRadioBtnValue);
             }
         }
 
+        #region Class Properties
         public string ClassTitle { get; set; }
 
         // Add Json string to match form-group class 
@@ -162,7 +213,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return ClassJsonStringConvert(ClassFormGroup);
+                return JsonDeserializeConvert_DSS(ClassFormGroup);
             }
         }
 
@@ -173,7 +224,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return ClassJsonStringConvert(ClassLabel);
+                return JsonDeserializeConvert_DSS(ClassLabel);
             }
         }
 
@@ -183,7 +234,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return ClassJsonStringConvert(ClassInput);
+                return JsonDeserializeConvert_DSS(ClassInput);
             }
         }
 
@@ -193,16 +244,18 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return ClassJsonStringConvert(ClassSpan);
+                return JsonDeserializeConvert_DSS(ClassSpan);
             }
         }
+        #endregion
 
+        #region Attributes Property
         public string AttributesFormGroup { get; set; }
         private Dictionary<string, Dictionary<string, string>> AttributesFormGroupDict
         {
             get
             {
-                return AttributeJsonStringConvert(AttributesFormGroup);
+                return JsonDeserializeConvert_DSDSS(AttributesFormGroup);
             }
         }
 
@@ -211,7 +264,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return AttributeJsonStringConvert(AttributesInput);
+                return JsonDeserializeConvert_DSDSS(AttributesInput);
             }
         }
 
@@ -220,7 +273,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return AttributeJsonStringConvert(AttributesLabel);
+                return JsonDeserializeConvert_DSDSS(AttributesLabel);
             }
         }
 
@@ -229,9 +282,10 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return AttributeJsonStringConvert(AttributesSpan);
+                return JsonDeserializeConvert_DSDSS(AttributesSpan);
             }
         }
+        #endregion
 
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
@@ -240,10 +294,15 @@ namespace GenericTagHelper.Helpers
             TagBuilder title = new TagBuilder("div");
             title.InnerHtml.SetHtmlContent(FormTitle);
 
+            TagBuilder validation_sum = GenerateValidationSummary();
+
+            validation_sum = AddAttributes(validation_sum, AttributesValidationSummaryDict);
+
             form.InnerHtml.AppendHtml(title);
 
+            form.InnerHtml.AppendHtml(validation_sum);
+
             bool restart;
-            // counter for your number of complex type's properties
 
             // Temporary counter for complex type and primary type
             int property_counter = 0;
@@ -711,6 +770,145 @@ namespace GenericTagHelper.Helpers
             return selectTag;
         }
 
+
+        private TagBuilder GenerateValidationSummary()
+
+        {
+            if (ValidationSummary == ValidationSummary.None)
+            {
+                return null;
+            }
+
+            var tagBuilder = GenerateValidationSummary(
+                ViewContext,
+                excludePropertyErrors: ValidationSummary == ValidationSummary.ModelOnly,
+                message: null,
+                headerTag: null,
+                htmlAttributes: null);
+
+            return tagBuilder;
+        }
+
+        /// <inheritdoc />
+        private TagBuilder GenerateValidationSummary(
+            ViewContext viewContext,
+            bool excludePropertyErrors,
+            string message,
+            string headerTag,
+            object htmlAttributes)
+        {
+            if (viewContext == null)
+            {
+                throw new ArgumentNullException(nameof(viewContext));
+            }
+
+            var viewData = viewContext.ViewData;
+            if (!viewContext.ClientValidationEnabled && viewData.ModelState.IsValid)
+            {
+                // Client-side validation is not enabled to add to the generated element and element will be empty.
+                return null;
+            }
+
+            ModelStateEntry entryForModel;
+            if (excludePropertyErrors &&
+                (!viewData.ModelState.TryGetValue(viewData.TemplateInfo.HtmlFieldPrefix, out entryForModel) ||
+                 entryForModel.Errors.Count == 0))
+            {
+                // Client-side validation (if enabled) will not affect the generated element and element will be empty.
+                return null;
+            }
+
+            TagBuilder messageTag;
+            if (string.IsNullOrEmpty(message))
+            {
+                messageTag = null;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(headerTag))
+                {
+                    headerTag = viewContext.ValidationSummaryMessageElement;
+                }
+
+                messageTag = new TagBuilder(headerTag);
+                messageTag.InnerHtml.SetContent(message);
+            }
+
+            // If excludePropertyErrors is true, describe any validation issue with the current model in a single item.
+            // Otherwise, list individual property errors.
+            var isHtmlSummaryModified = false;
+            var modelStates = ValidationHelpers.GetModelStateList(viewData, excludePropertyErrors);
+
+            var htmlSummary = new TagBuilder("ul");
+            htmlSummary = AddAttributes(htmlSummary, AttributesValidationSummaryUlDict);
+            foreach (var modelState in modelStates)
+            {
+                // Perf: Avoid allocations
+                for (var i = 0; i < modelState.Errors.Count; i++)
+                {
+                    var modelError = modelState.Errors[i];
+                    var errorText = ValidationHelpers.GetModelErrorMessageOrDefault(modelError);
+
+                    if (!string.IsNullOrEmpty(errorText))
+                    {
+                        var listItem = new TagBuilder("li");
+                        listItem.InnerHtml.SetContent(errorText);
+                        htmlSummary.InnerHtml.AppendLine(listItem);
+                        isHtmlSummaryModified = true;
+                    }
+                }
+            }
+
+            if (!isHtmlSummaryModified)
+            {
+                htmlSummary.InnerHtml.AppendHtml(@"<li style=""display:none""></li>");
+                htmlSummary.InnerHtml.AppendLine();
+            }
+
+            var tagBuilder = new TagBuilder("div");
+            tagBuilder.MergeAttributes(GetHtmlAttributeDictionaryOrNull(htmlAttributes));
+
+            if (viewData.ModelState.IsValid)
+            {
+                tagBuilder.AddCssClass(HtmlHelper.ValidationSummaryValidCssClassName);
+            }
+            else
+            {
+                tagBuilder.AddCssClass(HtmlHelper.ValidationSummaryCssClassName);
+            }
+
+            if (messageTag != null)
+            {
+                tagBuilder.InnerHtml.AppendLine(messageTag);
+            }
+
+            tagBuilder.InnerHtml.AppendHtml(htmlSummary);
+
+            if (viewContext.ClientValidationEnabled && !excludePropertyErrors)
+            {
+                // Inform the client where to replace the list of property errors after validation.
+                tagBuilder.MergeAttribute("data-valmsg-summary", "true");
+            }
+
+            return tagBuilder;
+        }
+
+        // Only need a dictionary if htmlAttributes is non-null. TagBuilder.MergeAttributes() is fine with null.
+        private static IDictionary<string, object> GetHtmlAttributeDictionaryOrNull(object htmlAttributes)
+        {
+            IDictionary<string, object> htmlAttributeDictionary = null;
+            if (htmlAttributes != null)
+            {
+                htmlAttributeDictionary = htmlAttributes as IDictionary<string, object>;
+                if (htmlAttributeDictionary == null)
+                {
+                    htmlAttributeDictionary = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
+                }
+            }
+
+            return htmlAttributeDictionary;
+        }
+
         // Get a fall-back format based on the metadata.
         private string GetFormat(ModelExplorer modelExplorer, string inputTypeHint, string inputType)
         {
@@ -771,7 +969,15 @@ namespace GenericTagHelper.Helpers
                     StringComparison.OrdinalIgnoreCase)).Value);
         }
 
-        private void AddAttribute(
+        private TagBuilder AddAttributes(TagBuilder tag, Dictionary<string, string> tagAttributeDict)
+        {
+            foreach (var attr in tagAttributeDict)
+            {
+                tag.Attributes[attr.Key] = attr.Value;
+            }
+            return tag;
+        }
+        private void AddAttributes(
             TagBuilder tag,
             Dictionary<string, Dictionary<string, string>> tagAttributeDict,
             string propertyName)
@@ -784,7 +990,8 @@ namespace GenericTagHelper.Helpers
                 .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
         }
 
-        private Dictionary<string, string> ClassJsonStringConvert(
+
+        private Dictionary<string, string> JsonDeserializeConvert_DSS(
             string classString)
         {
             if (!String.IsNullOrEmpty(classString))
@@ -794,7 +1001,7 @@ namespace GenericTagHelper.Helpers
             return new Dictionary<string, string>();
         }
 
-        private Dictionary<string, Dictionary<string, string>> AttributeJsonStringConvert(
+        private Dictionary<string, Dictionary<string, string>> JsonDeserializeConvert_DSDSS(
             string attributeString)
         {
             if (!String.IsNullOrEmpty(attributeString))
@@ -835,7 +1042,7 @@ namespace GenericTagHelper.Helpers
             if (IsContainsPropertyKey(
                     attributeDict, propertyName))
             {
-                AddAttribute(tag, attributeDict, propertyName);
+                AddAttributes(tag, attributeDict, propertyName);
             }
         }
 

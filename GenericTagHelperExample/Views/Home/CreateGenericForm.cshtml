@@ -1,18 +1,30 @@
 ﻿@model FormViewModel
-    @{ 
-        var list = new List<string>
+@{
+    var list = new List<string>
         {
             "1","Martin",
         };
-    }
+}
 
 <br />
 
-<form generic form-model="@Model"
-      form-title="<h3>FormModel</h3>"
+<form generic form-model="@Model" asp-validation-summary="All"
+      form-title="<h1>FormModel</h1>"
       class-input='{
       checkbox:"form-control ",
       checkbox:"",
+      }'
+
+     
+      all-class-span="text-danger"
+      attributes-validation-sum='{
+        "class":"text-danger"
+      }'
+      attributes-validation-sum-ul='{
+           style:"list-style-type:none;"
+      }'
+      attributes-validation-sum-li='{
+           class:"test" 
       }'
       attributes-input='{
         selectradio:{
