@@ -12,8 +12,8 @@ using System;
 namespace GenericTagHelperExample.Data.Migrations
 {
     [DbContext(typeof(GenericDbContext))]
-    [Migration("20170827084448_AddCustomerSeedData")]
-    partial class AddCustomerSeedData
+    [Migration("20170828053928_AddNewCustomerColunm")]
+    partial class AddNewCustomerColunm
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,6 +26,8 @@ namespace GenericTagHelperExample.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Gender");
 
                     b.Property<string>("Name");
 
@@ -43,7 +45,8 @@ namespace GenericTagHelperExample.Data.Migrations
 
                     b.Property<DateTime>("DateTimeTextBox");
 
-                    b.Property<string>("EmailTextBox");
+                    b.Property<string>("EmailTextBox")
+                        .IsRequired();
 
                     b.Property<int>("LevelSelectList");
 
@@ -51,7 +54,8 @@ namespace GenericTagHelperExample.Data.Migrations
 
                     b.Property<int>("SelectRadio");
 
-                    b.Property<string>("TextBox");
+                    b.Property<string>("TextBox")
+                        .IsRequired();
 
                     b.Property<byte[]>("Upload");
 

@@ -109,7 +109,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(ClassFormGroup);
+                return JsonDeserializeConvert_Dss(ClassFormGroup);
             }
         }
 
@@ -118,7 +118,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSDSS(AttributesFormGroup);
+                return JsonDeserializeConvert_DsDss(AttributesFormGroup);
             }
         }
         #endregion
@@ -132,7 +132,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(ClassLabel);
+                return JsonDeserializeConvert_Dss(ClassLabel);
             }
         }
 
@@ -141,7 +141,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSDSS(AttributesLabel);
+                return JsonDeserializeConvert_DsDss(AttributesLabel);
             }
         }
         #endregion
@@ -155,7 +155,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(ClassInput);
+                return JsonDeserializeConvert_Dss(ClassInput);
             }
         }
 
@@ -164,7 +164,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSDSS(AttributesInput);
+                return JsonDeserializeConvert_DsDss(AttributesInput);
             }
         }
         #endregion
@@ -178,7 +178,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(ClassSpan);
+                return JsonDeserializeConvert_Dss(ClassSpan);
             }
         }
 
@@ -187,7 +187,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSDSS(AttributesSpan);
+                return JsonDeserializeConvert_DsDss(AttributesSpan);
             }
         }
         #endregion
@@ -245,7 +245,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(AttributesValidationSummary);
+                return JsonDeserializeConvert_Dss(AttributesValidationSummary);
             }
         }
 
@@ -254,7 +254,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(AttributesValidationSummaryUl);
+                return JsonDeserializeConvert_Dss(AttributesValidationSummaryUl);
             }
         }
         #endregion
@@ -271,7 +271,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSDSS(RadioButtonDataList);
+                return JsonDeserializeConvert_DsDss(RadioButtonDataList);
             }
         }
 
@@ -280,7 +280,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSS(ClassRadioBtnValue);
+                return JsonDeserializeConvert_Dss(ClassRadioBtnValue);
             }
         }
 
@@ -290,7 +290,7 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_DSDSS(AttributesRadioBtnValue);
+                return JsonDeserializeConvert_DsDss(AttributesRadioBtnValue);
             }
         }
         #endregion
@@ -874,7 +874,7 @@ namespace GenericTagHelper.Helpers
             inputTypeHint = InputType.Text.ToString().ToLowerInvariant();
             return inputTypeHint;
         }
-       
+
         private static IEnumerable<string> GetInputTypeHints(
             ModelExplorer modelExplorer)
         {
@@ -999,7 +999,7 @@ namespace GenericTagHelper.Helpers
                 .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
         }
 
-        private Dictionary<string, string> JsonDeserializeConvert_DSS(
+        private Dictionary<string, string> JsonDeserializeConvert_Dss(
             string classString)
         {
             if (!String.IsNullOrEmpty(classString))
@@ -1009,7 +1009,7 @@ namespace GenericTagHelper.Helpers
             return new Dictionary<string, string>();
         }
 
-        private Dictionary<string, Dictionary<string, string>> JsonDeserializeConvert_DSDSS(
+        private Dictionary<string, Dictionary<string, string>> JsonDeserializeConvert_DsDss(
             string attributeString)
         {
             if (!String.IsNullOrEmpty(attributeString))

@@ -16,11 +16,16 @@ namespace GenericTagHelperExample.Controllers
         {
             this.context = context;
         }
+
         public IActionResult Index()
         {
             var customers = context.Customers.ToList();
-            var jsonSerialize = JsonConvert.SerializeObject(customers);
-            return View(jsonSerialize);
+            var customerList = new CustomerViewModel
+            {
+                CustomerList = JsonConvert.SerializeObject(customers)
+            };
+
+            return View(customerList);
         }
     }
 }

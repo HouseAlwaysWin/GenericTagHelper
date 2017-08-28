@@ -1,7 +1,12 @@
-﻿@model string
+﻿@model CustomerViewModel
 
 <table generic
        table-heads='
-                ["Id","Name"]
-           '
-       items="@Model"></table>
+       ["Id","Name","Gender"]'
+       items="@Model.CustomerList"
+
+       attributes-table='{
+            class:"table"
+       }'
+       >
+</table>
