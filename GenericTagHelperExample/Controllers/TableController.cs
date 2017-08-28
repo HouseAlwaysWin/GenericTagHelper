@@ -17,7 +17,7 @@ namespace GenericTagHelperExample.Controllers
             this.context = context;
         }
 
-        public IActionResult Index(int page)
+        public IActionResult Index(int page = 1)
         {
             var customers = context.Customers.ToList();
             var queryList = new Dictionary<string, string>
