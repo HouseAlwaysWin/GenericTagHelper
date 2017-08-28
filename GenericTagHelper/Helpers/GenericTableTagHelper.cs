@@ -60,7 +60,14 @@ namespace GenericTagHelper.Helpers
         {
             get
             {
-                return JsonDeserializeConvert_Dss(QueryList);
+                if (!String.IsNullOrEmpty(QueryList))
+                {
+                    return JsonConvert.DeserializeObject<Dictionary<string, string>>(QueryList);
+                }
+                return new Dictionary<string, string>()
+                {
+                    ["page"] = CurrentPage.ToString()
+                };
             }
         }
 
@@ -76,7 +83,7 @@ namespace GenericTagHelper.Helpers
         }
 
 
-        private List<Dictionary<string,string>> ItemsAfterPagination
+        private List<Dictionary<string, string>> ItemsAfterPagination
         {
             get
             {
@@ -475,12 +482,13 @@ namespace GenericTagHelper.Helpers
             if (String.IsNullOrEmpty(PageController))
             {
                 a.Attributes["href"] = urlHelper.Action(
-                     PageAction, QueryListDict);
+                     PageAction, new { page = page_action });
             }
             else
             {
                 a.Attributes["href"] = urlHelper.Action(
-                                     PageAction, PageController, QueryListDict);
+                                     PageAction, PageController,
+                                     new { page = page_action });
             }
 
             return a;
