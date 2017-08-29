@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using GenericTagHelper.MethodHelpers;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -109,7 +110,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(ClassFormGroup);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassFormGroup);
             }
         }
 
@@ -118,7 +119,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_DsDss(AttributesFormGroup);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesFormGroup);
             }
         }
         #endregion
@@ -132,7 +133,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(ClassLabel);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassLabel);
             }
         }
 
@@ -141,7 +142,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_DsDss(AttributesLabel);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesLabel);
             }
         }
         #endregion
@@ -155,7 +156,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(ClassInput);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassInput);
             }
         }
 
@@ -164,7 +165,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_DsDss(AttributesInput);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesInput);
             }
         }
         #endregion
@@ -178,7 +179,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(ClassSpan);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassSpan);
             }
         }
 
@@ -187,7 +188,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_DsDss(AttributesSpan);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesSpan);
             }
         }
         #endregion
@@ -245,7 +246,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(AttributesValidationSummary);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesValidationSummary);
             }
         }
 
@@ -254,7 +255,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(AttributesValidationSummaryUl);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesValidationSummaryUl);
             }
         }
         #endregion
@@ -271,7 +272,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_DsDss(RadioButtonDataList);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(RadioButtonDataList);
             }
         }
 
@@ -280,7 +281,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_Dss(ClassRadioBtnValue);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassRadioBtnValue);
             }
         }
 
@@ -290,7 +291,7 @@ namespace GenericTagHelper
         {
             get
             {
-                return JsonDeserializeConvert_DsDss(AttributesRadioBtnValue);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesRadioBtnValue);
             }
         }
         #endregion
@@ -304,7 +305,7 @@ namespace GenericTagHelper
 
             TagBuilder validation_sum = GenerateValidationSummary();
 
-            validation_sum = AddAttributes(validation_sum, AttributesValidationSummaryDict);
+            validation_sum =HtmlAttributesHelper.AddAttributes(validation_sum, AttributesValidationSummaryDict);
 
             output.Content.AppendHtml(title);
 
@@ -386,7 +387,7 @@ namespace GenericTagHelper
 
                     TagBuilder form_group = new TagBuilder("div");
 
-                    AddClassAndAttrToTag(
+                    HtmlAttributesHelper.AddClassAndAttrToTag(
                         form_group, ClassFormGroupDict,
                         AttributesFormGroupDict, property_name,
                         AllClassFormGroup);
@@ -398,7 +399,7 @@ namespace GenericTagHelper
                         labelText: null,
                         htmlAttributes: null);
 
-                    AddClassAndAttrToTag(
+                    HtmlAttributesHelper.AddClassAndAttrToTag(
                         label, ClassLabelDict,
                         AttributesLabelDict, property_name,
                         AllClassLabel);
@@ -423,7 +424,7 @@ namespace GenericTagHelper
                              .ToDictionary(item =>
                              {
                                  input = GenerateInputType(property, item.Key);
-                                 AddClassAndAttrToTag(
+                                 HtmlAttributesHelper.AddClassAndAttrToTag(
                                                   input, ClassInputDict,
                                                    AttributesInputDict, property_name,
                                                    AllClassInput);
@@ -439,7 +440,7 @@ namespace GenericTagHelper
                                      fieldset.InnerHtml.AppendHtml(input);
 
                                      value_span.InnerHtml.AppendHtml(item.Value);
-                                     AddClassAndAttrToTag(
+                                     HtmlAttributesHelper.AddClassAndAttrToTag(
                                          value_span, ClassRadioBtnValueDict,
                                          AttributesRadioBtnValueDict, property_name,
                                          AllClassRadioBtnValue);
@@ -453,7 +454,7 @@ namespace GenericTagHelper
                                      !RadioBottom)
                                  {
                                      value_span.InnerHtml.AppendHtml(item.Value);
-                                     AddClassAndAttrToTag(
+                                     HtmlAttributesHelper.AddClassAndAttrToTag(
                                         value_span, ClassRadioBtnValueDict,
                                         AttributesRadioBtnValueDict, property_name,
                                         AllClassRadioBtnValue);
@@ -470,7 +471,7 @@ namespace GenericTagHelper
                                  {
                                      fieldset.InnerHtml.AppendHtml(input);
                                      value_div.InnerHtml.AppendHtml(item.Value);
-                                     AddClassAndAttrToTag(
+                                     HtmlAttributesHelper.AddClassAndAttrToTag(
                                         value_div, ClassRadioBtnValueDict,
                                         AttributesRadioBtnValueDict, property_name,
                                         AllClassRadioBtnValue);
@@ -485,7 +486,7 @@ namespace GenericTagHelper
                                      RadioBottom)
                                  {
                                      value_div.InnerHtml.AppendHtml(item.Value);
-                                     AddClassAndAttrToTag(
+                                     HtmlAttributesHelper.AddClassAndAttrToTag(
                                         value_div, ClassRadioBtnValueDict,
                                         AttributesRadioBtnValueDict, property_name,
                                         AllClassRadioBtnValue);
@@ -499,7 +500,7 @@ namespace GenericTagHelper
                                      fieldset.InnerHtml.AppendHtml(input);
 
                                      value_span.InnerHtml.AppendHtml(item.Value);
-                                     AddClassAndAttrToTag(
+                                     HtmlAttributesHelper.AddClassAndAttrToTag(
                                         value_span, ClassRadioBtnValueDict,
                                         AttributesRadioBtnValueDict, property_name,
                                         AllClassRadioBtnValue);
@@ -513,7 +514,7 @@ namespace GenericTagHelper
                     else
                     {
                         input = GenerateInputType(property);
-                        AddClassAndAttrToTag(
+                        HtmlAttributesHelper.AddClassAndAttrToTag(
                             input, ClassInputDict,
                             AttributesInputDict, property_name,
                             AllClassInput);
@@ -528,7 +529,7 @@ namespace GenericTagHelper
                                             tag: null,
                                             htmlAttributes: null);
 
-                    AddClassAndAttrToTag(
+                    HtmlAttributesHelper.AddClassAndAttrToTag(
                         span, ClassSpanDict,
                         AttributesSpanDict, property_name,
                         AllClassSpan);
@@ -804,7 +805,8 @@ namespace GenericTagHelper
             var modelStates = ValidationHelpers.GetModelStateList(viewData, excludePropertyErrors);
 
             var htmlSummary = new TagBuilder("ul");
-            htmlSummary = AddAttributes(htmlSummary, AttributesValidationSummaryUlDict);
+            htmlSummary = HtmlAttributesHelper.AddAttributes(
+                htmlSummary, AttributesValidationSummaryUlDict);
             foreach (var modelState in modelStates)
             {
                 // Perf: Avoid allocations
@@ -950,110 +952,7 @@ namespace GenericTagHelper
             }
 
             return format;
-        }
-
-        private bool IsContainsPropertyKey(
-            Dictionary<string, string> tagClassDict,
-            string propertyName)
-        {
-            return tagClassDict.Any(d => d.Key.Equals(
-                propertyName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsContainsPropertyKey(
-            Dictionary<string, Dictionary<string, string>> tagClassDict,
-            string propertyName)
-        {
-            return tagClassDict.Any(d => d.Key.Equals(
-                propertyName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private void AddClass(
-            TagBuilder tag,
-            Dictionary<string, string> tagClassDict,
-            string propertyName)
-        {
-            tag.AddCssClass(
-                tagClassDict.LastOrDefault(
-                    fg => fg.Key.Equals(propertyName,
-                    StringComparison.OrdinalIgnoreCase)).Value);
-        }
-
-        private TagBuilder AddAttributes(
-            TagBuilder tag, Dictionary<string, string> tagAttributeDict)
-        {
-            foreach (var attr in tagAttributeDict)
-            {
-                tag.Attributes[attr.Key] = attr.Value;
-            }
-            return tag;
-        }
-        private void AddAttributes(
-            TagBuilder tag,
-            Dictionary<string, Dictionary<string, string>> tagAttributeDict,
-            string propertyName)
-        {
-            // find property if match propertyName then apply attributes.
-            tagAttributeDict.LastOrDefault(
-                prop => prop.Key
-                .Equals(propertyName, StringComparison.OrdinalIgnoreCase))
-                .Value
-                .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
-        }
-
-        private Dictionary<string, string> JsonDeserializeConvert_Dss(
-            string classString)
-        {
-            if (!String.IsNullOrEmpty(classString))
-            {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(classString);
-            }
-            return new Dictionary<string, string>();
-        }
-
-        private Dictionary<string, Dictionary<string, string>> JsonDeserializeConvert_DsDss(
-            string attributeString)
-        {
-            if (!String.IsNullOrEmpty(attributeString))
-            {
-                return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(attributeString);
-            }
-            return new Dictionary<string, Dictionary<string, string>>();
-        }
-
-        private Dictionary<string, ModelExpression> ModelExpJsonStringConvert(
-            string modelExpString)
-        {
-            if (!String.IsNullOrEmpty(modelExpString))
-            {
-                return JsonConvert.DeserializeObject<Dictionary<string, ModelExpression>>(modelExpString);
-            }
-            return new Dictionary<string, ModelExpression>();
-        }
-
-        public void AddClassAndAttrToTag(
-            TagBuilder tag,
-            Dictionary<string, string> classDict,
-            Dictionary<string, Dictionary<string, string>> attributeDict,
-            string propertyName,
-             string allClass)
-        {
-            if (IsContainsPropertyKey(
-                           classDict, propertyName))
-            {
-                AddClass(tag, classDict, propertyName);
-            }
-            else
-            {
-                tag.AddCssClass(allClass);
-            }
-
-            if (IsContainsPropertyKey(
-                    attributeDict, propertyName))
-            {
-                AddAttributes(tag, attributeDict, propertyName);
-            }
-        }
+        } 
         #endregion
     }
 }

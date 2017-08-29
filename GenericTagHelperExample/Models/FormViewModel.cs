@@ -15,6 +15,7 @@ namespace GenericTagHelperExample.Models
         public ComplexType4 ComplexType4 { get; set; }
         public ComplexType5 ComplexType5 { get; set; }
         public ComplexType6 ComplexType6 { get; set; }
+        public int Test { get; set; }
         public ComplexType7 ComplexType7 { get; set; }
         public ComplexType8 ComplexType8 { get; set; }
         public ComplexType9 ComplexType9 { get; set; }

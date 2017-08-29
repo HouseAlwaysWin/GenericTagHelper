@@ -59,5 +59,30 @@ namespace GenericTagHelper.MethodHelpers
                 .Value
                 .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
         }
+
+
+        public static void AddClassAndAttrToTag(
+            TagBuilder tag,
+            Dictionary<string, string> classDict,
+            Dictionary<string, Dictionary<string, string>> attributeDict,
+            string propertyName,
+             string allClass)
+        {
+            if (IsContainsKey(
+                           classDict, propertyName))
+            {
+                AddClass(tag, classDict, propertyName);
+            }
+            else
+            {
+                tag.AddCssClass(allClass);
+            }
+
+            if (IsContainsKey(
+                    attributeDict, propertyName))
+            {
+                AddAttributes(tag, attributeDict, propertyName);
+            }
+        }
     }
 }
