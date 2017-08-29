@@ -14,7 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GenericTagHelper.Helpers
+namespace GenericTagHelper
 {
     [HtmlTargetElement("form", Attributes = "generic")]
     public class GenericFormTagHelper : TagHelper
@@ -199,7 +199,7 @@ namespace GenericTagHelper.Helpers
 
         public string CancelBtnClass { get; set; } = "btn btn-default";
 
-        public string CancelBtnContant { get; set; } = "Cancel";
+        public string CancelBtnContent { get; set; } = "Cancel";
 
         public string CancelLinkReturnAction { get; set; } = "";
 
@@ -571,7 +571,7 @@ namespace GenericTagHelper.Helpers
             }
             cancelBtn.AddCssClass(CancelBtnClass);
             cancelBtn.MergeAttribute("style", "margin-left:10px;");
-            cancelBtn.InnerHtml.Append(CancelBtnContant);
+            cancelBtn.InnerHtml.Append(CancelBtnContent);
 
          
             output.Content.AppendHtml(submitBtn);

@@ -1,15 +1,26 @@
 ﻿@model CustomerViewModel
 
 <br />
+
+<table-panel active-panel-body="true" 
+             active-panel-heading="true"
+             panel-body-html-content="<h1 class='text-center'>Customers from Game of Thrones</h1>"
+             panel-heading-html-content="<h1 class='text-center'>Customers</h1>">
+    <table generic table-heads='["Id","Name","Gender"]'
+           class="table table-striped"
+           items="@Model.CustomerList"
+           active-pagination="true">
+
+    </table>
+</table-panel>
+
 <table generic
        class="table table-striped"
        table-heads='
        ["Id","Name","Gender"]'
        items="@Model.CustomerList"
-       attributes-table='{
-            class:"table"
-       }'
+      
+       active-pagination="true"
        page-action="Index"
        page-controller="Table"
-       active-panel="true"
        current-page="@Model.CurrentPage"></table>

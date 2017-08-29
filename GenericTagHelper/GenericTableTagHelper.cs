@@ -9,12 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenericTagHelper.Helpers
+namespace GenericTagHelper
 {
-    public class GenericPaginationTagHelper : TagHelper
+    [HtmlTargetElement("table", Attributes = "generic")]
+    public class GenericTableTagHelper : TagHelper
     {
+
         private IUrlHelperFactory urlHelperFactory;
-        public GenericPaginationTagHelper(
+        public GenericTableTagHelper(
             IUrlHelperFactory urlHelperFactory)
         {
             this.urlHelperFactory = urlHelperFactory;
@@ -33,7 +35,12 @@ namespace GenericTagHelper.Helpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        #region Pagination
+        public string NoItemsMessage { get; set; } = "No Items";
+
+       
+
+
+        #region Pagination Properties
         public int ItemPerPage { get; set; } = 5;
 
         public int CurrentPage { get; set; } = 1;
@@ -122,9 +129,143 @@ namespace GenericTagHelper.Helpers
         public bool ExchangePreviousFirstBtn { get; set; }
 
         public bool ExchangeNextLastBtn { get; set; }
+
+        public bool ActivePagination { get; set; }
         #endregion
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+
+
+
+
+        public string TableHeads { get; set; }
+        private List<string> TableHeadList
+        {
+            get
+            {
+                return JsonDeserializeConvert_Ls(TableHeads);
+            }
+        }
+
+        public string AttributesTable { get; set; }
+        private Dictionary<string, string> AttributesTableDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesTable);
+            }
+        }
+
+
+        public string AttributesTableHead { get; set; }
+        private Dictionary<string, string> AttributesTableHeadDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesTableHead);
+            }
+        }
+
+        public string AttributesTableHeadTr { get; set; }
+        private Dictionary<string, string> AttributesTableHeadTrDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesTableHeadTr);
+            }
+        }
+
+        public string AttributesTableBody { get; set; }
+        private Dictionary<string, string> AttributesTableBodyDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_Dss(AttributesTableBody);
+            }
+        }
+
+
+        public string HtmlContentTh { get; set; }
+        private Dictionary<string, Dictionary<string, string>> HtmlContentThDict
+        {
+            get
+            {
+                return JsonDeserializeConvert_DsDss(HtmlContentTh);
+            }
+        }
+
+        public override void Process(
+            TagHelperContext context, TagHelperOutput output)
+        {
+
+            TagBuilder table = new TagBuilder("table");
+            table = AddAttributes(table, AttributesTableDict);
+
+            TagBuilder thead = new TagBuilder("thead");
+            thead = AddAttributes(thead, AttributesTableHeadDict);
+
+            TagBuilder thead_tr = new TagBuilder("tr");
+            thead_tr = AddAttributes(thead_tr, AttributesTableHeadTrDict);
+
+            foreach (var name in TableHeadList)
+            {
+                TagBuilder th = new TagBuilder("th");
+                th.InnerHtml.AppendHtml(name);
+                thead_tr.InnerHtml.AppendHtml(th);
+            }
+
+            thead.InnerHtml.AppendHtml(thead_tr);
+            //output.Content.AppendHtml(thead);
+
+            TagBuilder tbody = new TagBuilder("tbody");
+            tbody = AddAttributes(tbody, AttributesTableBodyDict);
+
+
+            if (ItemsAfterPagination.Count == 0)
+            {
+                TagBuilder tbody_tr = new TagBuilder("tr");
+
+                TagBuilder td = new TagBuilder("td");
+
+                td.InnerHtml.AppendHtml(NoItemsMessage);
+
+                tbody_tr.InnerHtml.AppendHtml(td);
+
+                tbody.InnerHtml.AppendHtml(tbody_tr);
+            }
+            else
+            {
+                ItemsAfterPagination.ForEach(items =>
+                {
+                    TagBuilder tbody_tr = new TagBuilder("tr");
+                    items.ToDictionary(item =>
+                        {
+                            TagBuilder td = new TagBuilder("td");
+
+                            td.InnerHtml.AppendHtml(item.Value);
+
+                            tbody_tr.InnerHtml.AppendHtml(td);
+                            return td;
+                        });
+
+                    tbody.InnerHtml.AppendHtml(tbody_tr);
+                });
+            }
+
+            TagBuilder pagination = GeneratePagination();
+
+
+            output.Content.AppendHtml(tbody);
+
+
+
+            if (ActivePagination)
+            {
+                output.PostElement.AppendHtml(pagination);
+            }
+        }
+
+        #region Pagination Helpers
+        public TagBuilder GeneratePagination()
         {
             if (TotalPages <= 1)
             {
@@ -332,11 +473,9 @@ namespace GenericTagHelper.Helpers
                     }
                 }
             }
-            output.TagName = "nav";
-            output.TagMode = TagMode.StartTagAndEndTag;
-
-            output.Content.SetHtmlContent(ul);
+            return ul;
         }
+
         // Show Page Icon
         // <span aria-hidden="true">{{ icon  }}</span>
         private TagBuilder PageIcon(string icon)
@@ -421,6 +560,9 @@ namespace GenericTagHelper.Helpers
             return li;
         }
 
+        #endregion
+
+        #region Helpers
         private List<Dictionary<string, string>> JsonDeserializeConvert_LDss(
            string propertyString)
         {
@@ -480,5 +622,7 @@ namespace GenericTagHelper.Helpers
             }
             return tag;
         }
+        #endregion
+
     }
 }
