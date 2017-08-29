@@ -2,27 +2,25 @@
 
 <br />
 
-<table-panel active-panel-body="true" 
-             active-panel-heading="true"
-             panel-body-html-content="<h1 class='text-center'>Customers from Game of Thrones</h1>"
-             panel-heading-html-content="<h1 class='text-center'>Customers</h1>">
-    <table generic table-heads='["Id","Name","Gender"]'
-           class="table table-striped"
-           item-per-page="10"
-           items="@Model.CustomerList"
-           active-pagination="true"
-           current-page="@Model.CurrentPage">
 
-    </table>
-</table-panel>
 
 <table generic
-       class="table table-striped"
+       class="panel panel-primary"
        table-heads='
        ["Id","Name","Gender"]'
        items="@Model.CustomerList"
-      
        active-pagination="true"
-       page-action="Index"
-       page-controller="Table"
+
+       attributes-table='{
+            class:"table table-danger"
+       }'
+       item-per-page="10"
+       page-query-list='{
+            page:"1",
+            query:"2"
+       }'
+
+       panel-title="Customer"
+       panel-content="Customer from Game of Thrones"
+
        current-page="@Model.CurrentPage"></table>

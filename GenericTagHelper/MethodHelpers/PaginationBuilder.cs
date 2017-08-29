@@ -57,23 +57,17 @@ namespace GenericTagHelper.MethodHelpers
 
 
         public string CurrentPageParameter { get; set; } = "page";
-        public string QueryList { get; set; }
+        public string PageQueryList { get; set; }
         private Dictionary<string, string> QueryOptions
         {
             get
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(QueryList);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(PageQueryList);
             }
         }
         private Dictionary<string, string> QueryListDict { get; set; } = new Dictionary<string, string>();
 
-
-
-
         public int TotalItems { get; set; }
-
-      
-        public bool ActiveQueryOptions { get; set; }
 
         public string PageAction { get; set; } = "";
 
@@ -81,33 +75,33 @@ namespace GenericTagHelper.MethodHelpers
 
         public string PageStyleClass { get; set; } = "pagination";
 
-        public string ActivateClass { get; set; } = "active";
+        public string PageActiveClass { get; set; } = "active";
 
-        public string DisableClass { get; set; } = "disabled";
+        public string PageDisableClass { get; set; } = "disabled";
 
         public int PageMiddleLength { get; set; } = 2;
 
         public int PageTopBottomLength { get; set; } = 5;
 
-        public string PreviousIcon { get; set; } = "Previous";
+        public string PagePreviousIcon { get; set; } = "Previous";
 
-        public string NextIcon { get; set; } = "Next";
+        public string PageNextIcon { get; set; } = "Next";
 
-        public string FirstIcon { get; set; } = "First";
+        public string PageFirstIcon { get; set; } = "First";
 
-        public string LastIcon { get; set; } = "Last";
+        public string PageLastIcon { get; set; } = "Last";
 
-        public bool ShowFirstPage { get; set; } = true;
+        public bool PageShowFirst { get; set; } = true;
 
-        public bool ShowLastPage { get; set; } = true;
+        public bool PageShowLast { get; set; } = true;
 
-        public string BetweenIcon { get; set; } = "...";
+        public string PageBetweenIcon { get; set; } = "...";
 
-        public bool ShowBetweenIcon { get; set; } = true;
+        public bool PageShowBetweenIcon { get; set; } = true;
 
-        public bool ExchangePreviousFirstBtn { get; set; }
+        public bool PageExchangePreviousFirstBtn { get; set; }
 
-        public bool ExchangeNextLastBtn { get; set; }
+        public bool PageExchangeNextLastBtn { get; set; }
         #endregion
 
         public TagBuilder CreatePagination()
@@ -137,31 +131,31 @@ namespace GenericTagHelper.MethodHelpers
                 TagBuilder first_li = PageButton(
                     has_link: CurrentPage > 1,
                     page_action: i,
-                    icon: FirstIcon,
+                    icon: PageFirstIcon,
                     is_disabled: CurrentPage == 1,
                     active_page: false);
 
                 TagBuilder last_li = PageButton(
                     has_link: CurrentPage < TotalPages,
                     page_action: i,
-                    icon: LastIcon,
+                    icon: PageLastIcon,
                     is_disabled: CurrentPage == TotalPages,
                     active_page: false);
 
                 TagBuilder dot_li = PageButton(
                     has_link: false,
                     page_action: i,
-                    icon: BetweenIcon,
+                    icon: PageBetweenIcon,
                     is_disabled: true,
                     active_page: false);
 
                 /*-----------------------Show First and Previous Page Button-------------------------*/
 
                 // Show previous and first btn in different location
-                if (ExchangePreviousFirstBtn)
+                if (PageExchangePreviousFirstBtn)
                 {
                     // Show First Page Btn
-                    if (i == 1 && ShowFirstPage)
+                    if (i == 1 && PageShowFirst)
                     {
                         ul.InnerHtml.AppendHtml(first_li);
                     }
@@ -172,7 +166,7 @@ namespace GenericTagHelper.MethodHelpers
                         var pre_li = PageButton(
                             has_link: (CurrentPage - 1) >= 1,
                             page_action: CurrentPage - 1,
-                            icon: PreviousIcon,
+                            icon: PagePreviousIcon,
                             is_disabled: CurrentPage == 1,
                             active_page: false);
 
@@ -181,7 +175,7 @@ namespace GenericTagHelper.MethodHelpers
                         // TotalPage can't be same as PageMiddleLength 
                         if (CurrentPage > PageMiddleLength + 1 &&
                             TotalPages > (1 + PageMiddleLength * 2) &&
-                            ShowBetweenIcon)
+                            PageShowBetweenIcon)
                         {
                             ul.InnerHtml.AppendHtml(dot_li);
                         }
@@ -195,7 +189,7 @@ namespace GenericTagHelper.MethodHelpers
                         var pre_li = PageButton(
                             has_link: (CurrentPage - 1) >= 1,
                             page_action: CurrentPage - 1,
-                            icon: PreviousIcon,
+                            icon: PagePreviousIcon,
                             is_disabled: CurrentPage == 1,
                             active_page: false);
 
@@ -203,13 +197,13 @@ namespace GenericTagHelper.MethodHelpers
                     }
 
                     // Show First Page
-                    if (i == 1 && ShowFirstPage)
+                    if (i == 1 && PageShowFirst)
                     {
                         ul.InnerHtml.AppendHtml(first_li);
                         // if current page is bigger than 3 
                         if (CurrentPage > PageMiddleLength + 1 &&
                             TotalPages > (1 + PageMiddleLength * 2) &&
-                            ShowBetweenIcon)
+                            PageShowBetweenIcon)
                         {
                             ul.InnerHtml.AppendHtml(dot_li);
                         }
@@ -260,7 +254,7 @@ namespace GenericTagHelper.MethodHelpers
                 /*-----------------------Show Next And Last Page Button-------------------------*/
 
 
-                if (ExchangeNextLastBtn)
+                if (PageExchangeNextLastBtn)
                 {
                     // Show Next Page Btn 
                     if (i == TotalPages)
@@ -268,13 +262,13 @@ namespace GenericTagHelper.MethodHelpers
                         var next_li = PageButton(
                             has_link: (CurrentPage + 1) <= TotalPages,
                             page_action: CurrentPage + 1,
-                            icon: NextIcon,
+                            icon: PageNextIcon,
                             is_disabled: CurrentPage == TotalPages,
                             active_page: false);
                         // if current page is smaller than total page minus five 
                         if ((CurrentPage < TotalPages - PageMiddleLength) &&
                             TotalPages > (1 + PageMiddleLength * 2)
-                            && ShowBetweenIcon)
+                            && PageShowBetweenIcon)
                         {
                             ul.InnerHtml.AppendHtml(dot_li);
                         }
@@ -283,7 +277,7 @@ namespace GenericTagHelper.MethodHelpers
                     }
 
                     // Show Last Page Btn
-                    if (i == TotalPages && ShowLastPage)
+                    if (i == TotalPages && PageShowLast)
                     {
                         ul.InnerHtml.AppendHtml(last_li);
                     }
@@ -292,12 +286,12 @@ namespace GenericTagHelper.MethodHelpers
                 else
                 {
                     // Show Last Page Btn
-                    if (i == TotalPages && ShowLastPage)
+                    if (i == TotalPages && PageShowLast)
                     {
                         // if current page is smaller than total page minus five 
                         if ((CurrentPage < TotalPages - PageMiddleLength) &&
                             TotalPages > (1 + PageMiddleLength * 2) &&
-                            ShowBetweenIcon)
+                            PageShowBetweenIcon)
                         {
                             ul.InnerHtml.AppendHtml(dot_li);
                         }
@@ -311,7 +305,7 @@ namespace GenericTagHelper.MethodHelpers
                         var next_li = PageButton(
                             has_link: (CurrentPage + 1) <= TotalPages,
                             page_action: CurrentPage + 1,
-                            icon: NextIcon,
+                            icon: PageNextIcon,
                             is_disabled: CurrentPage == TotalPages,
                             active_page: false);
 
@@ -349,7 +343,7 @@ namespace GenericTagHelper.MethodHelpers
             else
             {
 
-                if (!String.IsNullOrEmpty(QueryList))
+                if (!String.IsNullOrEmpty(PageQueryList))
                 {
 
                     foreach (var item in QueryOptions)
@@ -395,77 +389,22 @@ namespace GenericTagHelper.MethodHelpers
 
             if (is_disabled)
             {
-                li.AddCssClass(DisableClass);
+                li.AddCssClass(PageDisableClass);
             }
 
             if (active_page)
             {
-                a.AddCssClass(ActivateClass);
-                li.AddCssClass(ActivateClass);
+                a.AddCssClass(PageActiveClass);
+                li.AddCssClass(PageActiveClass);
             }
 
             return li;
         }
 
-        private List<Dictionary<string, string>> JsonDeserializeConvert_LDss(
-           string propertyString)
-        {
-            if (!String.IsNullOrEmpty(propertyString))
-            {
-                return JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(propertyString);
-            }
-            return new List<Dictionary<string, string>>();
-        }
-
-        private List<string> JsonDeserializeConvert_Ls(
-                  string propertyString)
-        {
-            if (!String.IsNullOrEmpty(propertyString))
-            {
-                return JsonConvert.DeserializeObject<List<string>>(propertyString);
-            }
-            return new List<string>();
-        }
+     
 
 
 
-        private Dictionary<string, string> JsonDeserializeConvert_Dss(
-                   string classString)
-        {
-            if (!String.IsNullOrEmpty(classString))
-            {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(classString);
-            }
-            return new Dictionary<string, string>();
-        }
-
-        private Dictionary<string, Dictionary<string, string>> JsonDeserializeConvert_DsDss(
-                   string attributeString)
-        {
-            if (!String.IsNullOrEmpty(attributeString))
-            {
-                return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(attributeString);
-            }
-            return new Dictionary<string, Dictionary<string, string>>();
-        }
-
-        private bool IsContainsPropertyKey(
-           Dictionary<string, Dictionary<string, string>> tagClassDict,
-           string propertyName)
-        {
-            return tagClassDict.Any(d => d.Key.Equals(
-                propertyName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private TagBuilder AddAttributes(
-                           TagBuilder tag, Dictionary<string, string> tagAttributeDict)
-        {
-            foreach (var attr in tagAttributeDict)
-            {
-                tag.Attributes[attr.Key] = attr.Value;
-            }
-            return tag;
-        }
 
     }
 }
