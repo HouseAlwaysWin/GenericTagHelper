@@ -282,31 +282,7 @@ For other customizale attributes,please see this table...
 
 ## Complex Type Property Supported
 
-If you want to use complex type (Not default complex type String or DateTime)with generic form taghelper,you must put your complex type properties under the primary type properties
-<br/>
-### For Example
-Your model or viewmodel must be like this...
-
-``` c#
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Email { get; set; }
-
-        public bool IsAdmin { get; set; }
-
-        public string Password { get; set; }
-
-        public DateTime RegisteredDate { get; set; }
-
-/*-----------------complex properties type under the primary type properties---------------------------*/
-        public Address Addresses { get; set; }
-```
-
-### Load Your Complex Type Model
-
-With version 1.1.0, You don't need to set up any attribute with you form,It will automatic load you primary type properties nad complex type properties.
+With version 1.1.0, You don't need to set up any attribute with you form,It will automatic load you primary type properties and complex type properties but also no need to sequence your complex types after primary types
 <br/>
 <strong>Notice</strong> Do not supported nested complex type model or view model.
 
