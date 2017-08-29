@@ -15,7 +15,7 @@ GenericFormTagHelper help you to building html code without repeating.
 
 ## How To Use It
 
-Add <strong>@addTagHelper GenericTagHelper.Form.*,GenericTagHelper</strong> to your import _ViewImports.cshtml
+Add <strong>@addTagHelper GenericTagHelper.*,GenericTagHelper</strong> to your import _ViewImports.cshtml
 <br/>
 <strong>FormTagHelper</strong>
 And add generic and form-model attributes to your form
