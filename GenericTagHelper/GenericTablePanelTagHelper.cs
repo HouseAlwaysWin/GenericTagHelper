@@ -11,9 +11,7 @@ namespace GenericTagHelper
     [HtmlTargetElement("table-panel")]
     [RestrictChildren("table")]
     public class GenericTablePanelTagHelper : TagHelper
-    {
-
-        public bool ActivePanel { get; set; }
+    { 
         public bool ActivePanelHeading { get; set; }
         public bool ActivePanelBody { get; set; }
 

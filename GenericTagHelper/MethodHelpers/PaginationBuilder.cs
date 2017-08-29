@@ -1,5 +1,4 @@
-﻿using GenericTagHelper.MethodHelpers;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -11,17 +10,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenericTagHelper
+namespace GenericTagHelper.MethodHelpers
 {
-    [HtmlTargetElement("table", Attributes = "generic")]
-    public class GenericTableTagHelper : TagHelper
+    public class PaginationBuilder
     {
-
         private IUrlHelperFactory urlHelperFactory;
-        public GenericTableTagHelper(
-            IUrlHelperFactory urlHelperFactory)
+        private ViewContext ViewContext; 
+        public PaginationBuilder(
+            ViewContext viewContext,
+            IUrlHelperFactory urlHelperFactory,
+            int items,
+            int currentPage)
         {
+            this.ViewContext = viewContext;
             this.urlHelperFactory = urlHelperFactory;
+            this.Items = items;
+            this.CurrentPage = currentPage;
         }
 
         [HtmlAttributeNotBound]
@@ -33,16 +37,11 @@ namespace GenericTagHelper
             }
         }
 
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
-
-        public string NoItemsMessage { get; set; } = "No Items";
 
 
 
 
-        #region Pagination Properties
+        #region Pagination
         public int ItemPerPage { get; set; } = 5;
 
         public int CurrentPage { get; set; } = 1;
@@ -56,7 +55,7 @@ namespace GenericTagHelper
                     ItemPerPage = 5;
                 }
                 return (int)Math.Ceiling((decimal)
-                    ItemsList.Count / ItemPerPage);
+                    Items / ItemPerPage);
             }
         }
 
@@ -75,28 +74,10 @@ namespace GenericTagHelper
 
 
 
-        public string Items { get; set; }
-        private List<Dictionary<string, string>> ItemsList
-        {
-            get
-            {
-                return JsonDeserializeConvert_LDss(Items);
-            }
-        }
+        public int Items { get; set; }
 
-
-        private List<Dictionary<string, string>> ItemsAfterPagination
-        {
-            get
-            {
-                var query = JsonDeserializeConvert_LDss(Items);
-                return query.Skip((CurrentPage - 1)
-                    * ItemPerPage).Take(ItemPerPage).ToList();
-            }
-        }
 
         public bool ActiveQueryOptions { get; set; }
-
 
         public string PageAction { get; set; } = "";
 
@@ -131,148 +112,16 @@ namespace GenericTagHelper
         public bool ExchangePreviousFirstBtn { get; set; }
 
         public bool ExchangeNextLastBtn { get; set; }
-
-        public bool ActivePagination { get; set; }
         #endregion
 
-        public string TableHeads { get; set; }
-        private List<string> TableHeadList
-        {
-            get
-            {
-                return JsonDeserializeConvert_Ls(TableHeads);
-            }
-        }
-
-        public string AttributesTable { get; set; }
-        private Dictionary<string, string> AttributesTableDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_Dss(AttributesTable);
-            }
-        }
-
-
-        public string AttributesTableHead { get; set; }
-        private Dictionary<string, string> AttributesTableHeadDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_Dss(AttributesTableHead);
-            }
-        }
-
-        public string AttributesTableHeadTr { get; set; }
-        private Dictionary<string, string> AttributesTableHeadTrDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_Dss(AttributesTableHeadTr);
-            }
-        }
-
-        public string AttributesTableBody { get; set; }
-        private Dictionary<string, string> AttributesTableBodyDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_Dss(AttributesTableBody);
-            }
-        }
-
-
-        public string HtmlContentTh { get; set; }
-        private Dictionary<string, Dictionary<string, string>> HtmlContentThDict
-        {
-            get
-            {
-                return JsonDeserializeConvert_DsDss(HtmlContentTh);
-            }
-        }
-
-        public override void Process(
-            TagHelperContext context, TagHelperOutput output)
-        {
-
-            TagBuilder table = new TagBuilder("table");
-            table = AddAttributes(table, AttributesTableDict);
-
-            TagBuilder thead = new TagBuilder("thead");
-            thead = AddAttributes(thead, AttributesTableHeadDict);
-
-            TagBuilder thead_tr = new TagBuilder("tr");
-            thead_tr = AddAttributes(thead_tr, AttributesTableHeadTrDict);
-
-            foreach (var name in TableHeadList)
-            {
-                TagBuilder th = new TagBuilder("th");
-                th.InnerHtml.AppendHtml(name);
-                thead_tr.InnerHtml.AppendHtml(th);
-            }
-
-            thead.InnerHtml.AppendHtml(thead_tr);
-            //output.Content.AppendHtml(thead);
-
-            TagBuilder tbody = new TagBuilder("tbody");
-            tbody = AddAttributes(tbody, AttributesTableBodyDict);
-
-
-            if (ItemsAfterPagination.Count == 0)
-            {
-                TagBuilder tbody_tr = new TagBuilder("tr");
-
-                TagBuilder td = new TagBuilder("td");
-
-                td.InnerHtml.AppendHtml(NoItemsMessage);
-
-                tbody_tr.InnerHtml.AppendHtml(td);
-
-                tbody.InnerHtml.AppendHtml(tbody_tr);
-            }
-            else
-            {
-                ItemsAfterPagination.ForEach(items =>
-                {
-                    TagBuilder tbody_tr = new TagBuilder("tr");
-                    items.ToDictionary(item =>
-                        {
-                            TagBuilder td = new TagBuilder("td");
-
-                            td.InnerHtml.AppendHtml(item.Value);
-
-                            tbody_tr.InnerHtml.AppendHtml(td);
-                            return td;
-                        });
-
-                    tbody.InnerHtml.AppendHtml(tbody_tr);
-                });
-            }
-
-            TagBuilder pagination = GeneratePagination();
-
-
-            output.Content.AppendHtml(tbody);
-
-
-
-            if (ActivePagination)
-            {
-                PaginationBuilder pagintaionBuilder = new PaginationBuilder(
-                    ViewContext,urlHelperFactory,
-                    ItemsList.Count, CurrentPage);
-                TagBuilder p = pagintaionBuilder.CreatePagination();
-                output.PostElement.AppendHtml(p);
-            }
-        }
-
-        #region Pagination Helpers
-        public TagBuilder GeneratePagination()
+        public TagBuilder CreatePagination()
         {
             if (TotalPages <= 1)
             {
 
             }
+
+            TagBuilder nav = new TagBuilder("nav");
 
             // <ul class="pagination"></ul>
             TagBuilder ul = new TagBuilder("ul");
@@ -475,9 +324,9 @@ namespace GenericTagHelper
                     }
                 }
             }
-            return ul;
+            nav.InnerHtml.AppendHtml(ul);
+            return nav;
         }
-
         // Show Page Icon
         // <span aria-hidden="true">{{ icon  }}</span>
         private TagBuilder PageIcon(string icon)
@@ -562,9 +411,6 @@ namespace GenericTagHelper
             return li;
         }
 
-        #endregion
-
-        #region Helpers
         private List<Dictionary<string, string>> JsonDeserializeConvert_LDss(
            string propertyString)
         {
@@ -624,7 +470,6 @@ namespace GenericTagHelper
             }
             return tag;
         }
-        #endregion
 
     }
 }

@@ -9,7 +9,8 @@
     <table generic table-heads='["Id","Name","Gender"]'
            class="table table-striped"
            items="@Model.CustomerList"
-           active-pagination="true">
+           active-pagination="true"
+           current-page="@Model.CurrentPage">
 
     </table>
 </table-panel>
