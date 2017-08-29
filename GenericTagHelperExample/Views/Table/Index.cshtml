@@ -8,6 +8,7 @@
              panel-heading-html-content="<h1 class='text-center'>Customers</h1>">
     <table generic table-heads='["Id","Name","Gender"]'
            class="table table-striped"
+           item-per-page="10"
            items="@Model.CustomerList"
            active-pagination="true"
            current-page="@Model.CurrentPage">

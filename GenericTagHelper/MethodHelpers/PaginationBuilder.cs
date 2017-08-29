@@ -18,14 +18,10 @@ namespace GenericTagHelper.MethodHelpers
         private ViewContext ViewContext; 
         public PaginationBuilder(
             ViewContext viewContext,
-            IUrlHelperFactory urlHelperFactory,
-            int items,
-            int currentPage)
+            IUrlHelperFactory urlHelperFactory)
         {
             this.ViewContext = viewContext;
             this.urlHelperFactory = urlHelperFactory;
-            this.Items = items;
-            this.CurrentPage = currentPage;
         }
 
         [HtmlAttributeNotBound]
@@ -55,7 +51,7 @@ namespace GenericTagHelper.MethodHelpers
                     ItemPerPage = 5;
                 }
                 return (int)Math.Ceiling((decimal)
-                    Items / ItemPerPage);
+                    TotalItems / ItemPerPage);
             }
         }
 
@@ -74,9 +70,9 @@ namespace GenericTagHelper.MethodHelpers
 
 
 
-        public int Items { get; set; }
+        public int TotalItems { get; set; }
 
-
+      
         public bool ActiveQueryOptions { get; set; }
 
         public string PageAction { get; set; } = "";
