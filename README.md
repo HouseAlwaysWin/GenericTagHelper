@@ -95,6 +95,11 @@ And when you load your model with generic form taghelper the html code will be a
     <a asp-action="Index" class="btn btn-default">Cancel</a>
 </form>
 ```
+
+<hr/>
+
+# FormTagHelper
+
 ## Customizable Attributes
 
 You can customize your form tag's attributes by Json format string
@@ -327,4 +332,5 @@ And your form will generate html like this...
 
 <hr/>
 
+## Radio button Supported
 and more.... will update as soon as possible
