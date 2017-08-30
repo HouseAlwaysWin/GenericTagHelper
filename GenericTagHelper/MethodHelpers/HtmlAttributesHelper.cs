@@ -27,50 +27,64 @@ namespace GenericTagHelper.MethodHelpers
                 loopKey, StringComparison.OrdinalIgnoreCase));
         }
 
-        //public static void AddAllClass(
-        //    TagBuilder tag,
-        //    Dictionary<string, string> allClassAttr,
-        //    string loopKey)
-        //{
-        //    if (IsContainsKey(allClassAttr, loopKey) &&
-        //        allClassAttr.Count != 0)
-        //    {
-        //        tag.AddCssClass(
-        //            allClassAttr.LastOrDefault(
-        //                fg => fg.Key.Equals(loopKey,
-        //                StringComparison.OrdinalIgnoreCase)).Value);
-        //    }
-        //}
-
-        public static void AddOneItemClass(
+        public static void AddClass(
             TagBuilder tag,
-            Dictionary<string, string> oneItemClass,
+            Dictionary<string, string> itemClass,
             string loopKey)
         {
-            tag.AddCssClass(
-                oneItemClass.LastOrDefault(
-                    item => item.Key.Equals(loopKey,
-                    StringComparison.OrdinalIgnoreCase)).Value);
+            if (IsContainsKey(itemClass, loopKey) &&
+                itemClass.Count != 0)
+            {
+                tag.Attributes["class"] =
+                    itemClass.LastOrDefault(
+                        item => item.Key.Equals(loopKey,
+                        StringComparison.OrdinalIgnoreCase)).Value;
+            }
         }
 
+        //public static void AddOneItemClass(
+        //    TagBuilder tag,
+        //    Dictionary<string, string> oneItemClass,
+        //    string loopKey)
+        //{
+        //    tag.AddCssClass(
+        //        oneItemClass.LastOrDefault(
+        //            item => item.Key.Equals(loopKey,
+        //            StringComparison.OrdinalIgnoreCase)).Value);
+        //}
+
         #region  Attributes
-        public static TagBuilder AddAllItemsAttributes(
+        public static void AddAttributes(
+            TagBuilder tag,
+            Dictionary<string, string> itemAttrs)
+        {
+            if (itemAttrs.Keys.Count != 0)
+            {
+                itemAttrs.ToDictionary(attr =>
+                {
+                    tag.Attributes[attr.Key] = attr.Value;
+                    return tag;
+                });
+            }
+        }
+
+        // For applying all tags's attributes
+        public static void AddAttributes(
             TagBuilder tag,
             Dictionary<string, string> allItemsAttr,
             string loopKey)
         {
-            if (IsContainsKey(allItemsAttr, loopKey) &&
-                allItemsAttr.Count != 0)
+            if (allItemsAttr.Count != 0)
             {
                 foreach (var attr in allItemsAttr)
                 {
                     tag.Attributes[attr.Key] = attr.Value;
                 }
             }
-            return tag;
         }
 
-        public static void AddOneItemAttributes(
+        // For applying specific tag's attributes
+        public static void AddAttributes(
             TagBuilder tag,
             Dictionary<string, Dictionary<string, string>> oneItemAttr,
             string loopKey)
@@ -87,15 +101,16 @@ namespace GenericTagHelper.MethodHelpers
         }
 
 
-        public static void AddAttributesToTag(
+        // For applying both type
+        public static void AddAttributes(
             TagBuilder tag,
             Dictionary<string, string> allItemAttrs,
             Dictionary<string, Dictionary<string, string>> oneItemAttrs,
             string loopKey
             )
         {
-            AddAllItemsAttributes(tag, allItemAttrs, loopKey);
-            AddOneItemAttributes(tag, oneItemAttrs, loopKey);
+            AddAttributes(tag, allItemAttrs, loopKey);
+            AddAttributes(tag, oneItemAttrs, loopKey);
         }
         #endregion
 

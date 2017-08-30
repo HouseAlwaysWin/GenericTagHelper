@@ -205,10 +205,10 @@ namespace GenericTagHelper
         {
 
             TagBuilder thead = new TagBuilder("thead");
-            thead = HtmlAttributesHelper.AddAttributes(thead, AttributesTableHeadDict);
+            HtmlAttributesHelper.AddAttributes(thead, AttributesTableHeadDict);
 
             TagBuilder thead_tr = new TagBuilder("tr");
-            thead_tr = HtmlAttributesHelper.AddAttributes(thead_tr, AttributesTableHeadTrDict);
+            HtmlAttributesHelper.AddAttributes(thead_tr, AttributesTableHeadTrDict);
 
             foreach (var name in TableHeadList)
             {
@@ -221,13 +221,13 @@ namespace GenericTagHelper
             //output.Content.AppendHtml(thead);
 
             TagBuilder tbody = new TagBuilder("tbody");
-            tbody = HtmlAttributesHelper.AddAttributes(tbody, AttributesTableBodyDict);
+            HtmlAttributesHelper.AddAttributes(tbody, AttributesTableBodyDict);
 
 
             if (ItemsAfterPagination.Count == 0)
             {
                 TagBuilder tbody_tr = new TagBuilder("tr");
- 
+
                 TagBuilder td = new TagBuilder("td");
 
                 td.InnerHtml.AppendHtml(NoItemsMessage);
@@ -241,7 +241,7 @@ namespace GenericTagHelper
                 ItemsAfterPagination.ForEach(items =>
                 {
                     TagBuilder tbody_tr = new TagBuilder("tr");
-                    HtmlAttributesHelper.AddAttributes(tbody_tr,AttributesTableBodyDict);
+                    HtmlAttributesHelper.AddAttributes(tbody_tr, AttributesTableBodyDict);
 
                     items.ToDictionary(item =>
                         {
@@ -266,13 +266,13 @@ namespace GenericTagHelper
                 TagBuilder panel_body = new TagBuilder("div");
                 HtmlAttributesHelper.AddAttributes(panel_body, AttributesPanelBodyDict);
 
-               
- 
+
+
                 if (ActivePanelHeading)
                 {
                     output.Content.AppendHtml(panel_heading);
                     panel_heading.AddCssClass("panel-heading");
-                    panel_heading = HtmlAttributesHelper.AddAttributes(
+                    HtmlAttributesHelper.AddAttributes(
                         panel_heading, AttributesPanelHeadingDict);
                     panel_heading.InnerHtml.AppendHtml(PanelTitle);
                 }
@@ -280,15 +280,15 @@ namespace GenericTagHelper
                 {
                     output.Content.AppendHtml(panel_body);
                     panel_body.AddCssClass("panel-body");
-                    panel_body = HtmlAttributesHelper.AddAttributes(
-                        panel_body, AttributesPanelBodyDict);
+                    HtmlAttributesHelper.AddAttributes(
+                       panel_body, AttributesPanelBodyDict);
                     panel_body.InnerHtml.AppendHtml(PanelContent);
                 }
 
                 TagBuilder table = new TagBuilder("table");
                 table.AddCssClass("table table-primary");
-                table = HtmlAttributesHelper.AddAttributes(
-                    table, AttributesTableDict);
+                HtmlAttributesHelper.AddAttributes(
+                   table, AttributesTableDict);
 
                 table.InnerHtml.AppendHtml(thead);
                 table.InnerHtml.AppendHtml(tbody);

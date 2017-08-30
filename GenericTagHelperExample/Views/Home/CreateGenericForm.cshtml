@@ -5,48 +5,47 @@
 <form generic form-model="@Model" asp-validation-summary="All"
       form-title="<h1>FormModel</h1>"
       class-input='{
-      checkbox:"form-control ",
-      checkbox:"",
+        checkbox:"",
       }'
-
       class-form-group='{
           image:"test"
       }'
-
-     
       all-class-span="text-danger"
-      attributes-validation-summary='{
+      attrs-validation-summary='{
         "class":"text-danger"
       }'
-      attributes-validation-summary-ul='{
+      attrs-validation-summary-ul='{
            style:"list-style-type:none;"
       }'
-      attributes-input='{
+     
+    
+      attrs-input='{
         selectradio:{
-            "class":"hello",
+            class:"hello",
             style:"margin-left:10px;"
         },
         image:{
             class:""
+        },
+        levelselectlist:{
         }
       }'
+      attrs-all-radio-btn-span='{
+        selectradio:{
+            style:"margin-left:10px;"
+        }
+      }'
+      radio-left="true"
       radio-button-data-list='{
         selectradio:{
             1:"male",
             2:"female"
         }
       }'
-      attributes-radio-btn-value='{
-        selectradio:{
-            style:"margin-left:10px;"
-        }
-      }'
       method="post"
       cancel-link-return-action="Index"
       cancel-link-return-controller="Home"
       asp-action="CreateGenericForm"
-      asp-antiforgery="true">
-
-</form>
+      asp-antiforgery="true"></form>
 
 
