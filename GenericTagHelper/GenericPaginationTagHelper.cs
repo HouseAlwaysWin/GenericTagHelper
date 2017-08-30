@@ -10,9 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GenericTagHelper
 {
+    [HtmlTargetElement("pagination")]
     public class GenericPaginationTagHelper : TagHelper
     {
         private IUrlHelperFactory urlHelperFactory;
@@ -31,9 +33,69 @@ namespace GenericTagHelper
             }
         }
 
+
         [HtmlAttributeNotBound]
         [ViewContext]
         public ViewContext ViewContext { get; set; }
+
+        public string PaginationTagName { get; set; } = "div";
+
+        public string NoItemsMessage { get; set; } = "No Items";
+        public string NoItemsMessageTag { get; set; } = "div";
+
+        public string GroupListTag { get; set; } = "div";
+        public string AttributesGroupListTag { get; set; }
+        public Dictionary<string, string> AttributesGroupListTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesGroupListTag);
+            }
+        }
+
+        public string GroupTag { get; set; } = "ul";
+        public string AttributesGroupTag { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesGroupTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesGroupTag);
+            }
+        }
+        public string AttributesAllGroupTag { get; set; }
+        private Dictionary<string, string> AttributesAllGroupTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesAllGroupTag);
+            }
+        }
+
+
+        public string ListTag { get; set; } = "li";
+        public string AttributesListTag { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesListTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesListTag);
+            }
+        }
+
+        public bool AddContentBeforeList { get; set; }
+        public bool AddContentAfterList { get; set; }
+
+        public int NumberOfTagListOuterLayer { get; set; } = 0;
+        public string AttributesTagsListLayer { get; set; }
+        private Dictionary<string, Dictionary<string, string>> AttributesTagsListLayerDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesTagsListLayer);
+            }
+        }
+
+
 
         #region Pagination
         public int ItemPerPage { get; set; } = 5;
@@ -55,13 +117,13 @@ namespace GenericTagHelper
 
 
         public string CurrentPageParameter { get; set; } = "page";
-        public string QueryList { get; set; }
+        public string PageQueryList { get; set; }
 
         private Dictionary<string, string> QueryOptions
         {
             get
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, string>>(QueryList);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(PageQueryList);
             }
         }
         private Dictionary<string, string> QueryListDict { get; set; } = new Dictionary<string, string>();
@@ -90,9 +152,6 @@ namespace GenericTagHelper
         }
 
         public bool ActiveQueryOptions { get; set; }
-
-
-        public string PageQueryList { get; set; }
 
         public string PageAction { get; set; } = "";
 
@@ -131,14 +190,81 @@ namespace GenericTagHelper
         public bool ActivePagination { get; set; }
         #endregion
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+
+            TagBuilder group_list_tag = new TagBuilder(GroupListTag);
+            if (ItemsAfterPagination.Count == 0)
+            {
+                TagBuilder no_msg_tag = new TagBuilder(NoItemsMessageTag);
+
+                no_msg_tag.InnerHtml.AppendHtml(NoItemsMessage);
+
+            }
+            else
+            {
+                if (AddContentBeforeList)
+                {
+                    group_list_tag.InnerHtml.AppendHtml(await output.GetChildContentAsync());
+                }
+
+                for (int i = 0; i < ItemsAfterPagination.Count; i++)
+                {
+                    TagBuilder group_tag = new TagBuilder(GroupTag);
+                    HtmlAttributesHelper.AddAttributes(
+                        group_tag, AttributesGroupTagDict, i.ToString());
+
+                    if (HtmlAttributesHelper.IsContainsKey(AttributesGroupTagDict, i.ToString()))
+                    {
+                        HtmlAttributesHelper.AddAttributes(group_tag, AttributesAllGroupTagDict);
+                    }
+
+                    ItemsAfterPagination[i].ToDictionary(item =>
+                    {
+                        TagBuilder list_tag = new TagBuilder(ListTag);
+
+                        list_tag.InnerHtml.AppendHtml(item.Value);
+
+                        group_tag.InnerHtml.AppendHtml(list_tag);
+                        return list_tag;
+                    });
+
+                    group_list_tag.InnerHtml.AppendHtml(group_tag);
+                }
+                //ItemsAfterPagination.ForEach(items =>
+                //{
+                //    TagBuilder group_tag = new TagBuilder(GroupTag);
+
+                //    items.ToDictionary(item =>
+                //    {
+                //        TagBuilder list_tag = new TagBuilder(ListTag);
+
+                //        list_tag.InnerHtml.AppendHtml(item.Value);
+
+                //        group_tag.InnerHtml.AppendHtml(list_tag);
+                //        return list_tag;
+                //    });
+
+                //    group_list_tag.InnerHtml.AppendHtml(group_tag);
+                //});
+
+                if (AddContentAfterList)
+                {
+                    group_list_tag.InnerHtml.AppendHtml(await output.GetChildContentAsync());
+                }
+            }
+
+            group_list_tag = AddLayers(group_list_tag);
+
+            #region Pagination
+
             if (TotalPages <= 1)
             {
 
             }
 
             // <ul class="pagination"></ul>
+            TagBuilder nav = new TagBuilder("nav");
             TagBuilder ul = new TagBuilder("ul");
             ul.AddCssClass(PageStyleClass);
 
@@ -339,11 +465,21 @@ namespace GenericTagHelper
                     }
                 }
             }
-            output.TagName = "nav";
+            nav.InnerHtml.AppendHtml(ul);
+            #endregion
+
+            output.TagName = PaginationTagName;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Content.SetHtmlContent(ul);
+            output.Content.AppendHtml(group_list_tag);
+            output.Content.AppendHtml(nav);
+
+
         }
+
+
+
+
         // Show Page Icon
         // <span aria-hidden="true">{{ icon  }}</span>
         private TagBuilder PageIcon(string icon)
@@ -370,7 +506,7 @@ namespace GenericTagHelper
             else
             {
 
-                if (!String.IsNullOrEmpty(QueryList))
+                if (!String.IsNullOrEmpty(PageQueryList))
                 {
 
                     foreach (var item in QueryOptions)
@@ -427,6 +563,25 @@ namespace GenericTagHelper
             }
 
             return li;
+        }
+
+        public TagBuilder AddLayers(TagBuilder innter_tag)
+        {
+
+            for (int i = 1; i <= NumberOfTagListOuterLayer; i++)
+            {
+                TagBuilder outer_div = new TagBuilder("div");
+                if (HtmlAttributesHelper.IsContainsKey(AttributesTagsListLayerDict, i.ToString()))
+                {
+                    HtmlAttributesHelper.AddAttributes(outer_div,
+                        AttributesTagsListLayerDict,
+                        i.ToString());
+                }
+                outer_div.InnerHtml.AppendHtml(innter_tag);
+                innter_tag = outer_div;
+            }
+
+            return innter_tag;
         }
     }
 }

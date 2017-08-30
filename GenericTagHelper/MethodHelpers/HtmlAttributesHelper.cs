@@ -10,79 +10,113 @@ namespace GenericTagHelper.MethodHelpers
 {
     public static class HtmlAttributesHelper
     {
-     
+
         public static bool IsContainsKey(
-            Dictionary<string, string> tagClassDict,
-            string propertyName)
+            Dictionary<string, string> itemAttrs,
+            string loopKey)
         {
-            return tagClassDict.Any(d => d.Key.Equals(
-                propertyName, StringComparison.OrdinalIgnoreCase));
+            return itemAttrs.Any(d => d.Key.Equals(
+                loopKey, StringComparison.OrdinalIgnoreCase));
         }
 
         public static bool IsContainsKey(
-            Dictionary<string, Dictionary<string, string>> tagClassDict,
-            string propertyName)
+            Dictionary<string, Dictionary<string, string>> itemAttrs,
+            string loopKey)
         {
-            return tagClassDict.Any(d => d.Key.Equals(
-                propertyName, StringComparison.OrdinalIgnoreCase));
+            return itemAttrs.Any(item => item.Key.Equals(
+                loopKey, StringComparison.OrdinalIgnoreCase));
         }
 
-        public static void  AddClass(
+        //public static void AddAllClass(
+        //    TagBuilder tag,
+        //    Dictionary<string, string> allClassAttr,
+        //    string loopKey)
+        //{
+        //    if (IsContainsKey(allClassAttr, loopKey) &&
+        //        allClassAttr.Count != 0)
+        //    {
+        //        tag.AddCssClass(
+        //            allClassAttr.LastOrDefault(
+        //                fg => fg.Key.Equals(loopKey,
+        //                StringComparison.OrdinalIgnoreCase)).Value);
+        //    }
+        //}
+
+        public static void AddOneItemClass(
             TagBuilder tag,
-            Dictionary<string, string> tagClassDict,
-            string propertyName)
+            Dictionary<string, string> oneItemClass,
+            string loopKey)
         {
             tag.AddCssClass(
-                tagClassDict.LastOrDefault(
-                    fg => fg.Key.Equals(propertyName,
+                oneItemClass.LastOrDefault(
+                    item => item.Key.Equals(loopKey,
                     StringComparison.OrdinalIgnoreCase)).Value);
         }
 
-        public static  TagBuilder AddAttributes(
-            TagBuilder tag, Dictionary<string, string> tagAttributeDict)
+        #region  Attributes
+        public static TagBuilder AddAllItemsAttributes(
+            TagBuilder tag,
+            Dictionary<string, string> allItemsAttr,
+            string loopKey)
         {
-            foreach (var attr in tagAttributeDict)
+            if (IsContainsKey(allItemsAttr, loopKey) &&
+                allItemsAttr.Count != 0)
             {
-                tag.Attributes[attr.Key] = attr.Value;
+                foreach (var attr in allItemsAttr)
+                {
+                    tag.Attributes[attr.Key] = attr.Value;
+                }
             }
             return tag;
         }
-        public static void AddAttributes(
+
+        public static void AddOneItemAttributes(
             TagBuilder tag,
-            Dictionary<string, Dictionary<string, string>> tagAttributeDict,
-            string propertyName)
+            Dictionary<string, Dictionary<string, string>> oneItemAttr,
+            string loopKey)
         {
-            // find property if match propertyName then apply attributes.
-            tagAttributeDict.LastOrDefault(
-                prop => prop.Key
-                .Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+            if (IsContainsKey(oneItemAttr, loopKey) &&
+                oneItemAttr.Count != 0)
+            {
+                oneItemAttr.LastOrDefault(
+                item => item.Key
+                .Equals(loopKey, StringComparison.OrdinalIgnoreCase))
                 .Value
                 .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
+            }
         }
 
 
-        public static void AddClassAndAttrToTag(
+        public static void AddAttributesToTag(
             TagBuilder tag,
-            Dictionary<string, string> classDict,
-            Dictionary<string, Dictionary<string, string>> attributeDict,
-            string propertyName,
-             string allClass)
+            Dictionary<string, string> allItemAttrs,
+            Dictionary<string, Dictionary<string, string>> oneItemAttrs,
+            string loopKey
+            )
         {
-            if (IsContainsKey(
-                           classDict, propertyName))
-            {
-                AddClass(tag, classDict, propertyName);
-            }
-            else
-            {
-                tag.AddCssClass(allClass);
-            }
-
-            if (IsContainsKey(
-                    attributeDict, propertyName))
-            {
-                AddAttributes(tag, attributeDict, propertyName);
-            }
+            AddAllItemsAttributes(tag, allItemAttrs, loopKey);
+            AddOneItemAttributes(tag, oneItemAttrs, loopKey);
         }
+        #endregion
+
+        //public static void AddClassAndAttrToTag(
+        //    TagBuilder tag,
+        //    Dictionary<string, string> classDict,
+        //    Dictionary<string, Dictionary<string, string>> attributeDict,
+        //    string loopKey,
+        //    string allClass)
+        //{
+        //    AddAllClass(tag,classDict,loopKey);
+
+
+
+
+        //    if (IsContainsKey(
+        //            attributeDict, loopKey))
+        //    {
+        //        AddAttributes(tag, attributeDict, loopKey);
+        //    }
+
+        //}
     }
 }

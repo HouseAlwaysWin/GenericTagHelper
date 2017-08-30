@@ -2,6 +2,26 @@
 
 <br />
 
+<pagination item-per-page="10"
+            items="@Model.CustomerList"
+            current-page="@Model.CurrentPage"
+            group-list-tag="table"
+            group-tag="tr"
+            list-tag="td"
+            attributes-group-tag='{
+                11:{
+                    class:"form-control"
+                }
+            }'
+            >
+   <thead>
+       <tr>
+           <th>Id</th>
+           <th>Name</th>
+           <th>Gender</th>
+       </tr>
+   </thead> 
+</pagination>
 
 
 <table generic
@@ -9,18 +29,6 @@
        table-heads='
        ["Id","Name","Gender"]'
        items="@Model.CustomerList"
-       active-pagination="true"
-
-       attributes-table='{
-            class:"table table-danger"
-       }'
-       item-per-page="2"
-       page-query-list='{
-            page:"1",
-            query:"2"
-       }'
-
+       item-per-page="10"
        panel-title="Customer"
-       panel-content="Customer from Game of Thrones"
-
-       current-page="@Model.CurrentPage"></table>
+    ></table>
