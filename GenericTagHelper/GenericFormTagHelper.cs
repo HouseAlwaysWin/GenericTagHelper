@@ -335,7 +335,8 @@ namespace GenericTagHelper
 
         #region RadioButton 
 
-        public bool RadioRight { get; set; }
+        //public bool RadioRight { get; set; }
+        public bool RadioLeft { get; set; }
         public bool RadioTop { get; set; }
         public bool RadioBottom { get; set; }
 
@@ -372,9 +373,9 @@ namespace GenericTagHelper
         #region CheckBox 
         public bool CheckBoxTop { get; set; }
         public bool CheckBoxBottom { get; set; }
-        public bool CheckBoxLeft { get; set; }
-        public bool CheckBoxRight { get; set; }
+        public bool CheckBoxLeft { get; set; } 
         #endregion
+
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
         {
@@ -524,50 +525,15 @@ namespace GenericTagHelper
 
                                      TagBuilder value_div = new TagBuilder("div");
                                      TagBuilder value_span = new TagBuilder("span");
-                                     HtmlAttributesHelper.AddAttributes(value_span, AttrsAllRadioBtnSpanDict, property_name);
+                                     HtmlAttributesHelper.AddAttributes(
+                                         value_span, AttrsAllRadioBtnSpanDict,
+                                         property_name);
+                                     value_span.InnerHtml.AppendHtml(item.Value);
 
-                                     // radio button right
-                                     if (RadioRight &&
-                                         !RadioTop &&
-                                         !RadioBottom)
-                                     {
-                                         value_span.InnerHtml.AppendHtml(item.Value);
-
-                                         fieldset.InnerHtml.AppendHtml(value_span);
-
-                                         fieldset.InnerHtml.AppendHtml(input);
-                                     }
-                                     // radio button top
-                                     else if (!RadioRight &&
-                                               RadioTop &&
-                                              !RadioBottom)
-                                     {
-                                         fieldset.InnerHtml.AppendHtml(input);
-                                         value_div.InnerHtml.AppendHtml(item.Value);
-
-
-                                         fieldset.InnerHtml.AppendHtml(value_div);
-                                     }
-                                     // radio button bottom
-                                     else if (!RadioRight &&
-                                              !RadioTop &&
-                                               RadioBottom)
-                                     {
-                                         value_div.InnerHtml.AppendHtml(item.Value);
-
-                                         fieldset.InnerHtml.AppendHtml(value_div);
-
-                                         fieldset.InnerHtml.AppendHtml(input);
-                                     }
-                                     // default
-                                     else
-                                     {
-                                         fieldset.InnerHtml.AppendHtml(input);
-
-                                         value_span.InnerHtml.AppendHtml(item.Value);
-
-                                         fieldset.InnerHtml.AppendHtml(value_span);
-                                     }
+                                     SetInputLocation(
+                                         RadioTop, RadioBottom, RadioLeft, 
+                                         value_span, input, fieldset);
+                                    
 
                                      input.AddCssClass(ClassAllInput);
 
@@ -595,37 +561,10 @@ namespace GenericTagHelper
                     else if (property.Metadata.DataTypeName == "CheckBox")
                     {
                         input = GenerateInputType(property);
-                        if (CheckBoxTop &&
-                            !CheckBoxBottom &&
-                            !CheckBoxLeft)
-                        {
-                            TagBuilder checkbox_div = new TagBuilder("div");
-                            checkbox_div.InnerHtml.AppendHtml(label);
-                            form_group.InnerHtml.AppendHtml(input);
-                            form_group.InnerHtml.AppendHtml(checkbox_div);
-                        }
-                        else if (!CheckBoxTop &&
-                           CheckBoxBottom &&
-                           !CheckBoxLeft)
-                        {
-                            TagBuilder checkbox_div = new TagBuilder("div");
-                            checkbox_div.InnerHtml.AppendHtml(label);
-                            form_group.InnerHtml.AppendHtml(checkbox_div);
-                            form_group.InnerHtml.AppendHtml(input);
-                        }
-                        else if (!CheckBoxTop &&
-                           !CheckBoxBottom &&
-                           CheckBoxLeft)
-
-                        {
-                            form_group.InnerHtml.AppendHtml(input);
-                            form_group.InnerHtml.AppendHtml(label);
-                        }
-                        else
-                        {
-                            form_group.InnerHtml.AppendHtml(label);
-                            form_group.InnerHtml.AppendHtml(input);
-                        }
+                        SetInputLocation(
+                            CheckBoxTop,CheckBoxBottom,CheckBoxLeft,
+                            label,input,form_group);
+                       
                         input.AddCssClass(ClassAllInput);
                         HtmlAttributesHelper.AddClass(
                             input, ClassInputDict, property_name);
@@ -1100,6 +1039,44 @@ namespace GenericTagHelper
             }
 
             return format;
+        }
+
+
+        private void SetInputLocation(
+            bool top, bool bottom, bool left, 
+            TagBuilder label, TagBuilder input, TagBuilder group)
+
+        {
+            if (top &&
+                !bottom &&
+                !left) 
+            {
+                group.InnerHtml.AppendHtml(input);
+                TagBuilder div = new TagBuilder("div");
+                div.InnerHtml.AppendHtml(label);
+                group.InnerHtml.AppendHtml(div);
+            }
+            else if (!top &&
+                bottom &&
+                !left)
+            {
+                TagBuilder div = new TagBuilder("div");
+                div.InnerHtml.AppendHtml(label);
+                group.InnerHtml.AppendHtml(div);
+                group.InnerHtml.AppendHtml(input);
+            }
+            else if (!top &&
+                !bottom &&
+                left) 
+            {
+                group.InnerHtml.AppendHtml(input);
+                group.InnerHtml.AppendHtml(label);
+            }
+            else
+            {
+                group.InnerHtml.AppendHtml(label);
+                group.InnerHtml.AppendHtml(input);
+            }
         }
         #endregion
     }
