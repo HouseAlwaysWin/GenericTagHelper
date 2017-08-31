@@ -218,7 +218,7 @@ namespace GenericTagHelper
             }
 
             thead.InnerHtml.AppendHtml(thead_tr);
-            //output.Content.AppendHtml(thead);
+           
 
             TagBuilder tbody = new TagBuilder("tbody");
             HtmlAttributesHelper.AddAttributes(tbody, AttributesTableBodyDict);

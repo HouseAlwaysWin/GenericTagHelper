@@ -23,6 +23,9 @@ namespace GenericTagHelperExample.Models
         [Required]
         public string TextBox { get; set; }
 
+        [DataType("TextArea")]
+        [Required]
+        public string TextArea { get; set; }
 
         public byte[] Upload { get; set; }
         [NotMapped]
@@ -37,6 +40,7 @@ namespace GenericTagHelperExample.Models
         [Required]
         public Level LevelSelectList { get; set; }
 
+        [DataType("CheckBox")]
         public bool CheckBox { get; set; }
 
         [DataType(DataType.Password)]

@@ -10,15 +10,13 @@
       class-form-group='{
           image:"test"
       }'
-      all-class-span="text-danger"
+      class-all-span="text-danger"
       attrs-validation-summary='{
         "class":"text-danger"
       }'
       attrs-validation-summary-ul='{
            style:"list-style-type:none;"
       }'
-     
-    
       attrs-input='{
         selectradio:{
             class:"hello",
@@ -27,15 +25,18 @@
         image:{
             class:""
         },
-        levelselectlist:{
+        textarea:{
+            rows:"20",
+            cols:"50",
         }
+
       }'
       attrs-all-radio-btn-span='{
         selectradio:{
             style:"margin-left:10px;"
         }
       }'
-      radio-left="true"
+      check-box-left="true"
       radio-button-data-list='{
         selectradio:{
             1:"male",
@@ -48,4 +49,8 @@
       asp-action="CreateGenericForm"
       asp-antiforgery="true"></form>
 
-
+@section scripts{
+    <script>
+        CKEDITOR.replace("TextArea");
+    </script>
+}

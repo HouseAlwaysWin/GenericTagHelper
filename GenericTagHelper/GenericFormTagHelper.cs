@@ -50,6 +50,7 @@ namespace GenericTagHelper
                 { "DateTime-local", "datetime-local" },
                 { "Time", "time" },
                 { "Radio" ,"radio" },
+                { "TextArea","textarea"},
                 { nameof(Byte), "number" },
                 { nameof(SByte), "number" },
                 { nameof(Int16), "number" },
@@ -95,7 +96,7 @@ namespace GenericTagHelper
         public ModelExpression FormModel { get; set; }
 
         #region Title
-        public string FormTitle { get; set; } = "Form";
+        public string FormTitle { get; set; } = "Form-Title";
 
         public string ClassTitle { get; set; }
 
@@ -167,7 +168,7 @@ namespace GenericTagHelper
         #endregion
 
         #region FormGroup
-        public string AllClassFormGroup { get; set; } = "form-group";
+        public string ClassAllFormGroup { get; set; } = "form-group";
 
         // Add Json string to match form-group class 
         public string ClassFormGroup { get; set; }
@@ -201,7 +202,7 @@ namespace GenericTagHelper
         #endregion
 
         #region Label
-        public string AllClassLabel { get; set; } = "";
+        public string ClassAllLabel { get; set; } = "";
 
         // Add Json string to match label class
         public string ClassLabel { get; set; }
@@ -235,7 +236,7 @@ namespace GenericTagHelper
         #endregion
 
         #region Input
-        public string AllClassInput { get; set; } = "form-control";
+        public string ClassAllInput { get; set; } = "form-control";
 
         // Add Json string to match input class
         public string ClassInput { get; set; }
@@ -267,7 +268,7 @@ namespace GenericTagHelper
         #endregion
 
         #region Span
-        public string AllClassSpan { get; set; } = "";
+        public string ClassAllSpan { get; set; } = "";
 
         // Add Json string to match span class
         public string ClassSpan { get; set; }
@@ -332,9 +333,8 @@ namespace GenericTagHelper
         public string CancelLinkReturnController { get; set; } = "";
         #endregion
 
-        #region RadioButton
+        #region RadioButton 
 
-        public bool RadioLeft { get; set; }
         public bool RadioRight { get; set; }
         public bool RadioTop { get; set; }
         public bool RadioBottom { get; set; }
@@ -367,28 +367,14 @@ namespace GenericTagHelper
             }
         }
 
-
-
-        //public string ClassRadioBtnValue { get; set; }
-        //private Dictionary<string, string> ClassRadioBtnValueDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(ClassRadioBtnValue);
-        //    }
-        //}
-
-        //public string AllClassRadioBtnValue { get; set; } = "";
-        //public string AttributesRadioBtnValue { get; set; }
-        //private Dictionary<string, Dictionary<string, string>> AttributesRadioBtnValueDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_DsDss(AttributesRadioBtnValue);
-        //    }
-        //}
         #endregion
 
+        #region CheckBox 
+        public bool CheckBoxTop { get; set; }
+        public bool CheckBoxBottom { get; set; }
+        public bool CheckBoxLeft { get; set; }
+        public bool CheckBoxRight { get; set; }
+        #endregion
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
         {
@@ -487,7 +473,7 @@ namespace GenericTagHelper
                     /*-------------- Start Print your models-----------*/
 
                     TagBuilder form_group = new TagBuilder("div");
-                    form_group.AddCssClass(AllClassFormGroup);
+                    form_group.AddCssClass(ClassAllFormGroup);
                     HtmlAttributesHelper.AddClass(
                         form_group, ClassFormGroupDict, property_name);
                     HtmlAttributesHelper.AddAttributes(
@@ -502,7 +488,7 @@ namespace GenericTagHelper
                         labelText: null,
                         htmlAttributes: null);
 
-                    label.AddCssClass(AllClassLabel);
+                    label.AddCssClass(ClassAllLabel);
 
                     HtmlAttributesHelper.AddClass(
                         label, ClassLabelDict,
@@ -512,7 +498,9 @@ namespace GenericTagHelper
                         label, AttrsAllLabelDict,
                         AttrsLabelDict, property_name);
 
-                    form_group.InnerHtml.AppendHtml(label);
+
+                    //form_group.InnerHtml.AppendHtml(label);
+
 
                     TagBuilder input;
 
@@ -524,114 +512,91 @@ namespace GenericTagHelper
                         // According RadioDict's key to match main radio property name
                         // then get the key value pair from Value
                         // and tnen feed key and value to radio button
-                        RadioDict.LastOrDefault(
-                             prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
-                             .Value
-                             .ToDictionary(item =>
-                             {
-                                 input = GenerateInputType(property, item.Key);
-                                 //HtmlAttributesHelper.AddAttributes(
-                                 //                 input, ClassInputDict,
-                                 //                  AttributesInputDict, property_name,
-                                 //                  AllClassInput);
-
-                                 TagBuilder value_div = new TagBuilder("div");
-                                 TagBuilder value_span = new TagBuilder("span");
-                                 HtmlAttributesHelper.AddAttributes(value_span, AttrsAllRadioBtnSpanDict, property_name);
-                                 // radio button left
-                                 if (RadioLeft &&
-                                    !RadioRight &&
-                                    !RadioTop &&
-                                    !RadioBottom)
+                        if (RadioDict.Count != 0)
+                        {
+                            RadioDict.LastOrDefault(
+                                 prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
+                                 .Value
+                                 .ToDictionary(item =>
                                  {
-                                     fieldset.InnerHtml.AppendHtml(input);
+                                     input = GenerateInputType(property, item.Key);
 
-                                     value_span.InnerHtml.AppendHtml(item.Value);
-                                     //HtmlAttributesHelper.AddClassAndAttrToTag(
-                                     //    value_span, ClassRadioBtnValueDict,
-                                     //    AttributesRadioBtnValueDict, property_name,
-                                     //    AllClassRadioBtnValue);
-                                     fieldset.InnerHtml.AppendHtml(value_span);
-                                 }
-                                 // radio button right
-                                 else if (
-                                     !RadioLeft &&
-                                      RadioRight &&
-                                     !RadioTop &&
-                                     !RadioBottom)
-                                 {
-                                     value_span.InnerHtml.AppendHtml(item.Value);
-                                     //HtmlAttributesHelper.AddClassAndAttrToTag(
-                                     //   value_span, ClassRadioBtnValueDict,
-                                     //   AttributesRadioBtnValueDict, property_name,
-                                     //   AllClassRadioBtnValue);
-                                     fieldset.InnerHtml.AppendHtml(value_span);
 
-                                     fieldset.InnerHtml.AppendHtml(input);
-                                 }
-                                 // radio button top
-                                 else if (
-                                     !RadioLeft &&
-                                     !RadioRight &&
-                                      RadioTop &&
-                                     !RadioBottom)
-                                 {
-                                     fieldset.InnerHtml.AppendHtml(input);
-                                     value_div.InnerHtml.AppendHtml(item.Value);
-                                     //HtmlAttributesHelper.AddClassAndAttrToTag(
-                                     //   value_div, ClassRadioBtnValueDict,
-                                     //   AttributesRadioBtnValueDict, property_name,
-                                     //   AllClassRadioBtnValue);
+                                     TagBuilder value_div = new TagBuilder("div");
+                                     TagBuilder value_span = new TagBuilder("span");
+                                     HtmlAttributesHelper.AddAttributes(value_span, AttrsAllRadioBtnSpanDict, property_name);
 
-                                     fieldset.InnerHtml.AppendHtml(value_div);
-                                 }
-                                 // radio button bottom
-                                 else if (
-                                    !RadioLeft &&
-                                    !RadioRight &&
-                                    !RadioTop &&
-                                     RadioBottom)
-                                 {
-                                     value_div.InnerHtml.AppendHtml(item.Value);
-                                     //HtmlAttributesHelper.AddClassAndAttrToTag(
-                                     //   value_div, ClassRadioBtnValueDict,
-                                     //   AttributesRadioBtnValueDict, property_name,
-                                     //   AllClassRadioBtnValue);
-                                     fieldset.InnerHtml.AppendHtml(value_div);
+                                     // radio button right
+                                     if (RadioRight &&
+                                         !RadioTop &&
+                                         !RadioBottom)
+                                     {
+                                         value_span.InnerHtml.AppendHtml(item.Value);
 
-                                     fieldset.InnerHtml.AppendHtml(input);
-                                 }
-                                 // default
-                                 else
-                                 {
-                                     fieldset.InnerHtml.AppendHtml(input);
+                                         fieldset.InnerHtml.AppendHtml(value_span);
 
-                                     value_span.InnerHtml.AppendHtml(item.Value);
-                                     //HtmlAttributesHelper.AddClassAndAttrToTag(
-                                     //   value_span, ClassRadioBtnValueDict,
-                                     //   AttributesRadioBtnValueDict, property_name,
-                                     //   AllClassRadioBtnValue);
-                                     fieldset.InnerHtml.AppendHtml(value_span);
-                                 }
+                                         fieldset.InnerHtml.AppendHtml(input);
+                                     }
+                                     // radio button top
+                                     else if (!RadioRight &&
+                                               RadioTop &&
+                                              !RadioBottom)
+                                     {
+                                         fieldset.InnerHtml.AppendHtml(input);
+                                         value_div.InnerHtml.AppendHtml(item.Value);
 
-                                 input.AddCssClass(AllClassInput);
 
-                                 HtmlAttributesHelper.AddClass(
-                                     input, ClassInputDict, property_name);
-                                 HtmlAttributesHelper.AddAttributes(
-                                     input, AttrsAllInputDict,
-                                     AttrsInputDict, property_name);
+                                         fieldset.InnerHtml.AppendHtml(value_div);
+                                     }
+                                     // radio button bottom
+                                     else if (!RadioRight &&
+                                              !RadioTop &&
+                                               RadioBottom)
+                                     {
+                                         value_div.InnerHtml.AppendHtml(item.Value);
 
-                                 return input;
-                             });
+                                         fieldset.InnerHtml.AppendHtml(value_div);
 
+                                         fieldset.InnerHtml.AppendHtml(input);
+                                     }
+                                     // default
+                                     else
+                                     {
+                                         fieldset.InnerHtml.AppendHtml(input);
+
+                                         value_span.InnerHtml.AppendHtml(item.Value);
+
+                                         fieldset.InnerHtml.AppendHtml(value_span);
+                                     }
+
+                                     input.AddCssClass(ClassAllInput);
+
+                                     HtmlAttributesHelper.AddClass(
+                                         input, ClassInputDict, property_name);
+                                     HtmlAttributesHelper.AddAttributes(
+                                         input, AttrsAllInputDict,
+                                         AttrsInputDict, property_name);
+
+                                     return input;
+                                 });
+                        }
+                        else
+                        {
+                            TagBuilder NoDataMsg = new TagBuilder("span");
+                            NoDataMsg.MergeAttribute("style", "color:red;");
+                            NoDataMsg.InnerHtml.SetHtmlContent(
+                                "No radio button data,please give a data in your view");
+                            fieldset.InnerHtml.AppendHtml(NoDataMsg);
+                        }
+
+                        form_group.InnerHtml.AppendHtml(label);
                         form_group.InnerHtml.AppendHtml(fieldset);
                     }
                     else
                     {
                         input = GenerateInputType(property);
 
-                        input.AddCssClass(AllClassInput);
+                        input.AddCssClass(ClassAllInput);
                         HtmlAttributesHelper.AddClass(
                             input, ClassInputDict, property_name);
 
@@ -639,8 +604,48 @@ namespace GenericTagHelper
                                     input, AttrsAllInputDict,
                                     AttrsInputDict, property_name);
 
-                        form_group.InnerHtml.AppendHtml(input);
+                        if (property.Metadata.DataTypeName == "CheckBox")
+                        {
+                            if (CheckBoxTop &&
+                                !CheckBoxBottom &&
+                                !CheckBoxLeft)
+                            {
+                                TagBuilder checkbox_div = new TagBuilder("div");
+                                checkbox_div.InnerHtml.AppendHtml(label);
+                                form_group.InnerHtml.AppendHtml(input);
+                                form_group.InnerHtml.AppendHtml(checkbox_div);
+                            }
+                            else if (!CheckBoxTop &&
+                               CheckBoxBottom &&
+                               !CheckBoxLeft)
+                            {
+                                TagBuilder checkbox_div = new TagBuilder("div");
+                                checkbox_div.InnerHtml.AppendHtml(label);
+                                form_group.InnerHtml.AppendHtml(checkbox_div);
+                                form_group.InnerHtml.AppendHtml(input);
+                            }
+                            else if (!CheckBoxTop &&
+                               !CheckBoxBottom &&
+                               CheckBoxLeft)
+
+                            {
+                                form_group.InnerHtml.AppendHtml(input);
+                                form_group.InnerHtml.AppendHtml(label);
+                            }
+                            else
+                            {
+                                form_group.InnerHtml.AppendHtml(label);
+                                form_group.InnerHtml.AppendHtml(input);
+                            }
+                        }
+                        else
+                        {
+                            form_group.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(input);
+                        }
+
                     }
+
 
                     TagBuilder span = Generator.GenerateValidationMessage(
                                             ViewContext,
@@ -650,7 +655,7 @@ namespace GenericTagHelper
                                             tag: null,
                                             htmlAttributes: null);
 
-                    span.AddCssClass(AllClassSpan);
+                    span.AddCssClass(ClassAllSpan);
                     HtmlAttributesHelper.AddClass(
                         span, ClassSpanDict, property_name);
                     HtmlAttributesHelper.AddAttributes(
@@ -748,10 +753,22 @@ namespace GenericTagHelper
                                            value: radioValue,
                                            isChecked: null,
                                            htmlAttributes: null);
+
+
                     break;
 
                 case "select":
                     Input = GenerateSelectList(modelExplorer);
+                    break;
+
+                case "textarea":
+                    Input = Generator.GenerateTextArea(
+                        ViewContext,
+                        modelExplorer,
+                        modelExplorer.Metadata.PropertyName,
+                        rows: 0,
+                        columns: 0,
+                        htmlAttributes: null);
                     break;
 
                 default:

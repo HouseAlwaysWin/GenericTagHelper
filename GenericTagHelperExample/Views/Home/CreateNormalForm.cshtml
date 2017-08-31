@@ -13,6 +13,11 @@
         <span asp-validation-for="@Model.FormModel.TextBox"></span>
     </div>
     <div class="form-group">
+        <label asp-for="@Model.FormModel.TextArea"></label>
+        <input asp-for="@Model.FormModel.TextArea" class="form-control"/>
+        <span asp-validation-for="@Model.FormModel.TextArea"></span>
+    </div>
+    <div class="form-group">
         <label asp-for="@Model.FormModel.EmailTextBox"></label>
         <input asp-for="@Model.FormModel.EmailTextBox" class="form-control" />
         <span asp-validation-for="@Model.FormModel.EmailTextBox"></span>

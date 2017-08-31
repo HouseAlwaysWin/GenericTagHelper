@@ -42,17 +42,6 @@ namespace GenericTagHelper.MethodHelpers
             }
         }
 
-        //public static void AddOneItemClass(
-        //    TagBuilder tag,
-        //    Dictionary<string, string> oneItemClass,
-        //    string loopKey)
-        //{
-        //    tag.AddCssClass(
-        //        oneItemClass.LastOrDefault(
-        //            item => item.Key.Equals(loopKey,
-        //            StringComparison.OrdinalIgnoreCase)).Value);
-        //}
-
         #region  Attributes
         public static void AddAttributes(
             TagBuilder tag,
@@ -92,11 +81,26 @@ namespace GenericTagHelper.MethodHelpers
             if (IsContainsKey(oneItemAttr, loopKey) &&
                 oneItemAttr.Count != 0)
             {
-                oneItemAttr.LastOrDefault(
-                item => item.Key
-                .Equals(loopKey, StringComparison.OrdinalIgnoreCase))
-                .Value
-                .ToDictionary(attr => tag.Attributes[attr.Key] = attr.Value);
+
+                // try catch if key is duplicated
+                try
+                {
+                    oneItemAttr.LastOrDefault(
+                    item => item.Key
+                    .Equals(loopKey, StringComparison.OrdinalIgnoreCase))
+                    .Value
+                    .ToDictionary(attr =>
+                    {
+                        tag.Attributes[attr.Key] = attr.Value;
+                        return tag;
+                    });
+                }
+                catch (ArgumentException)
+                {
+                    return;
+                }
+
+
             }
         }
 
@@ -114,24 +118,6 @@ namespace GenericTagHelper.MethodHelpers
         }
         #endregion
 
-        //public static void AddClassAndAttrToTag(
-        //    TagBuilder tag,
-        //    Dictionary<string, string> classDict,
-        //    Dictionary<string, Dictionary<string, string>> attributeDict,
-        //    string loopKey,
-        //    string allClass)
-        //{
-        //    AddAllClass(tag,classDict,loopKey);
 
-
-
-
-        //    if (IsContainsKey(
-        //            attributeDict, loopKey))
-        //    {
-        //        AddAttributes(tag, attributeDict, loopKey);
-        //    }
-
-        //}
     }
 }
