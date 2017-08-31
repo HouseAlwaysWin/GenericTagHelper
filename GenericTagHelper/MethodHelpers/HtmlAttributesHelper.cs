@@ -35,10 +35,17 @@ namespace GenericTagHelper.MethodHelpers
             if (IsContainsKey(itemClass, loopKey) &&
                 itemClass.Count != 0)
             {
-                tag.Attributes["class"] =
-                    itemClass.LastOrDefault(
-                        item => item.Key.Equals(loopKey,
-                        StringComparison.OrdinalIgnoreCase)).Value;
+                try
+                {
+                    tag.Attributes["class"] =
+                        itemClass.LastOrDefault(
+                            item => item.Key.Equals(loopKey,
+                            StringComparison.OrdinalIgnoreCase)).Value;
+                }
+                catch(ArgumentException)
+                {
+                    return;
+                }
             }
         }
 
@@ -49,11 +56,19 @@ namespace GenericTagHelper.MethodHelpers
         {
             if (itemAttrs.Keys.Count != 0)
             {
-                itemAttrs.ToDictionary(attr =>
+                try
                 {
-                    tag.Attributes[attr.Key] = attr.Value;
-                    return tag;
-                });
+                    itemAttrs.ToDictionary(attr =>
+                    {
+                        tag.Attributes[attr.Key] = attr.Value;
+
+                        return tag;
+                    });
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
 
@@ -67,7 +82,14 @@ namespace GenericTagHelper.MethodHelpers
             {
                 foreach (var attr in allItemsAttr)
                 {
-                    tag.Attributes[attr.Key] = attr.Value;
+                    try
+                    {
+                        tag.Attributes[attr.Key] = attr.Value;
+                    }
+                    catch(ArgumentException)
+                    {
+                        return;
+                    }
                 }
             }
         }

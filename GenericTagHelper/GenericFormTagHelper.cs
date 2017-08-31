@@ -373,7 +373,7 @@ namespace GenericTagHelper
         #region CheckBox 
         public bool CheckBoxTop { get; set; }
         public bool CheckBoxBottom { get; set; }
-        public bool CheckBoxLeft { get; set; } 
+        public bool CheckBoxLeft { get; set; }
         #endregion
 
         public override void Process(
@@ -474,11 +474,15 @@ namespace GenericTagHelper
                     /*-------------- Start Print your models-----------*/
 
                     TagBuilder form_group = new TagBuilder("div");
-                    form_group.AddCssClass(ClassAllFormGroup);
-                    HtmlAttributesHelper.AddClass(
-                        form_group, ClassFormGroupDict, property_name);
-                    HtmlAttributesHelper.AddAttributes(
-                        form_group, AttrsAllFormGroupDict,
+                    //form_group.AddCssClass(ClassAllFormGroup);
+                    //HtmlAttributesHelper.AddClass(
+                    //    form_group, ClassFormGroupDict, property_name);
+                    //HtmlAttributesHelper.AddAttributes(
+                    //    form_group, AttrsAllFormGroupDict,
+                    //    AttrsFormGroupDict, property_name);
+                    SetTagAttrsAndClass(
+                        form_group, ClassAllFormGroup,
+                        ClassFormGroupDict, AttrsAllFormGroupDict,
                         AttrsFormGroupDict, property_name);
 
 
@@ -489,14 +493,16 @@ namespace GenericTagHelper
                         labelText: null,
                         htmlAttributes: null);
 
-                    label.AddCssClass(ClassAllLabel);
-
-                    HtmlAttributesHelper.AddClass(
-                        label, ClassLabelDict,
-                        property_name);
-
-                    HtmlAttributesHelper.AddAttributes(
-                        label, AttrsAllLabelDict,
+                    //label.AddCssClass(ClassAllLabel);
+                    //HtmlAttributesHelper.AddClass(
+                    //    label, ClassLabelDict,
+                    //    property_name);
+                    //HtmlAttributesHelper.AddAttributes(
+                    //    label, AttrsAllLabelDict,
+                    //    AttrsLabelDict, property_name);
+                    SetTagAttrsAndClass(
+                        label, ClassAllLabel,
+                        ClassLabelDict, AttrsAllLabelDict,
                         AttrsLabelDict, property_name);
 
 
@@ -531,17 +537,21 @@ namespace GenericTagHelper
                                      value_span.InnerHtml.AppendHtml(item.Value);
 
                                      SetInputLocation(
-                                         RadioTop, RadioBottom, RadioLeft, 
+                                         RadioTop, RadioBottom, RadioLeft,
                                          value_span, input, fieldset);
-                                    
 
-                                     input.AddCssClass(ClassAllInput);
 
-                                     HtmlAttributesHelper.AddClass(
-                                         input, ClassInputDict, property_name);
-                                     HtmlAttributesHelper.AddAttributes(
-                                         input, AttrsAllInputDict,
-                                         AttrsInputDict, property_name);
+                                     //input.AddCssClass(ClassAllInput);
+
+                                     //HtmlAttributesHelper.AddClass(
+                                     //    input, ClassInputDict, property_name);
+                                     //HtmlAttributesHelper.AddAttributes(
+                                     //    input, AttrsAllInputDict,
+                                     //    AttrsInputDict, property_name);
+                                     SetTagAttrsAndClass(
+                                         input,ClassAllInput,
+                                         ClassInputDict,AttrsAllInputDict,
+                                         AttrsInputDict,property_name);
 
                                      return input;
                                  });
@@ -562,29 +572,35 @@ namespace GenericTagHelper
                     {
                         input = GenerateInputType(property);
                         SetInputLocation(
-                            CheckBoxTop,CheckBoxBottom,CheckBoxLeft,
-                            label,input,form_group);
-                       
-                        input.AddCssClass(ClassAllInput);
-                        HtmlAttributesHelper.AddClass(
-                            input, ClassInputDict, property_name);
+                            CheckBoxTop, CheckBoxBottom, CheckBoxLeft,
+                            label, input, form_group);
 
-                        HtmlAttributesHelper.AddAttributes(
-                                    input, AttrsAllInputDict,
-                                    AttrsInputDict, property_name);
+                        //input.AddCssClass(ClassAllInput);
+                        //HtmlAttributesHelper.AddClass(
+                        //    input, ClassInputDict, property_name);
+                        //HtmlAttributesHelper.AddAttributes(
+                        //            input, AttrsAllInputDict,
+                        //            AttrsInputDict, property_name);
+                        SetTagAttrsAndClass(
+                                       input, ClassAllInput,
+                                       ClassInputDict, AttrsAllInputDict,
+                                       AttrsInputDict, property_name);
                     }
                     else
                     {
                         input = GenerateInputType(property);
 
-                        input.AddCssClass(ClassAllInput);
-                        HtmlAttributesHelper.AddClass(
-                            input, ClassInputDict, property_name);
+                        //input.AddCssClass(ClassAllInput);
+                        //HtmlAttributesHelper.AddClass(
+                        //    input, ClassInputDict, property_name);
 
-                        HtmlAttributesHelper.AddAttributes(
-                                    input, AttrsAllInputDict,
-                                    AttrsInputDict, property_name);
-
+                        //HtmlAttributesHelper.AddAttributes(
+                        //            input, AttrsAllInputDict,
+                        //            AttrsInputDict, property_name);
+                        SetTagAttrsAndClass(
+                                       input, ClassAllInput,
+                                       ClassInputDict, AttrsAllInputDict,
+                                       AttrsInputDict, property_name);
                         form_group.InnerHtml.AppendHtml(label);
                         form_group.InnerHtml.AppendHtml(input);
                     }
@@ -598,11 +614,15 @@ namespace GenericTagHelper
                                             tag: null,
                                             htmlAttributes: null);
 
-                    span.AddCssClass(ClassAllSpan);
-                    HtmlAttributesHelper.AddClass(
-                        span, ClassSpanDict, property_name);
-                    HtmlAttributesHelper.AddAttributes(
-                        span, AttrsAllSpanDict,
+                    //span.AddCssClass(ClassAllSpan);
+                    //HtmlAttributesHelper.AddClass(
+                    //    span, ClassSpanDict, property_name);
+                    //HtmlAttributesHelper.AddAttributes(
+                    //    span, AttrsAllSpanDict,
+                    //    AttrsSpanDict, property_name);
+                    SetTagAttrsAndClass(
+                        span, ClassAllSpan,
+                        ClassSpanDict, AttrsAllSpanDict,
                         AttrsSpanDict, property_name);
 
 
@@ -1043,13 +1063,13 @@ namespace GenericTagHelper
 
 
         private void SetInputLocation(
-            bool top, bool bottom, bool left, 
+            bool top, bool bottom, bool left,
             TagBuilder label, TagBuilder input, TagBuilder group)
 
         {
             if (top &&
                 !bottom &&
-                !left) 
+                !left)
             {
                 group.InnerHtml.AppendHtml(input);
                 TagBuilder div = new TagBuilder("div");
@@ -1067,7 +1087,7 @@ namespace GenericTagHelper
             }
             else if (!top &&
                 !bottom &&
-                left) 
+                left)
             {
                 group.InnerHtml.AppendHtml(input);
                 group.InnerHtml.AppendHtml(label);
@@ -1077,6 +1097,21 @@ namespace GenericTagHelper
                 group.InnerHtml.AppendHtml(label);
                 group.InnerHtml.AppendHtml(input);
             }
+        }
+
+        private void SetTagAttrsAndClass(
+            TagBuilder tag, string classAll,
+            Dictionary<string, string> classDict,
+            Dictionary<string, string> attrsAllDict,
+            Dictionary<string, Dictionary<string, string>> attrsDict,
+            string property_name)
+        {
+            tag.AddCssClass(classAll);
+            HtmlAttributesHelper.AddClass(
+                tag, classDict, property_name);
+            HtmlAttributesHelper.AddAttributes(
+                tag, attrsAllDict,
+                attrsDict, property_name);
         }
         #endregion
     }
