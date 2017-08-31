@@ -4,11 +4,6 @@
 
 <form generic form-model="@Model" asp-validation-summary="All"
       form-title="<h1>FormModel</h1>"
-
-      class-all-form-group=""
-      class-all-input=""
-      class-all-label=""
-      class-all-span=""
       class-input='{
         checkbox:"",
       }'
@@ -19,7 +14,16 @@
         "class":"text-danger"
       }'
       attrs-validation-summary-ul='{
-           style:"list-style-type:none;"
+      }'
+      attrs-form-group='{
+        id:{
+            test:"form-group"
+        }
+      }'
+      attrs-label='{ 
+        textbox:{
+            class:"text-danger"
+        }
       }'
       attrs-input='{
         selectradio:{
@@ -37,6 +41,31 @@
             style:"margin-left:10px;"
         }
       }'
+      attrs-span='{
+        emailtextbox:{
+            style:"color:blue;"
+        }
+      }'
+
+      attrs-all-form-group='{
+        style:"border-color:green;" 
+      }'
+      attrs-all-input='{
+        style:"border-color:#00ffff;" 
+      }'
+      attrs-all-label='{
+        style:"color:#aaa333;"
+      }'
+      attrs-title="{
+        style:'color:#000fff;'
+      }"
+      attrs-cancel-btn='{
+        class:"btn btn-danger"
+      }'
+      attrs-submit-btn="{
+        class:'btn btn-info'
+      }"
+
       attrs-all-radio-btn-span='{
         selectradio:{
             style:"margin-left:10px;"
@@ -57,5 +86,5 @@
 @section scripts{
     <script>
         CKEDITOR.replace("TextArea");
-    </script> 
+    </script>
 }

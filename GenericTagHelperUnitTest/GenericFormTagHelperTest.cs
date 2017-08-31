@@ -95,7 +95,7 @@ namespace GenericTagHelperUnitTest
                 tagName: "label",
                 allAttributes: new TagHelperAttributeList(
                     Enumerable.Empty<TagHelperAttribute>()),
-                items:new Dictionary<string,string>(),
+                items:new Dictionary<object,object>(),
                 uniqueId:"test");
 
             GenericFormTagHelper formTaghelper = 
