@@ -592,6 +592,48 @@ namespace GenericTagHelper
                         form_group.InnerHtml.AppendHtml(label);
                         form_group.InnerHtml.AppendHtml(fieldset);
                     }
+                    else if (property.Metadata.DataTypeName == "CheckBox")
+                    {
+                        input = GenerateInputType(property);
+                        if (CheckBoxTop &&
+                            !CheckBoxBottom &&
+                            !CheckBoxLeft)
+                        {
+                            TagBuilder checkbox_div = new TagBuilder("div");
+                            checkbox_div.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(input);
+                            form_group.InnerHtml.AppendHtml(checkbox_div);
+                        }
+                        else if (!CheckBoxTop &&
+                           CheckBoxBottom &&
+                           !CheckBoxLeft)
+                        {
+                            TagBuilder checkbox_div = new TagBuilder("div");
+                            checkbox_div.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(checkbox_div);
+                            form_group.InnerHtml.AppendHtml(input);
+                        }
+                        else if (!CheckBoxTop &&
+                           !CheckBoxBottom &&
+                           CheckBoxLeft)
+
+                        {
+                            form_group.InnerHtml.AppendHtml(input);
+                            form_group.InnerHtml.AppendHtml(label);
+                        }
+                        else
+                        {
+                            form_group.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(input);
+                        }
+                        input.AddCssClass(ClassAllInput);
+                        HtmlAttributesHelper.AddClass(
+                            input, ClassInputDict, property_name);
+
+                        HtmlAttributesHelper.AddAttributes(
+                                    input, AttrsAllInputDict,
+                                    AttrsInputDict, property_name);
+                    }
                     else
                     {
                         input = GenerateInputType(property);
@@ -604,46 +646,8 @@ namespace GenericTagHelper
                                     input, AttrsAllInputDict,
                                     AttrsInputDict, property_name);
 
-                        if (property.Metadata.DataTypeName == "CheckBox")
-                        {
-                            if (CheckBoxTop &&
-                                !CheckBoxBottom &&
-                                !CheckBoxLeft)
-                            {
-                                TagBuilder checkbox_div = new TagBuilder("div");
-                                checkbox_div.InnerHtml.AppendHtml(label);
-                                form_group.InnerHtml.AppendHtml(input);
-                                form_group.InnerHtml.AppendHtml(checkbox_div);
-                            }
-                            else if (!CheckBoxTop &&
-                               CheckBoxBottom &&
-                               !CheckBoxLeft)
-                            {
-                                TagBuilder checkbox_div = new TagBuilder("div");
-                                checkbox_div.InnerHtml.AppendHtml(label);
-                                form_group.InnerHtml.AppendHtml(checkbox_div);
-                                form_group.InnerHtml.AppendHtml(input);
-                            }
-                            else if (!CheckBoxTop &&
-                               !CheckBoxBottom &&
-                               CheckBoxLeft)
-
-                            {
-                                form_group.InnerHtml.AppendHtml(input);
-                                form_group.InnerHtml.AppendHtml(label);
-                            }
-                            else
-                            {
-                                form_group.InnerHtml.AppendHtml(label);
-                                form_group.InnerHtml.AppendHtml(input);
-                            }
-                        }
-                        else
-                        {
-                            form_group.InnerHtml.AppendHtml(label);
-                            form_group.InnerHtml.AppendHtml(input);
-                        }
-
+                        form_group.InnerHtml.AppendHtml(label);
+                        form_group.InnerHtml.AppendHtml(input);
                     }
 
 
