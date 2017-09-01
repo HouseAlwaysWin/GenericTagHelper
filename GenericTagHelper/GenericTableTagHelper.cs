@@ -162,7 +162,7 @@ namespace GenericTagHelper
             }
         }
 
-      
+
         public int TableColumns { get; set; }
 
         public string TableAllColumnContent { get; set; }
@@ -184,6 +184,9 @@ namespace GenericTagHelper
                 return JsonDeserialize.JsonDeserializeConvert_DsDss(TableContent);
             }
         }
+
+        public bool ShowTableIndex { get; set; }
+        public string TableIndexTitle { get; set; } = "Index";
 
         public string TablePrimaryKey { get; set; } = "Id";
         #endregion
@@ -234,6 +237,12 @@ namespace GenericTagHelper
 
             TagBuilder thead_tr = new TagBuilder("tr");
             HtmlAttributesHelper.AddAttributes(thead_tr, AttrsTableHeadTrDict);
+            if (ShowTableIndex)
+            {
+                TagBuilder th = new TagBuilder("th");
+                th.InnerHtml.AppendHtml(TableIndexTitle);
+                thead_tr.InnerHtml.AppendHtml(th);
+            }
 
             foreach (var name in TableHeadList)
             {
@@ -267,11 +276,23 @@ namespace GenericTagHelper
                 {
                     TableColumns = ItemsAfterPagination[0].Values.Count;
                 }
+
+
+
                 // Start loop pagination items
                 for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
                 {
                     TagBuilder tbody_tr = new TagBuilder("tr");
                     HtmlAttributesHelper.AddAttributes(tbody_tr, AttrsTableBodyDict);
+                    if (ShowTableIndex)
+                    {
+                        TagBuilder Index = new TagBuilder("td");
+                        Index.InnerHtml.AppendHtml(
+                            (rows + 1 + (ItemPerPage * (CurrentPage - 1)))
+                            .ToString());
+                        tbody_tr.InnerHtml.AppendHtml(Index);
+                    }
+
                     for (int columns = 0; columns < TableColumns; columns++)
                     {
                         TagBuilder td = new TagBuilder("td");

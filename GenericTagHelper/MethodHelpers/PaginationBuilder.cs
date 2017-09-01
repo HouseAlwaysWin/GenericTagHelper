@@ -12,7 +12,7 @@ using System.Text;
 
 namespace GenericTagHelper.MethodHelpers
 {
-    public class PaginationBuilder
+    public class PaginationBuilder 
     {
         private IUrlHelperFactory urlHelperFactory;
         private ViewContext ViewContext; 
