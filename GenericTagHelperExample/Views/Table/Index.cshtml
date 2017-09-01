@@ -4,7 +4,7 @@
 
 <table generic
        class="panel panel-primary"
-       table-heads='["Id","Name","Gender","Edit"]'
+       table-heads='["Name","Gender","Edit"]'
        items="@Model.CustomerList"
        item-per-page="5"
        active-pagination="true"
@@ -13,6 +13,7 @@
 
        table-primary-key="Gender"
        table-columns="4"
+       table-hidden-columns='["Id"]'
        show-table-index="true"
        table-content='{
             1:{

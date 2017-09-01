@@ -288,11 +288,12 @@ namespace GenericTagHelper
 
 
 
-                // Start loop pagination items
+                // Start loop table row 
                 for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
                 {
                     TagBuilder tbody_tr = new TagBuilder("tr");
                     HtmlAttributesHelper.AddAttributes(tbody_tr, AttrsTableBodyDict);
+                    // Show index if true
                     if (ShowTableIndex)
                     {
                         TagBuilder Index = new TagBuilder("td");
@@ -302,18 +303,24 @@ namespace GenericTagHelper
                         tbody_tr.InnerHtml.AppendHtml(Index);
                     }
 
+                    // Start loop table columns
                     for (int columns = 0; columns < TableColumns; columns++)
                     {
                         TagBuilder td = new TagBuilder("td");
 
-
                         // try to get value from 
                         try
                         {
-                            var item = ItemsAfterPagination[rows]
+                            var item_key = ItemsAfterPagination[rows]
+                                .Keys.ElementAt(columns);
+                            if (TableHiddenColumnsList.Contains(item_key))
+                            {
+                                continue;
+                            }
+                            var item_value = ItemsAfterPagination[rows]
                                 .Values.ElementAt(columns);
 
-                            td.InnerHtml.AppendHtml(item);
+                            td.InnerHtml.AppendHtml(item_value);
 
                             // Get your table list primary key value
                             var row_Id = ItemsAfterPagination[rows]
