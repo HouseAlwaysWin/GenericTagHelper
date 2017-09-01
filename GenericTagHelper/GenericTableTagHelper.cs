@@ -185,6 +185,15 @@ namespace GenericTagHelper
             }
         }
 
+        public  string TableHiddenColumns { get; set; }
+        private List<string> TableHiddenColumnsList
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Ls(TableHiddenColumns);
+            }
+        }
+
         public bool ShowTableIndex { get; set; }
         public string TableIndexTitle { get; set; } = "Index";
 
@@ -296,6 +305,7 @@ namespace GenericTagHelper
                     for (int columns = 0; columns < TableColumns; columns++)
                     {
                         TagBuilder td = new TagBuilder("td");
+
 
                         // try to get value from 
                         try

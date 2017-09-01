@@ -558,7 +558,7 @@ namespace GenericTagHelper
                         form_group.InnerHtml.AppendHtml(label);
                         form_group.InnerHtml.AppendHtml(fieldset);
                     }
-                    if (property.Metadata.DataTypeName == "CheckBox")
+                    else if (property.Metadata.DataTypeName == "CheckBox")
                     {
                         input = GenerateInputType(property);
                         SetInputLocation(
