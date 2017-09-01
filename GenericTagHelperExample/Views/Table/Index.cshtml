@@ -2,33 +2,16 @@
 
 <br />
 
-<pagination item-per-page="10"
-            items="@Model.CustomerList"
-            current-page="@Model.CurrentPage"
-            group-list-tag="table"
-            group-tag="tr"
-            list-tag="td"
-            attributes-group-tag='{
-                11:{
-                    class:"form-control"
-                }
-            }'
-            >
-   <thead>
-       <tr>
-           <th>Id</th>
-           <th>Name</th>
-           <th>Gender</th>
-       </tr>
-   </thead> 
-</pagination>
-
-
 <table generic
        class="panel panel-primary"
-       table-heads='
-       ["Id","Name","Gender"]'
+       table-heads='["Id","Name","Gender"]'
        items="@Model.CustomerList"
        item-per-page="10"
        panel-title="Customer"
+       table-columns="5"
+       table-content='{
+            1:{
+                3:""
+            }
+       }'
     ></table>

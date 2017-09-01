@@ -1,0 +1,23 @@
+﻿@model CustomerViewModel
+
+<br />
+
+<pagination item-per-page="10"
+            items="@Model.CustomerList"
+            current-page="@Model.CurrentPage"
+            group-list-tag="table"
+            group-tag="tr"
+            list-tag="td"
+            attributes-group-tag='{
+                11:{
+                    class:"form-control"
+                }
+            }'>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Gender</th>
+        </tr>
+    </thead>
+</pagination>

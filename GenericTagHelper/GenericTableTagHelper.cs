@@ -124,40 +124,62 @@ namespace GenericTagHelper
             }
         }
 
-        public string AttributesTable { get; set; }
-        private Dictionary<string, string> AttributesTableDict
+        public string AttrsTable { get; set; }
+        private Dictionary<string, string> AttrsTableDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesTable);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTable);
             }
         }
 
 
-        public string AttributesTableHead { get; set; }
-        private Dictionary<string, string> AttributesTableHeadDict
+        public string AttrsTableHead { get; set; }
+        private Dictionary<string, string> AttrsTableHeadDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesTableHead);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableHead);
             }
         }
 
-        public string AttributesTableHeadTr { get; set; }
-        private Dictionary<string, string> AttributesTableHeadTrDict
+        public string AttrsTableHeadTr { get; set; }
+        private Dictionary<string, string> AttrsTableHeadTrDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesTableHeadTr);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableHeadTr);
             }
         }
 
-        public string AttributesTableBody { get; set; }
-        private Dictionary<string, string> AttributesTableBodyDict
+        public string AttrsTableBody { get; set; }
+        private Dictionary<string, string> AttrsTableBodyDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesTableBody);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableBody);
+            }
+        }
+
+        public int TableColumns { get; set; }
+
+        public string TableAllColumnContent { get; set; }
+        // { columnes: items }
+        private Dictionary<string, string> TableAllColumnContentDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Dss(TableAllColumnContent);
+            }
+        }
+
+        public string TableContent { get; set; }
+        // { rows:{ columnes: item}}
+        private Dictionary<string, Dictionary<string, string>> TableContentDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(TableContent);
             }
         }
 
@@ -205,10 +227,10 @@ namespace GenericTagHelper
         {
 
             TagBuilder thead = new TagBuilder("thead");
-            HtmlAttributesHelper.AddAttributes(thead, AttributesTableHeadDict);
+            HtmlAttributesHelper.AddAttributes(thead, AttrsTableHeadDict);
 
             TagBuilder thead_tr = new TagBuilder("tr");
-            HtmlAttributesHelper.AddAttributes(thead_tr, AttributesTableHeadTrDict);
+            HtmlAttributesHelper.AddAttributes(thead_tr, AttrsTableHeadTrDict);
 
             foreach (var name in TableHeadList)
             {
@@ -218,10 +240,10 @@ namespace GenericTagHelper
             }
 
             thead.InnerHtml.AppendHtml(thead_tr);
-           
+
 
             TagBuilder tbody = new TagBuilder("tbody");
-            HtmlAttributesHelper.AddAttributes(tbody, AttributesTableBodyDict);
+            HtmlAttributesHelper.AddAttributes(tbody, AttrsTableBodyDict);
 
 
             if (ItemsAfterPagination.Count == 0)
@@ -238,23 +260,71 @@ namespace GenericTagHelper
             }
             else
             {
-                ItemsAfterPagination.ForEach(items =>
+                for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
                 {
                     TagBuilder tbody_tr = new TagBuilder("tr");
-                    HtmlAttributesHelper.AddAttributes(tbody_tr, AttributesTableBodyDict);
+                    HtmlAttributesHelper.AddAttributes(tbody_tr, AttrsTableBodyDict);
+                    for (int columns = 0; columns < TableColumns; columns++)
+                    {
+                        TagBuilder td = new TagBuilder("td");
 
-                    items.ToDictionary(item =>
+                        try
                         {
-                            TagBuilder td = new TagBuilder("td");
+                            var item = ItemsAfterPagination[rows]
+                                .Values.ElementAt(columns);
+                            td.InnerHtml.AppendHtml(item);
 
-                            td.InnerHtml.AppendHtml(item.Value);
+                            var row_Id = ItemsAfterPagination[rows]
+                                .FirstOrDefault(k => k.Key == "Id").Value;
 
-                            tbody_tr.InnerHtml.AppendHtml(td);
-                            return td;
-                        });
+                            if (HtmlAttributesHelper.IsContainsKey(TableContentDict, row_Id))
+                            {
+                                TableContentDict.FirstOrDefault(
+                                    items => items.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase))
+                                    .Value
+                                    .ToDictionary(i =>
+                                    {
+                                        if (i.Key.Equals((columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            td.InnerHtml.AppendHtml(i.Value);
+                                        }
+                                        return td;
+                                    });
+                            }
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            var row_Id = ItemsAfterPagination[rows]
+                                .FirstOrDefault(k => k.Key == "Id").Value;
 
+                            if (HtmlAttributesHelper.IsContainsKey(TableContentDict, row_Id))
+                            {
+                                TableContentDict.FirstOrDefault(
+                                    items => items.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase))
+                                    .Value
+                                    .ToDictionary(i =>
+                                    {
+                                        if (i.Key.Equals((columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            td.InnerHtml.AppendHtml(i.Value);
+                                        }
+                                        return td;
+                                    });
+                            }
+
+
+                            td.InnerHtml.AppendHtml(TableAllContent);
+
+
+                        }
+
+
+                        tbody_tr.InnerHtml.AppendHtml(td);
+                    }
                     tbody.InnerHtml.AppendHtml(tbody_tr);
-                });
+                }
+
+
             }
 
             if (ActivePanel)
@@ -288,7 +358,7 @@ namespace GenericTagHelper
                 TagBuilder table = new TagBuilder("table");
                 table.AddCssClass("table table-primary");
                 HtmlAttributesHelper.AddAttributes(
-                   table, AttributesTableDict);
+                   table, AttrsTableDict);
 
                 table.InnerHtml.AppendHtml(thead);
                 table.InnerHtml.AppendHtml(tbody);

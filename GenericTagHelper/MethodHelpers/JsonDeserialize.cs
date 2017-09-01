@@ -27,6 +27,16 @@ namespace GenericTagHelper.MethodHelpers
             return new Dictionary<string, Dictionary<string, string>>();
         }
 
+        public static Dictionary<string, List<Dictionary<string, string>>> JsonDeserializeConvert_DLDss(
+            string dataString)
+        {
+            if (!String.IsNullOrEmpty(dataString))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(dataString);
+            }
+            return new Dictionary<string, List<Dictionary<string, string>>>();
+        }
+
         public static List<Dictionary<string, string>> JsonDeserializeConvert_LDss(
           string propertyString)
         {
@@ -46,6 +56,16 @@ namespace GenericTagHelper.MethodHelpers
             }
             return new List<string>();
         }
- 
+
+        public static List<List<string>> JsonDeserializeConvert_LLs(
+            string dataString)
+        {
+            if (!String.IsNullOrEmpty(dataString))
+            {
+                return JsonConvert.DeserializeObject<List<List<string>>>(dataString);
+            }
+            return new List<List<string>>();
+        }
+
     }
 }
