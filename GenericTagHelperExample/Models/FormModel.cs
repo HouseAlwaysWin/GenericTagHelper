@@ -40,6 +40,10 @@ namespace GenericTagHelperExample.Models
         [Required]
         public Level LevelSelectList { get; set; }
 
+        [Required]
+        [DataType("Select")]
+        public int SelectList { get; set; }
+
         [DataType("CheckBox")]
         public bool CheckBox { get; set; }
 

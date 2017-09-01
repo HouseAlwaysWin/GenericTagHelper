@@ -50,6 +50,7 @@ namespace GenericTagHelper
                 { "DateTime-local", "datetime-local" },
                 { "Time", "time" },
                 { "Radio" ,"radio" },
+                { "Select","select" },
                 { "TextArea","textarea"},
                 { nameof(Byte), "number" },
                 { nameof(SByte), "number" },
@@ -370,6 +371,17 @@ namespace GenericTagHelper
 
         #endregion
 
+        #region  SelectList
+        public string SelectDataList { get; set; }
+        public Dictionary<string, Dictionary<string, string>> SelectListDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(SelectDataList);
+            }
+        }
+        #endregion
+
         #region CheckBox 
         public bool CheckBoxTop { get; set; }
         public bool CheckBoxBottom { get; set; }
@@ -474,12 +486,7 @@ namespace GenericTagHelper
                     /*-------------- Start Print your models-----------*/
 
                     TagBuilder form_group = new TagBuilder("div");
-                    //form_group.AddCssClass(ClassAllFormGroup);
-                    //HtmlAttributesHelper.AddClass(
-                    //    form_group, ClassFormGroupDict, property_name);
-                    //HtmlAttributesHelper.AddAttributes(
-                    //    form_group, AttrsAllFormGroupDict,
-                    //    AttrsFormGroupDict, property_name);
+
                     SetTagAttrsAndClass(
                         form_group, ClassAllFormGroup,
                         ClassFormGroupDict, AttrsAllFormGroupDict,
@@ -493,25 +500,15 @@ namespace GenericTagHelper
                         labelText: null,
                         htmlAttributes: null);
 
-                    //label.AddCssClass(ClassAllLabel);
-                    //HtmlAttributesHelper.AddClass(
-                    //    label, ClassLabelDict,
-                    //    property_name);
-                    //HtmlAttributesHelper.AddAttributes(
-                    //    label, AttrsAllLabelDict,
-                    //    AttrsLabelDict, property_name);
+
                     SetTagAttrsAndClass(
                         label, ClassAllLabel,
                         ClassLabelDict, AttrsAllLabelDict,
                         AttrsLabelDict, property_name);
 
-
-                    //form_group.InnerHtml.AppendHtml(label);
-
-
                     TagBuilder input;
 
-                    // if type is radio than use radio button
+                    //if type is radio than use radio button
                     if (property.Metadata.DataTypeName == "Radio")
                     {
 
@@ -528,7 +525,6 @@ namespace GenericTagHelper
                                  {
                                      input = GenerateInputType(property, item.Key);
 
-
                                      TagBuilder value_div = new TagBuilder("div");
                                      TagBuilder value_span = new TagBuilder("span");
                                      HtmlAttributesHelper.AddAttributes(
@@ -541,17 +537,11 @@ namespace GenericTagHelper
                                          value_span, input, fieldset);
 
 
-                                     //input.AddCssClass(ClassAllInput);
 
-                                     //HtmlAttributesHelper.AddClass(
-                                     //    input, ClassInputDict, property_name);
-                                     //HtmlAttributesHelper.AddAttributes(
-                                     //    input, AttrsAllInputDict,
-                                     //    AttrsInputDict, property_name);
                                      SetTagAttrsAndClass(
-                                         input,ClassAllInput,
-                                         ClassInputDict,AttrsAllInputDict,
-                                         AttrsInputDict,property_name);
+                                         input, ClassAllInput,
+                                         ClassInputDict, AttrsAllInputDict,
+                                         AttrsInputDict, property_name);
 
                                      return input;
                                  });
@@ -568,35 +558,55 @@ namespace GenericTagHelper
                         form_group.InnerHtml.AppendHtml(label);
                         form_group.InnerHtml.AppendHtml(fieldset);
                     }
-                    else if (property.Metadata.DataTypeName == "CheckBox")
+                    if (property.Metadata.DataTypeName == "CheckBox")
                     {
                         input = GenerateInputType(property);
                         SetInputLocation(
                             CheckBoxTop, CheckBoxBottom, CheckBoxLeft,
                             label, input, form_group);
 
-                        //input.AddCssClass(ClassAllInput);
-                        //HtmlAttributesHelper.AddClass(
-                        //    input, ClassInputDict, property_name);
-                        //HtmlAttributesHelper.AddAttributes(
-                        //            input, AttrsAllInputDict,
-                        //            AttrsInputDict, property_name);
+
                         SetTagAttrsAndClass(
                                        input, ClassAllInput,
                                        ClassInputDict, AttrsAllInputDict,
                                        AttrsInputDict, property_name);
                     }
+                    else if (property.Metadata.DataTypeName == "Select")
+                    {
+                        input = GenerateInputType(property);
+                        if (HtmlAttributesHelper.IsContainsKey(SelectListDict, property_name) &&
+                            SelectListDict.Count() != 0)
+                        {
+                            SelectListDict.Values.ToDictionary(items => items.ToDictionary(
+                                item =>
+                                {
+                                    TagBuilder option = new TagBuilder("option");
+                                    option.Attributes["value"] = item.Key;
+                                    option.InnerHtml.SetHtmlContent(item.Value);
+                                    input.InnerHtml.AppendHtml(option);
+                                    return option;
+                                }));
+                            form_group.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(input);
+                            SetTagAttrsAndClass(
+                                       input, ClassAllInput,
+                                       ClassInputDict, AttrsAllInputDict,
+                                       AttrsInputDict, property_name);
+                        }
+                        else
+                        {
+                            TagBuilder NoDataMsg = new TagBuilder("div");
+                            NoDataMsg.MergeAttribute("style", "color:red;");
+                            NoDataMsg.InnerHtml.SetHtmlContent(
+                                "No select list data,please give a data in your view");
+                            form_group.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(NoDataMsg);
+                        }
+                    }
                     else
                     {
                         input = GenerateInputType(property);
 
-                        //input.AddCssClass(ClassAllInput);
-                        //HtmlAttributesHelper.AddClass(
-                        //    input, ClassInputDict, property_name);
-
-                        //HtmlAttributesHelper.AddAttributes(
-                        //            input, AttrsAllInputDict,
-                        //            AttrsInputDict, property_name);
                         SetTagAttrsAndClass(
                                        input, ClassAllInput,
                                        ClassInputDict, AttrsAllInputDict,
@@ -614,12 +624,7 @@ namespace GenericTagHelper
                                             tag: null,
                                             htmlAttributes: null);
 
-                    //span.AddCssClass(ClassAllSpan);
-                    //HtmlAttributesHelper.AddClass(
-                    //    span, ClassSpanDict, property_name);
-                    //HtmlAttributesHelper.AddAttributes(
-                    //    span, AttrsAllSpanDict,
-                    //    AttrsSpanDict, property_name);
+
                     SetTagAttrsAndClass(
                         span, ClassAllSpan,
                         ClassSpanDict, AttrsAllSpanDict,
@@ -717,11 +722,10 @@ namespace GenericTagHelper
                                            isChecked: null,
                                            htmlAttributes: null);
 
-
                     break;
 
                 case "select":
-                    Input = GenerateSelectList(modelExplorer);
+                    Input = GenerateSelectList(modelExplorer, inputTypeHint);
                     break;
 
                 case "textarea":
@@ -806,7 +810,7 @@ namespace GenericTagHelper
                 htmlAttributes: htmlAttributes);
         }
 
-        public TagBuilder GenerateSelectList(ModelExplorer modelExplorer)
+        public TagBuilder GenerateSelectList(ModelExplorer modelExplorer, string inputTypeHint)
         {
 
             // Base allowMultiple on the instance or declared type of the expression to avoid a
@@ -828,14 +832,16 @@ namespace GenericTagHelper
                 allowMultiple: _allowMultiple,
                 htmlAttributes: null);
 
-
-            var names = Enum.GetNames(modelExplorer.ModelType);
-            for (int i = 0; i < names.Length; i++)
+            if (inputTypeHint == "Enum")
             {
-                TagBuilder selectList = new TagBuilder("option");
-                selectList.MergeAttribute("value", i.ToString());
-                selectList.InnerHtml.SetContent(names[i]);
-                selectTag.InnerHtml.AppendHtml(selectList);
+                var names = Enum.GetNames(modelExplorer.ModelType);
+                for (int i = 0; i < names.Length; i++)
+                {
+                    TagBuilder selectList = new TagBuilder("option");
+                    selectList.MergeAttribute("value", i.ToString());
+                    selectList.InnerHtml.SetContent(names[i]);
+                    selectTag.InnerHtml.AppendHtml(selectList);
+                }
             }
 
             return selectTag;
