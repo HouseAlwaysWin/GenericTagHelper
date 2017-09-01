@@ -162,6 +162,7 @@ namespace GenericTagHelper
             }
         }
 
+      
         public int TableColumns { get; set; }
 
         public string TableAllColumnContent { get; set; }
@@ -262,6 +263,10 @@ namespace GenericTagHelper
             }
             else
             {
+                if (TableColumns == 0)
+                {
+                    TableColumns = ItemsAfterPagination[0].Values.Count;
+                }
                 // Start loop pagination items
                 for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
                 {
