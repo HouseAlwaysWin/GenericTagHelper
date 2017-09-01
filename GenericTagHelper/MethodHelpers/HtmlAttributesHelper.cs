@@ -10,6 +10,12 @@ namespace GenericTagHelper.MethodHelpers
 {
     public static class HtmlAttributesHelper
     {
+        public static bool IsContainsKey(
+           Dictionary<int, string> itemAttrs,
+           string loopKey)
+        {
+            return itemAttrs.Any(d => d.Key.Equals(loopKey));
+        }
 
         public static bool IsContainsKey(
             Dictionary<string, string> itemAttrs,

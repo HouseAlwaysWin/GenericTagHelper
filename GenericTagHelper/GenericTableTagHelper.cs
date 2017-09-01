@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GenericTagHelper
 {
@@ -183,6 +184,7 @@ namespace GenericTagHelper
             }
         }
 
+        public string TablePrimaryKey { get; set; } = "Id";
         #endregion
 
         #region Table Panel
@@ -260,6 +262,7 @@ namespace GenericTagHelper
             }
             else
             {
+                // Start loop pagination items
                 for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
                 {
                     TagBuilder tbody_tr = new TagBuilder("tr");
@@ -268,34 +271,51 @@ namespace GenericTagHelper
                     {
                         TagBuilder td = new TagBuilder("td");
 
+                        // try to get value from 
                         try
                         {
                             var item = ItemsAfterPagination[rows]
                                 .Values.ElementAt(columns);
+
                             td.InnerHtml.AppendHtml(item);
 
+                            // Get your table list primary key value
                             var row_Id = ItemsAfterPagination[rows]
-                                .FirstOrDefault(k => k.Key == "Id").Value;
+                                .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            if (HtmlAttributesHelper.IsContainsKey(TableContentDict, row_Id))
+                            if (HtmlAttributesHelper.IsContainsKey(
+                                TableContentDict, row_Id))
                             {
                                 TableContentDict.FirstOrDefault(
-                                    items => items.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase))
+                                    items => items.Key.Equals(row_Id,
+                                    StringComparison.OrdinalIgnoreCase))
                                     .Value
-                                    .ToDictionary(i =>
+                                    .ToDictionary(cols =>
                                     {
-                                        if (i.Key.Equals((columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
+                                        if (cols.Key.Equals((columns + 1).ToString(),
+                                            StringComparison.OrdinalIgnoreCase))
                                         {
-                                            td.InnerHtml.AppendHtml(i.Value);
+                                            td.InnerHtml.AppendHtml(cols.Value);
                                         }
                                         return td;
                                     });
                             }
+
+                            if (HtmlAttributesHelper.IsContainsKey(
+                                TableAllColumnContentDict, (columns + 1).ToString()))
+                            {
+                                //TableAllColumnContentDict.FirstOrDefault(
+                                //items => items.Key.Equals((columns + 1).ToString())).
+                                var value = TableAllColumnContentDict[(columns + 1).ToString()];
+                                td.InnerHtml.AppendHtml(value);
+                            }
+
                         }
+                        // if out of index then catch exception to create new columns
                         catch (ArgumentOutOfRangeException)
                         {
                             var row_Id = ItemsAfterPagination[rows]
-                                .FirstOrDefault(k => k.Key == "Id").Value;
+                                .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
                             if (HtmlAttributesHelper.IsContainsKey(TableContentDict, row_Id))
                             {
@@ -312,8 +332,37 @@ namespace GenericTagHelper
                                     });
                             }
 
+                            if (HtmlAttributesHelper.IsContainsKey(
+                               TableAllColumnContentDict, (columns + 1).ToString()))
+                            {
 
-                            td.InnerHtml.AppendHtml(TableAllContent);
+                                // Get columns value
+                                var value = TableAllColumnContentDict[(columns + 1).ToString()];
+
+                                string[] valueArray = value.Split('|').ToArray();
+                                TagBuilder a = new TagBuilder(valueArray[0]);
+                                a.InnerHtml.AppendHtml(valueArray[1].ToString());
+                                a.Attributes["class"] = valueArray[2];
+                                var query = new Dictionary<string, string>
+                                {
+                                    [valueArray[5]] = row_Id
+                                };
+                                a.Attributes["href"] = urlHelper.Action(valueArray[3].ToString(), valueArray[4].ToString(), query);
+                                //if (value.StartsWith("<a") && value.EndsWith("</a>"))
+                                //{
+                                //    Regex find_controller_regex = new Regex(@"(?<=\bcontroller="")[^""]*");
+                                //    Regex find_action_regex = new Regex(@"(?<=\baction="")[^""]*");
+                                //    Match controller_match = find_controller_regex.Match(value);
+                                //    Match action_match = find_action_regex.Match(value);
+
+                                //    string controller = controller_match.Value;
+                                //    string action = action_match.Value;
+                                //    var url= urlHelper.Action(action, controller,new { Id = row_Id});
+                                //    value = "<a href=\"" + url + "\">Edit</a>";
+                                //}
+
+                                td.InnerHtml.AppendHtml(a);
+                            }
 
 
                         }

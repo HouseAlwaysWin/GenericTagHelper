@@ -37,6 +37,17 @@ namespace GenericTagHelper.MethodHelpers
             return new Dictionary<string, List<Dictionary<string, string>>>();
         }
 
+        public static Dictionary<int, Dictionary<int, string>> JsonDeserializeConvert_DiDis(
+            string dataString)
+        {
+            if (!String.IsNullOrEmpty(dataString))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<int, Dictionary<int, string>>>(dataString);
+            }
+            return new Dictionary<int, Dictionary<int, string>>(); 
+        }
+
+
         public static List<Dictionary<string, string>> JsonDeserializeConvert_LDss(
           string propertyString)
         {

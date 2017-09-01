@@ -7,11 +7,16 @@
        table-heads='["Id","Name","Gender"]'
        items="@Model.CustomerList"
        item-per-page="10"
+       active-pagination="true"
+       current-page="@Model.CurrentPage"
        panel-title="Customer"
+
        table-columns="5"
        table-content='{
             1:{
                 3:""
             }
        }'
-    ></table>
+       table-all-column-content='{
+            4:"a|Edit|btn btn-primary|Index|Home|asshloe" 
+       }'></table>
