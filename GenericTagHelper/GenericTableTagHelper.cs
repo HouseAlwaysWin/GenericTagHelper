@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,10 +21,13 @@ namespace GenericTagHelper
     {
 
         private IUrlHelperFactory urlHelperFactory;
+        private IHtmlGenerator Generator;
         public GenericTableTagHelper(
-            IUrlHelperFactory urlHelperFactory)
+            IUrlHelperFactory urlHelperFactory,
+            IHtmlGenerator generator)
         {
             this.urlHelperFactory = urlHelperFactory;
+            this.Generator = generator;
         }
 
         [HtmlAttributeNotBound]
@@ -398,6 +402,10 @@ namespace GenericTagHelper
                                           [
                                             [{tagName:value},{name_Id:type}]
                                           ],
+                                          if tag Name is input, type is select
+                                          [
+                                            [{tagName:value},{name:type},{Id:class},options...]
+                                          ],
                                  *        if tagName is link 'a'
                                           [
                                             [{tagName:tagContent},{action:controller}]
@@ -430,7 +438,7 @@ namespace GenericTagHelper
                                             if (tagName.Key == "input")
                                             {
                                                 var nameValue = tag_attrs_total.ElementAt(1).ElementAt(0);
-                                                var classId = tag_attrs_total.ElementAt(2).ElementAt(0);
+                                                var Idclass = tag_attrs_total.ElementAt(2).ElementAt(0);
 
                                                 // first attrs value
                                                 tag.Attributes["value"] = tagName.Value;
@@ -440,10 +448,33 @@ namespace GenericTagHelper
                                                 tag.Attributes["id"] = nameValue.Key + row_Id;
                                                 tag.Attributes["type"] = nameValue.Value;
 
-                                                for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                if (nameValue.Value == "select")
                                                 {
-                                                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
-                                                    tag.Attributes[attrs.Key] = attrs.Value;
+                                                    tag = new TagBuilder("select");
+
+                                                    tag.Attributes["name"] = nameValue.Key + row_Id;
+                                                    tag.Attributes["type"] = nameValue.Value;
+
+                                                    tag.Attributes["Id"] = Idclass.Key + row_Id;
+                                                    tag.Attributes["class"] = Idclass.Value;
+                                                    for (int attrs_num = 3; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                    {
+                                                        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+
+
+                                                        TagBuilder option = new TagBuilder("option");
+                                                        option.Attributes["value"] = attrs.Key;
+                                                        option.InnerHtml.AppendHtml(attrs.Value);
+                                                        tag.InnerHtml.AppendHtml(option);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                    {
+                                                        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                                        tag.Attributes[attrs.Key] = attrs.Value;
+                                                    }
                                                 }
                                             }
                                             else if (tagName.Key == "a")
@@ -588,6 +619,8 @@ namespace GenericTagHelper
             }
 
         }
+
+
 
         private void SetPagination(TagHelperOutput output)
         {
