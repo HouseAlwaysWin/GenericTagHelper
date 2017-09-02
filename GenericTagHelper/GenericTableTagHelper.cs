@@ -389,13 +389,18 @@ namespace GenericTagHelper
                                TableAllColumnContentDict, (columns + 1).ToString()))
                             {
 
-                                /* { cols:if tagName is input
+                                /* { cols:
+                                          if tagName is button,label
                                           [
-                                            [{tagName:tagContent},{name:type},{class:Id}]
+                                            [{tagName:tagContent}]
                                           ],
-                                          if tagName is link 'a'
+                                 *        if tagName is input
                                           [
-                                            [{tagName:tagContent},{name:value},{action:controller}]
+                                            [{tagName:value},{name_Id:type}]
+                                          ],
+                                 *        if tagName is link 'a'
+                                          [
+                                            [{tagName:tagContent},{action:controller}]
                                           ]
                                    } 
                                 */
@@ -413,7 +418,8 @@ namespace GenericTagHelper
                                         {
 
                                             var tag_attrs_total = data.Value.ElementAt(tags_num);
-                                            // Get first attrs for base tag element
+
+                                            // first attrs tagName and tagContent
                                             var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
 
 
@@ -426,23 +432,41 @@ namespace GenericTagHelper
                                                 var nameValue = tag_attrs_total.ElementAt(1).ElementAt(0);
                                                 var classId = tag_attrs_total.ElementAt(2).ElementAt(0);
 
+                                                // first attrs value
                                                 tag.Attributes["value"] = tagName.Value;
 
+                                                // second attrs name and type
                                                 tag.Attributes["name"] = nameValue.Key + row_Id;
+                                                tag.Attributes["id"] = nameValue.Key + row_Id;
                                                 tag.Attributes["type"] = nameValue.Value;
 
-                                                tag.Attributes["class"] = classId.Key;
-                                                tag.Attributes["id"] = classId.Value + row_Id;
+                                                for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                {
+                                                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                                    tag.Attributes[attrs.Key] = attrs.Value;
+                                                }
                                             }
                                             else if (tagName.Key == "a")
                                             {
+                                                // first attrs tagContent
                                                 tag.InnerHtml.AppendHtml(tagName.Value);
-                                                // Get link action and controller
-                                                var link = tag_attrs_total.ElementAt(2).ElementAt(0);
+
+                                                // second attrs action and controller
+                                                var actionController = tag_attrs_total.ElementAt(1).ElementAt(0);
+
+
+                                                Dictionary<string, string> query = new Dictionary<string, string>
+                                                {
+                                                    [TablePrimaryKey] = row_Id
+                                                };
 
                                                 //var link_query = tag_attrs_total.ElementAt(0).ElementAt(2);
-                                                tag.Attributes["href"] = urlHelper.Action(link.Key, link.Value, new { Id = row_Id });
-                                                for (int attrs_num = 3; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                tag.Attributes["href"] = urlHelper.Action(
+                                                    actionController.Key,
+                                                    actionController.Value,
+                                                    query);
+
+                                                for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
                                                 {
                                                     var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
                                                     tag.Attributes[attrs.Key] = attrs.Value;
@@ -450,7 +474,13 @@ namespace GenericTagHelper
                                             }
                                             else
                                             {
+                                                // first attrs tagContent
                                                 tag.InnerHtml.AppendHtml(tagName.Value);
+                                                if (tagName.Key == "label")
+                                                {
+                                                    // Add for attr to label with content
+                                                    tag.Attributes["for"] = tagName.Value + row_Id;
+                                                }
                                                 // skip first attr and loop attrs element  
                                                 for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
                                                 {
