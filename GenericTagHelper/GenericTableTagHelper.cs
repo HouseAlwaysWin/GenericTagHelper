@@ -167,11 +167,19 @@ namespace GenericTagHelper
 
         public string TableAllColumnContent { get; set; }
         // { columnes: items }
-        private Dictionary<string, string> TableAllColumnContentDict
+        //private Dictionary<string, string> TableAllColumnContentDict
+        //{
+        //    get
+        //    {
+        //        return JsonDeserialize.JsonDeserializeConvert_Dss(TableAllColumnContent);
+        //    }
+        //}
+
+        private Dictionary<string, List<List<Dictionary<string, string>>>> TableAllColumnContentDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(TableAllColumnContent);
+                return JsonDeserialize.JsonDeserializeConvert_DsLLDss(TableAllColumnContent);
             }
         }
 
@@ -185,7 +193,7 @@ namespace GenericTagHelper
             }
         }
 
-        public  string TableHiddenColumns { get; set; }
+        public string TableHiddenColumns { get; set; }
         private List<string> TableHiddenColumnsList
         {
             get
@@ -194,7 +202,8 @@ namespace GenericTagHelper
             }
         }
 
-        public bool ShowTableIndex { get; set; }
+
+        public bool TableShowIndex { get; set; }
         public string TableIndexTitle { get; set; } = "Index";
 
         public string TablePrimaryKey { get; set; } = "Id";
@@ -246,7 +255,7 @@ namespace GenericTagHelper
 
             TagBuilder thead_tr = new TagBuilder("tr");
             HtmlAttributesHelper.AddAttributes(thead_tr, AttrsTableHeadTrDict);
-            if (ShowTableIndex)
+            if (TableShowIndex)
             {
                 TagBuilder th = new TagBuilder("th");
                 th.InnerHtml.AppendHtml(TableIndexTitle);
@@ -294,7 +303,7 @@ namespace GenericTagHelper
                     TagBuilder tbody_tr = new TagBuilder("tr");
                     HtmlAttributesHelper.AddAttributes(tbody_tr, AttrsTableBodyDict);
                     // Show index if true
-                    if (ShowTableIndex)
+                    if (TableShowIndex)
                     {
                         TagBuilder Index = new TagBuilder("td");
                         Index.InnerHtml.AppendHtml(
@@ -344,14 +353,14 @@ namespace GenericTagHelper
                                     });
                             }
 
-                            if (HtmlAttributesHelper.IsContainsKey(
-                                TableAllColumnContentDict, (columns + 1).ToString()))
-                            {
-                                //TableAllColumnContentDict.FirstOrDefault(
-                                //items => items.Key.Equals((columns + 1).ToString())).
-                                var value = TableAllColumnContentDict[(columns + 1).ToString()];
-                                td.InnerHtml.AppendHtml(value);
-                            }
+                            //if (HtmlAttributesHelper.IsContainsKey(
+                            //    TableAllColumnContentDict, (columns + 1).ToString()))
+                            //{
+                            //    //TableAllColumnContentDict.FirstOrDefault(
+                            //    //items => items.Key.Equals((columns + 1).ToString())).
+                            //    var value = TableAllColumnContentDict[(columns + 1).ToString()];
+                            //    td.InnerHtml.AppendHtml(value);
+                            //}
 
                         }
                         // if out of index then catch exception to create new columns
@@ -375,22 +384,101 @@ namespace GenericTagHelper
                                     });
                             }
 
+
                             if (HtmlAttributesHelper.IsContainsKey(
                                TableAllColumnContentDict, (columns + 1).ToString()))
                             {
 
-                                // Get columns value
-                                var value = TableAllColumnContentDict[(columns + 1).ToString()];
+                                /* { cols:if tagName is input
+                                          [
+                                            [{tagName:tagContent},{name:type},{class:Id}]
+                                          ],
+                                          if tagName is link 'a'
+                                          [
+                                            [{tagName:tagContent},{name:value},{action:controller}]
+                                          ]
+                                   } 
+                                */
 
-                                string[] valueArray = value.Split('|').ToArray();
-                                TagBuilder a = new TagBuilder(valueArray[0]);
-                                a.InnerHtml.AppendHtml(valueArray[1].ToString());
-                                a.Attributes["class"] = valueArray[2];
-                                var query = new Dictionary<string, string>
+                                // { 1:[[{b,c},{d,e}]], 2:[[{f,g},{h,g}]] }
+                                for (int cols = 0; cols < TableAllColumnContentDict.Count; cols++)
                                 {
-                                    [valueArray[5]] = row_Id
-                                };
-                                a.Attributes["href"] = urlHelper.Action(valueArray[3].ToString(), valueArray[4].ToString(), query);
+                                    // { 1: [[{b,c},{d,e}]] } get cols data
+                                    var data = TableAllColumnContentDict.ElementAt(cols);
+                                    // data.key = column_num 
+                                    if (data.Key == (columns + 1).ToString())
+                                    {
+                                        // [[{b,c},{d,e}]]  numbers of tags loop
+                                        for (int tags_num = 0; tags_num < data.Value.Count; tags_num++)
+                                        {
+
+                                            var tag_attrs_total = data.Value.ElementAt(tags_num);
+                                            // Get first attrs for base tag element
+                                            var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
+
+
+                                            // Build Tag
+                                            TagBuilder tag = new TagBuilder(tagName.Key);
+
+
+                                            if (tagName.Key == "input")
+                                            {
+                                                var nameValue = tag_attrs_total.ElementAt(1).ElementAt(0);
+                                                var classId = tag_attrs_total.ElementAt(2).ElementAt(0);
+
+                                                tag.Attributes["value"] = tagName.Value;
+
+                                                tag.Attributes["name"] = nameValue.Key + row_Id;
+                                                tag.Attributes["type"] = nameValue.Value;
+
+                                                tag.Attributes["class"] = classId.Key;
+                                                tag.Attributes["id"] = classId.Value + row_Id;
+                                            }
+                                            else if (tagName.Key == "a")
+                                            {
+                                                tag.InnerHtml.AppendHtml(tagName.Value);
+                                                // Get link action and controller
+                                                var link = tag_attrs_total.ElementAt(2).ElementAt(0);
+
+                                                //var link_query = tag_attrs_total.ElementAt(0).ElementAt(2);
+                                                tag.Attributes["href"] = urlHelper.Action(link.Key, link.Value, new { Id = row_Id });
+                                                for (int attrs_num = 3; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                {
+                                                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                                    tag.Attributes[attrs.Key] = attrs.Value;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                tag.InnerHtml.AppendHtml(tagName.Value);
+                                                // skip first attr and loop attrs element  
+                                                for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                                {
+                                                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                                    tag.Attributes[attrs.Key] = attrs.Value;
+                                                }
+                                            }
+                                            td.InnerHtml.AppendHtml(tag);
+                                        }
+                                    }
+                                }
+
+                                // Get columns value
+                                //var value = TableAllColumnContentDict[(columns + 1).ToString()];
+
+
+                                //string[] valueArray = value.Split('|').ToArray();
+
+                                //TagBuilder a = new TagBuilder(valueArray[0]);
+                                //a.InnerHtml.AppendHtml(valueArray[1].ToString());
+                                //a.Attributes["class"] = valueArray[2];
+                                //var query = new Dictionary<string, string>
+                                //{
+                                //    [valueArray[5]] = row_Id
+                                //};
+                                //a.Attributes["href"] = urlHelper.Action(valueArray[3].ToString(), valueArray[4].ToString(), query);
+
+
                                 //if (value.StartsWith("<a") && value.EndsWith("</a>"))
                                 //{
                                 //    Regex find_controller_regex = new Regex(@"(?<=\bcontroller="")[^""]*");
@@ -404,7 +492,7 @@ namespace GenericTagHelper
                                 //    value = "<a href=\"" + url + "\">Edit</a>";
                                 //}
 
-                                td.InnerHtml.AppendHtml(a);
+                                //td.InnerHtml.AppendHtml(a);
                             }
 
 

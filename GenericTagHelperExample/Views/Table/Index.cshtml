@@ -10,18 +10,27 @@
        active-pagination="true"
        current-page="@Model.CurrentPage"
        panel-title="Customer"
-
-       table-primary-key="Gender"
-       table-columns="4"
+       table-primary-key="Id"
+       table-columns="6"
        table-hidden-columns='["Id"]'
-       show-table-index="true"
+       table-show-index="true"
        table-content='{
             1:{
-                3:""
+                2:" Hello world"
+            },
+            50:{
+                4:"Fuck you"
             }
        }'
        table-all-column-content='{
-            4:"a|Edit|btn btn-primary|Index|Table|Name" ,
-            5:"a|Edit|btn btn-primary|Index|Table|asshloe" ,
-            6:"a|Edit|btn btn-primary|Index|Home|asshloe" 
+            4:[
+                [{label:"Test4"}],
+                [{input:""},{test:"password"},{"form-control":"textbox"},{button:"btn"}],
+                [{button:"submit"},{class:"btn btn-primary text-center"}]
+              ],
+            5:[
+                [{label:"Test5"}],
+                [{input:""},{edit:"select"},{class:"form-control"},{button:"btn"}],
+                [{a:"Submit"},{edit:"test"},{Index:"Home"},{class:"btn btn-primary"}]
+              ]
        }'></table>
