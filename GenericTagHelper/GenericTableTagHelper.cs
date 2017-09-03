@@ -167,33 +167,48 @@ namespace GenericTagHelper
         }
 
 
+        // Show how many columns of table
         public int TableColumns { get; set; }
 
-        public string TableAllColumnContent { get; set; }
-        // { columnes: items }
-        //private Dictionary<string, string> TableAllColumnContentDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(TableAllColumnContent);
-        //    }
-        //}
-
-        private Dictionary<string, List<List<Dictionary<string, string>>>> TableAllColumnContentDict
+        // Append Html string to  specific column
+        public string TableAppendHtmlCols { get; set; }
+        private Dictionary<string, string> TableAppendHtmlColsDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsLLDss(TableAllColumnContent);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(TableAppendHtmlCols);
             }
         }
 
-        public string TableContent { get; set; }
-        // { rows:{ columnes: item}}
-        private Dictionary<string, Dictionary<string, string>> TableContentDict
+        // Append json tag format to specific column
+        public string TableAppendTagsCols { get; set; }
+        private Dictionary<string, List<List<Dictionary<string, string>>>> TableAppendTagsColsDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(TableContent);
+                return JsonDeserialize.JsonDeserializeConvert_DsLLDss(TableAppendTagsCols);
+            }
+        }
+
+        // Append html string to specific td location
+        public string TableAppendHtmlRowsCols { get; set; }
+        private Dictionary<string, Dictionary<string, string>> TableAppendHtmlRowsColsDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(TableAppendHtmlRowsCols);
+            }
+        }
+
+
+        // Append json tag format to specific td location
+        public string TableAppendTagsRowsCols { get; set; }
+        private Dictionary<string, Dictionary<string, List<List<Dictionary<string, string>>>>>
+            TableAppendTagsRowsColsDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDsLLDss(TableAppendTagsRowsCols);
             }
         }
 
@@ -210,6 +225,7 @@ namespace GenericTagHelper
         public bool TableShowIndex { get; set; }
         public string TableIndexTitle { get; set; } = "Index";
 
+        // Set primarykey from your columns of table
         public string TablePrimaryKey { get; set; } = "Id";
         #endregion
 
@@ -324,12 +340,15 @@ namespace GenericTagHelper
                         // try to get value from 
                         try
                         {
+                            // Get hidden columns name
                             var item_key = ItemsAfterPagination[rows]
                                 .Keys.ElementAt(columns);
+                            // Skip hidden columns
                             if (TableHiddenColumnsList.Contains(item_key))
                             {
                                 continue;
                             }
+
                             var item_value = ItemsAfterPagination[rows]
                                 .Values.ElementAt(columns);
 
@@ -339,10 +358,11 @@ namespace GenericTagHelper
                             var row_Id = ItemsAfterPagination[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
+                            // Add html content to specific location
                             if (HtmlAttributesHelper.IsContainsKey(
-                                TableContentDict, row_Id))
+                                TableAppendHtmlRowsColsDict, row_Id))
                             {
-                                TableContentDict.FirstOrDefault(
+                                TableAppendHtmlRowsColsDict.FirstOrDefault(
                                     items => items.Key.Equals(row_Id,
                                     StringComparison.OrdinalIgnoreCase))
                                     .Value
@@ -357,12 +377,47 @@ namespace GenericTagHelper
                                     });
                             }
 
+                            if (HtmlAttributesHelper.IsContainsKey(
+                                TableAppendTagsRowsColsDict, row_Id))
+                            {
+                                TableAppendTagsRowsColsDict.FirstOrDefault(
+                                    items => items.Key.Equals(row_Id,
+                                    StringComparison.OrdinalIgnoreCase))
+                                    .Value
+                                    .ToDictionary(colsData =>
+                                    {
+                                        if (colsData.Key.Equals((columns + 1).ToString(),
+                                            StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            //colsData.Value.ForEach(tag_attr =>
+                                            for (int tags_num = 0; tags_num < colsData.Value.Count; tags_num++)
+                                            {
+                                                var tag_attrs_total = colsData.Value.ElementAt(tags_num);
+
+                                                // first attrs tagName and tagContent
+                                                var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
+
+                                                // Build Tag
+                                                TagBuilder tag = new TagBuilder(tagName.Key);
+
+                                                tag = AddTagsToTableData(
+                                                    tagName,
+                                                    tag_attrs_total,
+                                                    tag,
+                                                    row_Id);
+                                                td.InnerHtml.AppendHtml(tag);
+                                            }
+                                        }
+                                        return td;
+                                    });
+                            }
+
                             //if (HtmlAttributesHelper.IsContainsKey(
-                            //    TableAllColumnContentDict, (columns + 1).ToString()))
+                            //    TableAppendTagsColsDict, (columns + 1).ToString()))
                             //{
-                            //    //TableAllColumnContentDict.FirstOrDefault(
+                            //    //TableAppendTagsColsDict.FirstOrDefault(
                             //    //items => items.Key.Equals((columns + 1).ToString())).
-                            //    var value = TableAllColumnContentDict[(columns + 1).ToString()];
+                            //    var value = TableAppendTagsColsDict[(columns + 1).ToString()];
                             //    td.InnerHtml.AppendHtml(value);
                             //}
 
@@ -373,9 +428,10 @@ namespace GenericTagHelper
                             var row_Id = ItemsAfterPagination[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            if (HtmlAttributesHelper.IsContainsKey(TableContentDict, row_Id))
+                            if (HtmlAttributesHelper.IsContainsKey(
+                                TableAppendHtmlRowsColsDict, row_Id))
                             {
-                                TableContentDict.FirstOrDefault(
+                                TableAppendHtmlRowsColsDict.FirstOrDefault(
                                     items => items.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase))
                                     .Value
                                     .ToDictionary(i =>
@@ -390,7 +446,7 @@ namespace GenericTagHelper
 
 
                             if (HtmlAttributesHelper.IsContainsKey(
-                               TableAllColumnContentDict, (columns + 1).ToString()))
+                               TableAppendTagsColsDict, (columns + 1).ToString()))
                             {
 
                                 /* { cols:
@@ -414,18 +470,18 @@ namespace GenericTagHelper
                                 */
 
                                 // { 1:[[{b,c},{d,e}]], 2:[[{f,g},{h,g}]] }
-                                for (int cols = 0; cols < TableAllColumnContentDict.Count; cols++)
+                                for (int cols = 0; cols < TableAppendTagsColsDict.Count; cols++)
                                 {
                                     // { 1: [[{b,c},{d,e}]] } get cols data
-                                    var data = TableAllColumnContentDict.ElementAt(cols);
-                                    // data.key = column_num 
-                                    if (data.Key == (columns + 1).ToString())
+                                    var colsData = TableAppendTagsColsDict.ElementAt(cols);
+                                    // if data.key = column_num 
+                                    if (colsData.Key == (columns + 1).ToString())
                                     {
                                         // [[{b,c},{d,e}]]  numbers of tags loop
-                                        for (int tags_num = 0; tags_num < data.Value.Count; tags_num++)
+                                        for (int tags_num = 0; tags_num < colsData.Value.Count; tags_num++)
                                         {
 
-                                            var tag_attrs_total = data.Value.ElementAt(tags_num);
+                                            var tag_attrs_total = colsData.Value.ElementAt(tags_num);
 
                                             // first attrs tagName and tagContent
                                             var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
@@ -435,97 +491,102 @@ namespace GenericTagHelper
                                             TagBuilder tag = new TagBuilder(tagName.Key);
 
 
-                                            if (tagName.Key == "input")
-                                            {
-                                                var nameValue = tag_attrs_total.ElementAt(1).ElementAt(0);
-                                                var Idclass = tag_attrs_total.ElementAt(2).ElementAt(0);
+                                            tag = AddTagsToTableData(
+                                                tagName,
+                                                tag_attrs_total,
+                                                tag,
+                                                row_Id);
+                                            //if (tagName.Key == "input")
+                                            //{
+                                            //    var nameValue = tag_attrs_total.ElementAt(1).ElementAt(0);
+                                            //    var Idclass = tag_attrs_total.ElementAt(2).ElementAt(0);
 
-                                                // first attrs value
-                                                tag.Attributes["value"] = tagName.Value;
+                                            //    // first attrs value
+                                            //    tag.Attributes["value"] = tagName.Value;
 
-                                                // second attrs name and type
-                                                tag.Attributes["name"] = nameValue.Key + row_Id;
-                                                tag.Attributes["id"] = nameValue.Key + row_Id;
-                                                tag.Attributes["type"] = nameValue.Value;
+                                            //    // second attrs name and type
+                                            //    tag.Attributes["name"] = nameValue.Key + row_Id;
+                                            //    tag.Attributes["id"] = nameValue.Key + row_Id;
+                                            //    tag.Attributes["type"] = nameValue.Value;
 
-                                                if (nameValue.Value == "select")
-                                                {
-                                                    tag = new TagBuilder("select");
+                                            //    if (nameValue.Value == "select")
+                                            //    {
+                                            //        tag = new TagBuilder("select");
 
-                                                    tag.Attributes["name"] = nameValue.Key + row_Id;
-                                                    tag.Attributes["type"] = nameValue.Value;
+                                            //        tag.Attributes["name"] = nameValue.Key + row_Id;
+                                            //        tag.Attributes["type"] = nameValue.Value;
 
-                                                    tag.Attributes["Id"] = Idclass.Key + row_Id;
-                                                    tag.Attributes["class"] = Idclass.Value;
-                                                    for (int attrs_num = 3; attrs_num < tag_attrs_total.Count; attrs_num++)
-                                                    {
-                                                        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
-
-
-                                                        TagBuilder option = new TagBuilder("option");
-                                                        option.Attributes["value"] = attrs.Key;
-                                                        option.InnerHtml.AppendHtml(attrs.Value);
-                                                        tag.InnerHtml.AppendHtml(option);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
-                                                    {
-                                                        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
-                                                        tag.Attributes[attrs.Key] = attrs.Value;
-                                                    }
-                                                }
-                                            }
-                                            else if (tagName.Key == "a")
-                                            {
-                                                // first attrs tagContent
-                                                tag.InnerHtml.AppendHtml(tagName.Value);
-
-                                                // second attrs action and controller
-                                                var actionController = tag_attrs_total.ElementAt(1).ElementAt(0);
+                                            //        tag.Attributes["Id"] = Idclass.Key + row_Id;
+                                            //        tag.Attributes["class"] = Idclass.Value;
+                                            //        for (int attrs_num = 3; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                            //        {
+                                            //            var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
 
 
-                                                Dictionary<string, string> query = new Dictionary<string, string>
-                                                {
-                                                    [TablePrimaryKey] = row_Id
-                                                };
+                                            //            TagBuilder option = new TagBuilder("option");
+                                            //            option.Attributes["value"] = attrs.Key;
+                                            //            option.InnerHtml.AppendHtml(attrs.Value);
+                                            //            tag.InnerHtml.AppendHtml(option);
+                                            //        }
+                                            //    }
+                                            //    else
+                                            //    {
+                                            //        for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                            //        {
+                                            //            var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                            //            tag.Attributes[attrs.Key] = attrs.Value;
+                                            //        }
+                                            //    }
+                                            //}
+                                            //else if (tagName.Key == "a")
+                                            //{
+                                            //    // first attrs tagContent
+                                            //    tag.InnerHtml.AppendHtml(tagName.Value);
 
-                                                //var link_query = tag_attrs_total.ElementAt(0).ElementAt(2);
-                                                tag.Attributes["href"] = urlHelper.Action(
-                                                    actionController.Key,
-                                                    actionController.Value,
-                                                    query);
+                                            //    // second attrs action and controller
+                                            //    var actionController = tag_attrs_total.ElementAt(1).ElementAt(0);
 
-                                                for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
-                                                {
-                                                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
-                                                    tag.Attributes[attrs.Key] = attrs.Value;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                // first attrs tagContent
-                                                tag.InnerHtml.AppendHtml(tagName.Value);
-                                                if (tagName.Key == "label")
-                                                {
-                                                    // Add for attr to label with content
-                                                    tag.Attributes["for"] = tagName.Value + row_Id;
-                                                }
-                                                // skip first attr and loop attrs element  
-                                                for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
-                                                {
-                                                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
-                                                    tag.Attributes[attrs.Key] = attrs.Value;
-                                                }
-                                            }
+
+                                            //    Dictionary<string, string> query = new Dictionary<string, string>
+                                            //    {
+                                            //        [TablePrimaryKey] = row_Id
+                                            //    };
+
+                                            //    //var link_query = tag_attrs_total.ElementAt(0).ElementAt(2);
+                                            //    tag.Attributes["href"] = urlHelper.Action(
+                                            //        actionController.Key,
+                                            //        actionController.Value,
+                                            //        query);
+
+                                            //    for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                            //    {
+                                            //        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                            //        tag.Attributes[attrs.Key] = attrs.Value;
+                                            //    }
+                                            //}
+                                            //else
+                                            //{
+                                            //    // first attrs tagContent
+                                            //    tag.InnerHtml.AppendHtml(tagName.Value);
+                                            //    if (tagName.Key == "label")
+                                            //    {
+                                            //        // Add for attr to label with content
+                                            //        tag.Attributes["for"] = tagName.Value + row_Id;
+                                            //    }
+                                            //    // skip first attr and loop attrs element  
+                                            //    for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
+                                            //    {
+                                            //        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                                            //        tag.Attributes[attrs.Key] = attrs.Value;
+                                            //    }
+                                            //}
                                             td.InnerHtml.AppendHtml(tag);
                                         }
                                     }
                                 }
 
                                 // Get columns value
-                                //var value = TableAllColumnContentDict[(columns + 1).ToString()];
+                                //var value = TableAppendTagsColsDict[(columns + 1).ToString()];
 
 
                                 //string[] valueArray = value.Split('|').ToArray();
@@ -621,6 +682,98 @@ namespace GenericTagHelper
         }
 
 
+        private TagBuilder AddTagsToTableData(
+            KeyValuePair<string, string> tagName,
+            List<Dictionary<string, string>> tag_attrs_total,
+            TagBuilder tag,
+            string row_Id)
+        {
+            if (tagName.Key == "input")
+            {
+                var nameValue = tag_attrs_total.ElementAt(1).ElementAt(0);
+                var Idclass = tag_attrs_total.ElementAt(2).ElementAt(0);
+
+                // first attrs value
+                tag.Attributes["value"] = tagName.Value;
+
+                // second attrs name and type
+                tag.Attributes["name"] = nameValue.Key + row_Id;
+                tag.Attributes["id"] = nameValue.Key + row_Id;
+                tag.Attributes["type"] = nameValue.Value;
+
+                if (nameValue.Value == "select")
+                {
+                    tag = new TagBuilder("select");
+
+                    tag.Attributes["name"] = nameValue.Key + row_Id;
+                    tag.Attributes["type"] = nameValue.Value;
+
+                    tag.Attributes["Id"] = Idclass.Key + row_Id;
+                    tag.Attributes["class"] = Idclass.Value;
+                    for (int attrs_num = 3; attrs_num < tag_attrs_total.Count; attrs_num++)
+                    {
+                        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+
+
+                        TagBuilder option = new TagBuilder("option");
+                        option.Attributes["value"] = attrs.Key;
+                        option.InnerHtml.AppendHtml(attrs.Value);
+                        tag.InnerHtml.AppendHtml(option);
+                    }
+                }
+                else
+                {
+                    for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                    {
+                        var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                        tag.Attributes[attrs.Key] = attrs.Value;
+                    }
+                }
+            }
+            else if (tagName.Key == "a")
+            {
+                // first attrs tagContent
+                tag.InnerHtml.AppendHtml(tagName.Value);
+
+                // second attrs action and controller
+                var actionController = tag_attrs_total.ElementAt(1).ElementAt(0);
+
+
+                Dictionary<string, string> query = new Dictionary<string, string>
+                {
+                    [TablePrimaryKey] = row_Id
+                };
+
+                //var link_query = tag_attrs_total.ElementAt(0).ElementAt(2);
+                tag.Attributes["href"] = urlHelper.Action(
+                    actionController.Key,
+                    actionController.Value,
+                    query);
+
+                for (int attrs_num = 2; attrs_num < tag_attrs_total.Count; attrs_num++)
+                {
+                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                    tag.Attributes[attrs.Key] = attrs.Value;
+                }
+            }
+            else
+            {
+                // first attrs tagContent
+                tag.InnerHtml.AppendHtml(tagName.Value);
+                if (tagName.Key == "label")
+                {
+                    // Add for attr to label with content
+                    tag.Attributes["for"] = tagName.Value + row_Id;
+                }
+                // skip first attr and loop attrs element  
+                for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
+                {
+                    var attrs = tag_attrs_total.ElementAt(attrs_num).ElementAt(0);
+                    tag.Attributes[attrs.Key] = attrs.Value;
+                }
+            }
+            return tag;
+        }
 
         private void SetPagination(TagHelperOutput output)
         {

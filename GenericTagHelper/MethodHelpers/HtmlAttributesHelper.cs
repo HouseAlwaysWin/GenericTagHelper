@@ -34,7 +34,7 @@ namespace GenericTagHelper.MethodHelpers
         }
 
         public static bool IsContainsKey(
-            Dictionary<string,List<Dictionary<string,string>>> dataDict,
+            Dictionary<string, List<Dictionary<string, string>>> dataDict,
             string loopKey)
         {
             return dataDict.Any(item => item.Key.Equals(
@@ -43,6 +43,14 @@ namespace GenericTagHelper.MethodHelpers
 
         public static bool IsContainsKey(
             Dictionary<string, List<List<Dictionary<string, string>>>> dataDict,
+            string loopKey)
+        {
+            return dataDict.Any(item => item.Key.Equals(
+                loopKey, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static bool IsContainsKey(
+            Dictionary<string, Dictionary<string, List<List<Dictionary<string, string>>>>> dataDict,
             string loopKey)
         {
             return dataDict.Any(item => item.Key.Equals(
@@ -64,7 +72,7 @@ namespace GenericTagHelper.MethodHelpers
                             item => item.Key.Equals(loopKey,
                             StringComparison.OrdinalIgnoreCase)).Value;
                 }
-                catch(ArgumentException)
+                catch (ArgumentException)
                 {
                     return;
                 }
@@ -108,7 +116,7 @@ namespace GenericTagHelper.MethodHelpers
                     {
                         tag.Attributes[attr.Key] = attr.Value;
                     }
-                    catch(ArgumentException)
+                    catch (ArgumentException)
                     {
                         return;
                     }
