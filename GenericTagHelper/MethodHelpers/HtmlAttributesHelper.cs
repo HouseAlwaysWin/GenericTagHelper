@@ -57,6 +57,14 @@ namespace GenericTagHelper.MethodHelpers
                 loopKey, StringComparison.OrdinalIgnoreCase));
         }
 
+        public static bool IsContainsKey(
+            Dictionary<string, List<Dictionary<string, List<List<Dictionary<string, string>>>>>> dataDict,
+            string loopKey)
+        {
+            return dataDict.Any(item => item.Key.Equals(
+                loopKey, StringComparison.OrdinalIgnoreCase));
+        }
+
         public static void AddClass(
             TagBuilder tag,
             Dictionary<string, string> itemClass,

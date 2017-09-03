@@ -192,23 +192,23 @@ namespace GenericTagHelper
 
         // Append html string to specific td location
         public string TableAppendHtmlRowsCols { get; set; }
-        private Dictionary<string, Dictionary<string, string>> TableAppendHtmlRowsColsDict
+        private Dictionary<string, List<Dictionary<string, string>>> TableAppendHtmlRowsColsDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(TableAppendHtmlRowsCols);
+                return JsonDeserialize.JsonDeserializeConvert_DsLDss(TableAppendHtmlRowsCols);
             }
         }
 
 
         // Append json tag format to specific td location
         public string TableAppendTagsRowsCols { get; set; }
-        private Dictionary<string, Dictionary<string, List<List<Dictionary<string, string>>>>>
+        private Dictionary<string, List<Dictionary<string, List<List<Dictionary<string, string>>>>>>
             TableAppendTagsRowsColsDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsDsLLDss(TableAppendTagsRowsCols);
+                return JsonDeserialize.JsonDeserializeConvert_DsLDsLLDss(TableAppendTagsRowsCols);
             }
         }
 
@@ -358,58 +358,113 @@ namespace GenericTagHelper
                             var row_Id = ItemsAfterPagination[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            // Add html content to specific location
+                            // Add html content to specific row and cols
                             if (HtmlAttributesHelper.IsContainsKey(
                                 TableAppendHtmlRowsColsDict, row_Id))
                             {
                                 TableAppendHtmlRowsColsDict.FirstOrDefault(
                                     items => items.Key.Equals(row_Id,
                                     StringComparison.OrdinalIgnoreCase))
-                                    .Value
-                                    .ToDictionary(cols =>
+                                    .Value.ForEach(cols =>
                                     {
-                                        if (cols.Key.Equals((columns + 1).ToString(),
-                                            StringComparison.OrdinalIgnoreCase))
+                                        cols.ToDictionary(itemDict =>
                                         {
-                                            td.InnerHtml.AppendHtml(cols.Value);
-                                        }
-                                        return td;
+
+                                            if (itemDict.Key.Equals((columns + 1).ToString(),
+                                                StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                td.InnerHtml.AppendHtml(itemDict.Value);
+                                            }
+                                            return td;
+                                        });
                                     });
                             }
 
+                            // Add html content to specific column
+                            if (HtmlAttributesHelper.IsContainsKey(
+                                TableAppendHtmlColsDict, (columns + 1).ToString()))
+                            {
+                                var htmlString = TableAppendHtmlColsDict.FirstOrDefault(
+                                    cols => cols.Key.Equals(
+                                        (columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
+                                    .Value;
+                                td.InnerHtml.AppendHtml(htmlString);
+                            }
+
+                            // Add json tag string to specific row and col
                             if (HtmlAttributesHelper.IsContainsKey(
                                 TableAppendTagsRowsColsDict, row_Id))
                             {
                                 TableAppendTagsRowsColsDict.FirstOrDefault(
                                     items => items.Key.Equals(row_Id,
                                     StringComparison.OrdinalIgnoreCase))
-                                    .Value
-                                    .ToDictionary(colsData =>
+                                    .Value.ForEach(cols =>
                                     {
-                                        if (colsData.Key.Equals((columns + 1).ToString(),
-                                            StringComparison.OrdinalIgnoreCase))
+                                        cols.ToDictionary(itemDict =>
                                         {
-                                            //colsData.Value.ForEach(tag_attr =>
-                                            for (int tags_num = 0; tags_num < colsData.Value.Count; tags_num++)
+                                            if (itemDict.Key.Equals((columns + 1).ToString(),
+                                                StringComparison.OrdinalIgnoreCase))
                                             {
-                                                var tag_attrs_total = colsData.Value.ElementAt(tags_num);
+                                                //colsData.Value.ForEach(tag_attr =>
+                                                for (int tags_num = 0; tags_num < itemDict.Value.Count; tags_num++)
+                                                {
+                                                    var tag_attrs_total = itemDict.Value.ElementAt(tags_num);
 
-                                                // first attrs tagName and tagContent
-                                                var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
+                                                    // first attrs tagName and tagContent
+                                                    var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
 
-                                                // Build Tag
-                                                TagBuilder tag = new TagBuilder(tagName.Key);
+                                                    // Build Tag
+                                                    TagBuilder tag = new TagBuilder(tagName.Key);
 
-                                                tag = AddTagsToTableData(
-                                                    tagName,
-                                                    tag_attrs_total,
-                                                    tag,
-                                                    row_Id);
-                                                td.InnerHtml.AppendHtml(tag);
+                                                    tag = AddTagsToTableData(
+                                                        tagName,
+                                                        tag_attrs_total,
+                                                        tag,
+                                                        row_Id);
+                                                    td.InnerHtml.AppendHtml(tag);
+                                                }
                                             }
-                                        }
-                                        return td;
+                                            return td;
+                                        });
                                     });
+                            }
+
+
+                            // Add json tag string to specific column
+                            if (HtmlAttributesHelper.IsContainsKey(
+                            TableAppendTagsColsDict, (columns + 1).ToString()))
+                            {
+                                // { 1:[[{b,c},{d,e}]], 2:[[{f,g},{h,g}]] }
+                                for (int cols = 0; cols < TableAppendTagsColsDict.Count; cols++)
+                                {
+                                    // { 1: [[{b,c},{d,e}]] } get cols data
+                                    var colsData = TableAppendTagsColsDict.ElementAt(cols);
+                                    // if data.key = column_num 
+                                    if (colsData.Key == (columns + 1).ToString())
+                                    {
+                                        // [[{b,c},{d,e}]]  numbers of tags loop
+                                        for (int tags_num = 0; tags_num < colsData.Value.Count; tags_num++)
+                                        {
+
+                                            var tag_attrs_total = colsData.Value.ElementAt(tags_num);
+
+                                            // first attrs tagName and tagContent
+                                            var tagName = tag_attrs_total.ElementAt(0).ElementAt(0);
+
+
+                                            // Build Tag
+                                            TagBuilder tag = new TagBuilder(tagName.Key);
+
+
+                                            tag = AddTagsToTableData(
+                                                tagName,
+                                                tag_attrs_total,
+                                                tag,
+                                                row_Id);
+                                            td.InnerHtml.AppendHtml(tag);
+                                        }
+                                    }
+                                }
                             }
 
                             //if (HtmlAttributesHelper.IsContainsKey(
@@ -428,19 +483,25 @@ namespace GenericTagHelper
                             var row_Id = ItemsAfterPagination[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
+                            // Add html content to specific row and cols
                             if (HtmlAttributesHelper.IsContainsKey(
                                 TableAppendHtmlRowsColsDict, row_Id))
                             {
                                 TableAppendHtmlRowsColsDict.FirstOrDefault(
-                                    items => items.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase))
-                                    .Value
-                                    .ToDictionary(i =>
+                                    items => items.Key.Equals(row_Id,
+                                    StringComparison.OrdinalIgnoreCase))
+                                    .Value.ForEach(cols =>
                                     {
-                                        if (i.Key.Equals((columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
+                                        cols.ToDictionary(itemDict =>
                                         {
-                                            td.InnerHtml.AppendHtml(i.Value);
-                                        }
-                                        return td;
+
+                                            if (itemDict.Key.Equals((columns + 1).ToString(),
+                                                StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                td.InnerHtml.AppendHtml(itemDict.Value);
+                                            }
+                                            return td;
+                                        });
                                     });
                             }
 
