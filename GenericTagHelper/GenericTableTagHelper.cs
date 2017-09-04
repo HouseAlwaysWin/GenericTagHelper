@@ -315,8 +315,6 @@ namespace GenericTagHelper
                     TableColumns = ItemsAfterPagination[0].Values.Count;
                 }
 
-
-
                 // Start loop table row 
                 for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
                 {
@@ -395,47 +393,68 @@ namespace GenericTagHelper
                 TagBuilder panel_body = new TagBuilder("div");
                 HtmlAttributesHelper.AddAttributes(panel_body, AttributesPanelBodyDict);
 
-
-
                 if (ActivePanelHeading)
                 {
-                    output.Content.AppendHtml(panel_heading);
-                    panel_heading.AddCssClass("panel-heading");
-                    HtmlAttributesHelper.AddAttributes(
-                        panel_heading, AttributesPanelHeadingDict);
-                    panel_heading.InnerHtml.AppendHtml(PanelTitle);
+                    output.Content.AppendHtml(panel_heading); 
+                    panel_heading = SetPanelElement(
+                        panel_heading, "panel-heading",
+                        AttributesPanelHeadingDict,
+                        PanelTitle);
                 }
                 if (ActivePanelBody)
                 {
-                    output.Content.AppendHtml(panel_body);
-                    panel_body.AddCssClass("panel-body");
-                    HtmlAttributesHelper.AddAttributes(
-                       panel_body, AttributesPanelBodyDict);
-                    panel_body.InnerHtml.AppendHtml(PanelContent);
+                    output.Content.AppendHtml(panel_body); 
+                    panel_body = SetPanelElement(
+                         panel_body, "panel-body",
+                         AttributesPanelBodyDict,
+                         PanelContent);
                 }
-
-                TagBuilder table = new TagBuilder("table");
-                table.AddCssClass("table table-primary");
-                HtmlAttributesHelper.AddAttributes(
-                   table, AttrsTableDict);
-
-                table.InnerHtml.AppendHtml(thead);
-                table.InnerHtml.AppendHtml(tbody);
-
-                output.Content.AppendHtml(table);
 
                 output.TagName = "div";
                 output.TagMode = TagMode.StartTagAndEndTag;
+                output.Content.AppendHtml(
+                    SetTableOutput(output, thead, tbody)
+                    );
                 SetPagination(output);
             }
             else
             {
                 output.TagName = "table";
                 output.TagMode = TagMode.StartTagAndEndTag;
-                output.Content.AppendHtml(tbody);
+                output.Content.AppendHtml(
+                    SetTableOutput(output, thead, tbody)
+                    );
                 SetPagination(output);
             }
 
+        }
+
+        private TagBuilder SetTableOutput(
+            TagHelperOutput output, TagBuilder thead, TagBuilder tbody)
+        {
+            TagBuilder table = new TagBuilder("table");
+            table.Attributes["class"] = "table table-primary";
+
+            HtmlAttributesHelper.AddAttributes(
+               table, AttrsTableDict);
+
+            table.InnerHtml.AppendHtml(thead);
+            table.InnerHtml.AppendHtml(tbody);
+
+            return table;
+        }
+
+        private TagBuilder SetPanelElement(
+            TagBuilder panel_element,
+            string elementClass, 
+            Dictionary<string, string> itemAttrsDict,
+            string appendContent)
+        {
+            panel_element.AddCssClass(elementClass);
+            HtmlAttributesHelper.AddAttributes(
+                panel_element, itemAttrsDict);
+            panel_element.InnerHtml.AppendHtml(appendContent);
+            return panel_element;
         }
 
         private void AddHtmlRowsAndCols(TagBuilder td, string row_Id, int columns)
@@ -502,6 +521,8 @@ namespace GenericTagHelper
                                     // Build Tag
                                     TagBuilder tag = new TagBuilder(tagName.Key);
 
+                                    AddTagContentWithRowId(tagName, tag, row_Id);
+
                                     tag = AddTagsToTableData(
                                         tagName,
                                         tag_attrs_total,
@@ -541,15 +562,9 @@ namespace GenericTagHelper
 
                             // Build Tag
                             TagBuilder tag = new TagBuilder(tagName.Key);
-                            if (tagName.Value.EndsWith("_"))
-                            {
-                                var tagValue = tagName.Value.TrimEnd('_');
-                                tag.InnerHtml.AppendHtml(tagValue + row_Id);
-                            }
-                            else
-                            {
-                                tag.InnerHtml.AppendHtml(tagName.Value);
-                            }
+
+                            AddTagContentWithRowId(tagName, tag, row_Id);
+
 
                             tag = AddTagsToTableData(
                                 tagName,
@@ -571,8 +586,6 @@ namespace GenericTagHelper
         {
             if (tagName.Key == "input")
             {
-
-
                 for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
                 {
 
@@ -627,14 +640,14 @@ namespace GenericTagHelper
             }
             else
             {
-                if (tagName.Value.EndsWith("_"))
-                {
-                    tag.InnerHtml.AppendHtml(tagName.Value + row_Id);
-                }
-                else
-                {
-                    tag.InnerHtml.AppendHtml(tagName.Value);
-                }
+                //if (tagName.Value.EndsWith("_"))
+                //{
+                //    tag.InnerHtml.AppendHtml(tagName.Value + row_Id);
+                //}
+                //else
+                //{
+                //    tag.InnerHtml.AppendHtml(tagName.Value);
+                //}
                 // skip first attr and loop attrs element  
                 for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
                 {
@@ -644,6 +657,22 @@ namespace GenericTagHelper
             }
 
             return tag;
+        }
+
+        private void AddTagContentWithRowId(
+            KeyValuePair<string, string> tagName,
+            TagBuilder tag,
+            string row_Id)
+        {
+            if (tagName.Value.EndsWith("_"))
+            {
+                var tagValue = tagName.Value.TrimEnd('_');
+                tag.InnerHtml.AppendHtml(tagValue + row_Id);
+            }
+            else
+            {
+                tag.InnerHtml.AppendHtml(tagName.Value);
+            }
         }
 
         private TagBuilder AddRowIdWith_(

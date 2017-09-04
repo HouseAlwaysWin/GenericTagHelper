@@ -2,18 +2,22 @@
 
 <br />
 
+
 <table generic
        class="panel panel-primary"
-       table-heads='["Name","Gender","Edit"]'
+       table-heads='["Name","Gender","Edit","Select1","Select2"]'
        items="@Model.CustomerList"
        item-per-page="5"
        active-pagination="true"
        current-page="@Model.CurrentPage"
-       panel-title="Customer"
        table-primary-key="Id"
        table-columns="6"
-       table-hidden-columns='["Id"]'
-       table-show-index="true"
+       table-show-index="false"
+       active-panel="true"
+       active-panel-heading="true"
+       panel-title="Customer"
+       active-panel-body="false"
+       panel-content="Hello"
        table-append-html-rows-cols='{
             1:[
                 {2:"hello"},
@@ -24,14 +28,13 @@
                 {2:"Stark"}
             ],
       }'
-
        table-append-tags-rows-cols='{
             10:[
                 {
                   2:[
                         [{label:"tag"}],
                         [{input:""},{Id:"textbox_"},{class:"form-control"}],
-                        [{button:"submit"},{class:"btn btn-primary text-center"}]
+                        [{button:"submit_"},{class:"btn btn-primary text-center"}]
                     ]
                 },{
                   3:[
@@ -44,13 +47,13 @@
        table-append-html-cols='{
             2:"World",
             3:"This is sparda",
-            4:"Hello" 
+            4:"Hello"
        }'
        table-append-tags-cols='{
             4:[
                 [{label:"Test_"},{for:"textbox_"}],
                 [{input:""},{Id:"textbox_"},{class:"form-control"},{value:"Hello_"}],
-                [{button:"submit"},{class:"btn btn-primary text-center"}]
+                [{button:"submit_"},{class:"btn btn-primary text-center"}]
               ],
             5:[
                 [{label:"select_"}],
@@ -58,6 +61,4 @@
                  {1:"Bronze"},{2:"Silver"},{3:"Gold"},{4:"Patiumn"}],
                 [{a:"link"},{Index:"Home"},{Id:"hello_"}]
               ]
-       }'
-    
-    ></table>
+       }'></table>
