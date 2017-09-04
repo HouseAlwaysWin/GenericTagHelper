@@ -4,6 +4,9 @@
 
 
 <table generic
+       items="@Model.CustomerList"></table>
+
+<table generic
        class="panel panel-primary"
        table-heads='["Name","Gender","Edit","Select1","Select2"]'
        items="@Model.CustomerList"
@@ -11,13 +14,15 @@
        active-pagination="true"
        current-page="@Model.CurrentPage"
        table-primary-key="Id"
-       table-columns="6"
-       table-show-index="false"
+       table-hidden-columns='["Id"]'
+       table-cols-number="6"
+       table-show-index="true"
        active-panel="true"
        active-panel-heading="true"
-       panel-title="Customer"
-       active-panel-body="false"
-       panel-content="Hello"
+       active-panel-body="true"
+       panel-heading-content="Customer"
+       panel-body-content="Hello"
+
        table-append-html-rows-cols='{
             1:[
                 {2:"hello"},
@@ -44,11 +49,11 @@
                 }
                ],
        }'
+
        table-append-html-cols='{
             2:"World",
-            3:"This is sparda",
-            4:"Hello"
        }'
+
        table-append-tags-cols='{
             4:[
                 [{label:"Test_"},{for:"textbox_"}],

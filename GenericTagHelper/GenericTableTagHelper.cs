@@ -168,7 +168,7 @@ namespace GenericTagHelper
 
 
         // Show how many columns of table
-        public int TableColumns { get; set; }
+        public int TableColsNumber { get; set; }
 
         // Append Html string to  specific column
         public string TableAppendHtmlCols { get; set; }
@@ -226,7 +226,7 @@ namespace GenericTagHelper
         public string TableIndexTitle { get; set; } = "Index";
 
         // Set primarykey from your columns of table
-        public string TablePrimaryKey { get; set; } = "Id";
+        public string TablePrimaryKey { get; set; } = "Id"; 
         #endregion
 
         #region Table Panel
@@ -235,35 +235,35 @@ namespace GenericTagHelper
         public bool ActivePanelBody { get; set; }
 
 
-        public string AttributesPanel { get; set; }
-        private Dictionary<string, string> AttributesPanelDict
+        public string AttrsPanel { get; set; }
+        private Dictionary<string, string> AttrsPanelDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesPanel);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsPanel);
             }
         }
 
-        public string AttributesPanelHeading { get; set; }
-        private Dictionary<string, string> AttributesPanelHeadingDict
+        public string AttrsPanelHeading { get; set; }
+        private Dictionary<string, string> AttrsPanelHeadingDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesPanelHeading);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsPanelHeading);
             }
         }
 
-        public string AttributesPanelBody { get; set; }
-        private Dictionary<string, string> AttributesPanelBodyDict
+        public string AttrsPanelBody { get; set; }
+        private Dictionary<string, string> AttrsPanelBodyDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttributesPanelBody);
+                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsPanelBody);
             }
         }
 
-        public string PanelTitle { get; set; }
-        public string PanelContent { get; set; }
+        public string PanelHeadingContent { get; set; }
+        public string PanelBodyContent { get; set; }
         #endregion
 
         public override void Process(
@@ -310,9 +310,9 @@ namespace GenericTagHelper
             }
             else
             {
-                if (TableColumns == 0)
+                if (TableColsNumber == 0)
                 {
-                    TableColumns = ItemsAfterPagination[0].Values.Count;
+                    TableColsNumber = ItemsAfterPagination[0].Values.Count;
                 }
 
                 // Start loop table row 
@@ -331,7 +331,7 @@ namespace GenericTagHelper
                     }
 
                     // Start loop table columns
-                    for (int columns = 0; columns < TableColumns; columns++)
+                    for (int columns = 0; columns < TableColsNumber; columns++)
                     {
                         TagBuilder td = new TagBuilder("td");
 
@@ -388,26 +388,26 @@ namespace GenericTagHelper
             {
 
                 TagBuilder panel_heading = new TagBuilder("div");
-                HtmlAttributesHelper.AddAttributes(panel_heading, AttributesPanelHeadingDict);
+                HtmlAttributesHelper.AddAttributes(panel_heading, AttrsPanelHeadingDict);
 
                 TagBuilder panel_body = new TagBuilder("div");
-                HtmlAttributesHelper.AddAttributes(panel_body, AttributesPanelBodyDict);
+                HtmlAttributesHelper.AddAttributes(panel_body, AttrsPanelBodyDict);
 
                 if (ActivePanelHeading)
                 {
                     output.Content.AppendHtml(panel_heading); 
                     panel_heading = SetPanelElement(
                         panel_heading, "panel-heading",
-                        AttributesPanelHeadingDict,
-                        PanelTitle);
+                        AttrsPanelHeadingDict,
+                        PanelHeadingContent);
                 }
                 if (ActivePanelBody)
                 {
                     output.Content.AppendHtml(panel_body); 
                     panel_body = SetPanelElement(
                          panel_body, "panel-body",
-                         AttributesPanelBodyDict,
-                         PanelContent);
+                         AttrsPanelBodyDict,
+                         PanelBodyContent);
                 }
 
                 output.TagName = "div";
@@ -639,16 +639,7 @@ namespace GenericTagHelper
                 }
             }
             else
-            {
-                //if (tagName.Value.EndsWith("_"))
-                //{
-                //    tag.InnerHtml.AppendHtml(tagName.Value + row_Id);
-                //}
-                //else
-                //{
-                //    tag.InnerHtml.AppendHtml(tagName.Value);
-                //}
-                // skip first attr and loop attrs element  
+            { 
                 for (int attrs_num = 1; attrs_num < tag_attrs_total.Count; attrs_num++)
                 {
                     tag = AddRowIdWith_(
