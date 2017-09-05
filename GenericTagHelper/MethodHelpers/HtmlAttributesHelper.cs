@@ -50,6 +50,14 @@ namespace GenericTagHelper.MethodHelpers
         }
 
         public static bool IsContainsKey(
+            Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> dataDict,
+            string loopKey)
+        {
+            return dataDict.Any(item => item.Key.Equals(
+                loopKey, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static bool IsContainsKey(
             Dictionary<string, Dictionary<string, List<List<Dictionary<string, string>>>>> dataDict,
             string loopKey)
         {
@@ -103,7 +111,7 @@ namespace GenericTagHelper.MethodHelpers
                         return tag;
                     });
                 }
-                catch
+                catch (ArgumentException)
                 {
                     return;
                 }
