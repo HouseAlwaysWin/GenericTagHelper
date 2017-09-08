@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace GenericTagHelper.MethodHelpers
@@ -91,6 +92,16 @@ namespace GenericTagHelper.MethodHelpers
                 return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>>(dataString);
             }
             return new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
+        }
+
+        public static Dictionary<string, Expression<Func<object, object>>> JsonDeserializeConvert_DsEFoo(string dataString)
+        {
+            if (!String.IsNullOrEmpty(dataString))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, Expression<Func<object, object>>>>(dataString);
+            }
+
+            return new Dictionary<string, Expression<Func<object, object>>>();
         }
 
         public static List<Dictionary<string, string>> JsonDeserializeConvert_LDss(

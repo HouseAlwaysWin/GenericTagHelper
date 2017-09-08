@@ -2,50 +2,30 @@
 
 <br />
 
-
-
 <table generic
        class="panel panel-primary"
-       table-heads='["#","<a href=\"@Url.Action("Index", "Home", new { page = Model.CurrentPage })\">Name</a>","Gender","Edit","Select1"]'
-       items="@Model.CustomerList"
+
+       items="@Model.ItemsJson"
        item-per-page="5"
-       active-pagination="true"
-       attrs-table='{class:"table",id:"mytable"}'
-       attrs-panel-body='{class:"text-center",style:"font-size:100px;"}'
-       attrs-table-head='{class:"head",Id:"classId"}'
-       attrs-table-body='{class:"body",Id:"bodyId"}'
-       attrs-table-body-tr='{Id:"_",class:"table"}'
-       current-page="@Model.CurrentPage"
+       current-page="@Model.Page"
+
+       table-heads="['Id @Model.Id','Name @Model.Name','Gender']"
        table-primary-key="Id"
-       table-cols-number="6"
+       table-cols-number="3"
        table-show-index="true"
+
        active-panel="true"
        active-panel-heading="true"
-       active-panel-body="true"
-       panel-heading-content="Customer"
-       panel-body-content="Hello"
-       active-override-html-cols="true"
-       table-append-html-rows-cols='{
-       1:{2:"<input type=\"checkbox\" />",3:"lo"},
-    2:{2:"mother*"},
-    50:{3:"God of war*"},
-    }'
 
-    table-append-html-cols='{
-    1:"<input type=\"checkbox\" />",
-    2:"@if (Model.CurrentPage==2) { 
-        <a href=\"@Url.Action("Index","Home",new {page=Model.CurrentPage })\">a</a> 
-    } ",
-    4:"<select class=\"form-control\" id=\"*\">
-        <option value=\"1\">Bronze</option>
-        <option value=\"2\">Sliver</option>
-        <option value=\"3\">Gold</option>
-        <option value=\"4\">Patiumn</option>
-        </select>",
-    5:"<select class=\"form-control\" id=\"myselect*\">
-    <option value=\"1\">Bronze</option>
-    <option value=\"2\">Sliver</option>
-    <option value=\"3\">Gold</option>
-    <option iflue=\"4\">Patiumn</option>
-    </select>"
-    }'> </table>
+       panel-heading-content="Customer"></table>
+
+<pagination total-items="@Model.TotalItems"
+            current-page="@Model.Page"
+            item-per-page="@Model.ItemPerPage"
+            page-query-options="{
+                SearchItem:'@Model.SearchItem' ,
+                searchtype:'@Model.SearchType',
+                sorttype:'@Model.SortType',
+                issortdescending:'@Model.IsSortDescending'}"
+            page-action="Index">
+</pagination>

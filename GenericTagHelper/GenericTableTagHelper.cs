@@ -11,6 +11,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -56,69 +57,9 @@ namespace GenericTagHelper
             }
         }
 
-
-        private List<Dictionary<string, string>> ItemsAfterPagination
-        {
-            get
-            {
-                var query = JsonDeserialize.JsonDeserializeConvert_LDss(Items);
-                return query.Skip((CurrentPage - 1)
-                    * ItemPerPage).Take(ItemPerPage).ToList();
-            }
-        }
-
-
-        public int TotalItems
-        {
-            get
-            {
-                return ItemsList.Count;
-            }
-        }
-
-        public string CurrentPageParameter { get; set; } = "page";
-
-        public string PageQueryList { get; set; }
-
         public int CurrentPage { get; set; } = 1;
 
-        public int ItemPerPage { get; set; } = 5;
-
-        public string PageAction { get; set; } = "";
-
-        public string PageController { get; set; } = "";
-
-        public string PageStyleClass { get; set; } = "pagination";
-
-        public string PageActiveClass { get; set; } = "active";
-
-        public string PageDisableClass { get; set; } = "disabled";
-
-        public int PageMiddleLength { get; set; } = 2;
-
-        public int PageTopBottomLength { get; set; } = 5;
-
-        public string PagePreviousIcon { get; set; } = "Previous";
-
-        public string PageNextIcon { get; set; } = "Next";
-
-        public string PageFirstIcon { get; set; } = "First";
-
-        public string PageLastIcon { get; set; } = "Last";
-
-        public bool PageShowFirst { get; set; } = true;
-
-        public bool PageShowLast { get; set; } = true;
-
-        public string PageBetweenIcon { get; set; } = "...";
-
-        public bool PageShowBetweenIcon { get; set; } = true;
-
-        public bool PageExchangePreviousFirstBtn { get; set; }
-
-        public bool PageExchangeNextLastBtn { get; set; }
-
-        public bool ActivePagination { get; set; }
+        public int ItemPerPage { get; set; } = 5; 
         #endregion
 
         #region Table Properties
@@ -290,8 +231,9 @@ namespace GenericTagHelper
             TagBuilder tbody = new TagBuilder("tbody");
             HtmlAttributesHelper.AddAttributes(tbody, AttrsTableBodyDict);
 
+            
 
-            if (ItemsAfterPagination.Count == 0)
+            if (ItemsList.Count == 0)
             {
                 TagBuilder tbody_tr = new TagBuilder("tr");
 
@@ -307,11 +249,11 @@ namespace GenericTagHelper
             {
                 if (TableColsNumber == 0)
                 {
-                    TableColsNumber = ItemsAfterPagination[0].Values.Count;
+                    TableColsNumber = ItemsList[0].Values.Count;
                 }
 
                 // Start loop table row 
-                for (int rows = 0; rows < ItemsAfterPagination.Count; rows++)
+                for (int rows = 0; rows < ItemsList.Count; rows++)
                 {
                     TagBuilder tbody_tr = new TagBuilder("tr");
 
@@ -356,7 +298,7 @@ namespace GenericTagHelper
                         try
                         {
                             // Get hidden columns name
-                            var item_key = ItemsAfterPagination[rows]
+                            var item_key = ItemsList[rows]
                                 .Keys.ElementAt(columns);
                             // Skip hidden columns
                             if (TableHiddenColumnsList.Contains(item_key))
@@ -364,13 +306,13 @@ namespace GenericTagHelper
                                 continue;
                             }
 
-                            var item_value = ItemsAfterPagination[rows]
+                            var item_value = ItemsList[rows]
                                 .Values.ElementAt(columns);
 
                             td.InnerHtml.AppendHtml(item_value);
 
                             // Get your table list primary key value
-                            var row_Id = ItemsAfterPagination[rows]
+                            var row_Id = ItemsList[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
                             AddHtmlRowsAndCols(td, row_Id, columns);
@@ -380,7 +322,7 @@ namespace GenericTagHelper
                         // if out of index then catch exception to create new columns
                         catch (ArgumentOutOfRangeException)
                         {
-                            var row_Id = ItemsAfterPagination[rows]
+                            var row_Id = ItemsList[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
                             AddHtmlRowsAndCols(td, row_Id, columns);
@@ -428,7 +370,6 @@ namespace GenericTagHelper
                 output.Content.AppendHtml(
                     SetTableOutput(output, thead, tbody)
                     );
-                SetPagination(output);
             }
             else
             {
@@ -437,7 +378,6 @@ namespace GenericTagHelper
                 output.Content.AppendHtml(
                     SetTableOutput(output, thead, tbody)
                     );
-                SetPagination(output);
             }
 
         }
@@ -528,20 +468,6 @@ namespace GenericTagHelper
             }
         }
 
-        private void SetPagination(TagHelperOutput output)
-        {
-            if (ActivePagination)
-            {
-                PaginationBuilder paginaionBuilder = new PaginationBuilder(
-                    ViewContext, urlHelperFactory);
-
-                Mapper.Initialize(cfg =>
-                {
-                    cfg.CreateMap<GenericTableTagHelper, PaginationBuilder>();
-                });
-                Mapper.Map<GenericTableTagHelper, PaginationBuilder>(this, paginaionBuilder);
-                output.PostElement.AppendHtml(paginaionBuilder.CreatePagination());
-            }
-        }
+       
     }
 }
