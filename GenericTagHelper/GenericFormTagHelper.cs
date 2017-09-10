@@ -15,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace GenericTagHelper
 {
@@ -145,7 +146,7 @@ namespace GenericTagHelper
             }
         }
 
-        public string ClassValidationSummary { get; set; }
+        public string ClassValidationSummary { get; set; } = "";
 
         public string AttrsValidationSummary { get; set; }
         private Dictionary<string, string> AttrsValidationSummaryDict
@@ -388,7 +389,7 @@ namespace GenericTagHelper
         public bool CheckBoxLeft { get; set; }
         #endregion
 
-        public override void Process(
+        public override async Task ProcessAsync(
             TagHelperContext context, TagHelperOutput output)
         {
 
@@ -396,12 +397,13 @@ namespace GenericTagHelper
             TagBuilder title = new TagBuilder("div");
             title.InnerHtml.SetHtmlContent(FormTitle);
             title.AddCssClass(ClassTitle);
+            title.Attributes["class"] = ClassTitle;
             HtmlAttributesHelper.AddAttributes(title, AttrsTitleDict);
 
 
             // Apply Validation Summary class and attrs
             TagBuilder validation_sum = GenerateValidationSummary();
-            validation_sum.AddCssClass(ClassValidationSummary);
+            //validation_sum.AddCssClass(ClassValidationSummary);
             HtmlAttributesHelper.AddAttributes(
                 validation_sum, AttrsValidationSummaryDict);
 
@@ -653,31 +655,7 @@ namespace GenericTagHelper
                 }
             } while (restart);
 
-            TagBuilder submitBtn = new TagBuilder("button");
-            submitBtn.MergeAttribute("type", "submit");
-            submitBtn.AddCssClass(ClassSubmitBtn);
-            submitBtn.InnerHtml.SetContent(SubmitBtnContent);
-            HtmlAttributesHelper.AddAttributes(
-                submitBtn, AttrsSubmitBtnDict);
-
-            TagBuilder cancelBtn = new TagBuilder("a");
-            if (CancelLinkReturnAction != "" && CancelLinkReturnController == "")
-            {
-                cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction);
-            }
-            else
-            {
-                cancelBtn.Attributes["href"] = urlHelper.Action(CancelLinkReturnAction, CancelLinkReturnController);
-            }
-            cancelBtn.AddCssClass(ClassCancelBtn);
-            cancelBtn.MergeAttribute("style", "margin-left:10px;");
-            cancelBtn.InnerHtml.Append(CancelBtnContent);
-            HtmlAttributesHelper.AddAttributes(
-                cancelBtn, AttrsCancelBtnDict);
-
-            output.Content.AppendHtml(submitBtn);
-            output.Content.AppendHtml(cancelBtn);
-
+            output.Content.AppendHtml(await output.GetChildContentAsync());
         }
 
         #region Tag Generators

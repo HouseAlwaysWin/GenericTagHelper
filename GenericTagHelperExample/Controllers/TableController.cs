@@ -77,7 +77,6 @@ namespace GenericTagHelperExample.Controllers
             TagBuilder link = new TagBuilder("a");
             TagBuilder span = new TagBuilder("span");
 
-
             var route = Url.Action("Index", new
             {
                 page = model.Page,
@@ -87,7 +86,12 @@ namespace GenericTagHelperExample.Controllers
                 IsSortDescending = isSortDescending,
             });
 
-            link.ToLinkHtmlString(route, "");
+            link.ToGeneralTagHtmlString("",
+                new Dictionary<string, string>
+                {
+                    ["href"] = route
+                });
+
             span.ToGeneralTagHtmlString("",
                 new Dictionary<string, string>
                 {

@@ -6,6 +6,10 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "ckeditor": "#standard/4.7.2"
+    "ckeditor": "#standard/4.7.2",
+    "select-picker": "0.3.1"
+  },
+  "resolutions": {
+    "jquery": ">= 1.7.2"
   }
 }

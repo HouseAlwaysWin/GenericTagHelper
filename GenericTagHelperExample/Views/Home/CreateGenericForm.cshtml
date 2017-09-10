@@ -90,7 +90,12 @@
       cancel-link-return-action="Index"
       cancel-link-return-controller="Home"
       asp-action="CreateGenericForm"
-      asp-antiforgery="true"></form>
+      asp-antiforgery="true">
+    <input class="btn btn-primary" type="submit" value="Sumit" />
+    <a class="btn btn-danger" asp-action="Index" asp-controller="Home">
+        Cancel
+    </a>
+</form>
 
 @section scripts{
     <script>

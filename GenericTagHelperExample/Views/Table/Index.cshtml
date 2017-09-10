@@ -1,22 +1,37 @@
 ﻿@model CustomerViewModel
-
 <br />
+<form generic form-model="@Model.SearchBar"
+      form-title=""
+      asp-controller="Table"
+      asp-action="Index"
+      select-data-list="{
+        searchselectlist:{
+            1:'Id',
+            2:'Email'
+        },
+      
+      }"
+      method="get"
+      class="input-group">
+    <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
+    </span>
+</form>
+
 
 <table generic
        class="panel panel-primary"
-
        items="@Model.ItemsJson"
        item-per-page="5"
        current-page="@Model.Page"
-
        table-heads="['Id @Model.Id','Name @Model.Name','Gender']"
        table-primary-key="Id"
        table-cols-number="3"
        table-show-index="true"
-
        active-panel="true"
        active-panel-heading="true"
-
        panel-heading-content="Customer"></table>
 
 <pagination total-items="@Model.TotalItems"
