@@ -169,6 +169,24 @@ namespace GenericTagHelper
         }
         #endregion
 
+        public string AttrsSingleTag { get; set; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsSingleTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsSingleTag);
+            }
+        }
+
+        public string AttrsMultiTags { get; set; }
+        public Dictionary<string, Dictionary<string, string>> AttrsMultiTagsDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsMultiTags);
+            }
+        }
+
         #region FormGroup
         public string ClassAllFormGroup { get; set; } = "form-group";
 
@@ -488,12 +506,9 @@ namespace GenericTagHelper
                     /*-------------- Start Print your models-----------*/
 
                     TagBuilder form_group = new TagBuilder("div");
-
-                    SetTagAttrsAndClass(
-                        form_group, ClassAllFormGroup,
-                        ClassFormGroupDict, AttrsAllFormGroupDict,
-                        AttrsFormGroupDict, property_name);
-
+                    form_group.Attributes["class"] = "form-group";
+                    SetSingleTagAttrs(form_group, "group", property_name);
+                    SetMultiTagsAttrs(form_group, "group");
 
                     TagBuilder label = Generator.GenerateLabel(
                         ViewContext,
@@ -503,50 +518,49 @@ namespace GenericTagHelper
                         htmlAttributes: null);
 
 
-                    SetTagAttrsAndClass(
-                        label, ClassAllLabel,
-                        ClassLabelDict, AttrsAllLabelDict,
-                        AttrsLabelDict, property_name);
+                    SetMultiTagsAttrs(label, "label");
+                    SetSingleTagAttrs(label, property_name, "label");
 
                     TagBuilder input;
-
                     //if type is radio than use radio button
                     if (property.Metadata.DataTypeName == "Radio")
                     {
 
                         TagBuilder fieldset = new TagBuilder("fieldset");
+                        SetSingleTagAttrs(fieldset, property_name, "fieldset");
+
                         // According RadioDict's key to match main radio property name
                         // then get the key value pair from Value
                         // and tnen feed key and value to radio button
                         if (RadioDict.Count != 0)
                         {
-                            RadioDict.LastOrDefault(
-                                 prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
-                                 .Value
-                                 .ToDictionary(item =>
-                                 {
-                                     input = GenerateInputType(property, item.Key);
+                            var radioTag = RadioDict.LastOrDefault(
+                                prop => prop.Key.Equals(
+                                    property_name, StringComparison.OrdinalIgnoreCase))
+                                    .Value;
+                            if (radioTag != null)
+                            {
 
-                                     TagBuilder value_div = new TagBuilder("div");
-                                     TagBuilder value_span = new TagBuilder("span");
-                                     HtmlAttributesHelper.AddAttributes(
-                                         value_span, AttrsAllRadioBtnSpanDict,
-                                         property_name);
-                                     value_span.InnerHtml.AppendHtml(item.Value);
+                                RadioDict.LastOrDefault(
+                                     prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
+                                     .Value
+                                     .ToDictionary(item =>
+                                     {
+                                         input = GenerateInputType(property, item.Key);
 
-                                     SetInputLocation(
-                                         RadioTop, RadioBottom, RadioLeft,
-                                         value_span, input, fieldset);
+                                         TagBuilder value_span = new TagBuilder("span");
+                                         SetSingleTagAttrs(value_span, property_name, "span", item.Key);
+                                         value_span.InnerHtml.AppendHtml(item.Value);
 
+                                         SetInputLocation(
+                                             RadioTop, RadioBottom, RadioLeft,
+                                             value_span, input, fieldset,
+                                             property_name, item.Key);
 
-
-                                     SetTagAttrsAndClass(
-                                         input, ClassAllInput,
-                                         ClassInputDict, AttrsAllInputDict,
-                                         AttrsInputDict, property_name);
-
-                                     return input;
-                                 });
+                                         SetSingleTagAttrs(input, property_name, "input", item.Key);
+                                         return input;
+                                     });
+                            }
                         }
                         else
                         {
@@ -565,13 +579,16 @@ namespace GenericTagHelper
                         input = GenerateInputType(property);
                         SetInputLocation(
                             CheckBoxTop, CheckBoxBottom, CheckBoxLeft,
-                            label, input, form_group);
+                            label, input, form_group, property_name, "");
 
 
-                        SetTagAttrsAndClass(
-                                       input, ClassAllInput,
-                                       ClassInputDict, AttrsAllInputDict,
-                                       AttrsInputDict, property_name);
+                        //SetSingleTagAttrsAndClass(
+                        //               input, ClassAllInput,
+                        //               ClassInputDict, AttrsAllInputDict,
+                        //               AttrsInputDict, property_name);
+
+                        SetMultiTagsAttrs(input, "input");
+                        SetSingleTagAttrs(input, property_name, "input");
                     }
                     else if (property.Metadata.DataTypeName == "Select")
                     {
@@ -579,21 +596,38 @@ namespace GenericTagHelper
                         if (HtmlAttributesHelper.IsContainsKey(SelectListDict, property_name) &&
                             SelectListDict.Count() != 0)
                         {
-                            SelectListDict.Values.ToDictionary(items => items.ToDictionary(
-                                item =>
+                            var selectModel = SelectListDict.FirstOrDefault(
+                                model => model.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
+                                .Value;
+
+                            if (selectModel != null)
+                            {
+                                selectModel.ToDictionary(item =>
                                 {
                                     TagBuilder option = new TagBuilder("option");
                                     option.Attributes["value"] = item.Key;
                                     option.InnerHtml.SetHtmlContent(item.Value);
+                                    SetSingleTagAttrs(option, property_name, "option", item.Key);
                                     input.InnerHtml.AppendHtml(option);
                                     return option;
-                                }));
+                                });
+                            }
+                            //SelectListDict.Values.ToDictionary(items => items.ToDictionary(
+                            //    item =>
+                            //    {
+                            //        TagBuilder option = new TagBuilder("option");
+                            //        option.Attributes["value"] = item.Key;
+                            //        option.InnerHtml.SetHtmlContent(item.Value);
+                            //        input.InnerHtml.AppendHtml(option);
+                            //        return option;
+                            //    }));
+
+                            SetMultiTagsAttrs(input, "input");
+                            SetSingleTagAttrs(input, property_name, "input");
+
                             form_group.InnerHtml.AppendHtml(label);
                             form_group.InnerHtml.AppendHtml(input);
-                            SetTagAttrsAndClass(
-                                       input, ClassAllInput,
-                                       ClassInputDict, AttrsAllInputDict,
-                                       AttrsInputDict, property_name);
+
                         }
                         else
                         {
@@ -609,10 +643,13 @@ namespace GenericTagHelper
                     {
                         input = GenerateInputType(property);
 
-                        SetTagAttrsAndClass(
-                                       input, ClassAllInput,
-                                       ClassInputDict, AttrsAllInputDict,
-                                       AttrsInputDict, property_name);
+                        //SetSingleTagAttrsAndClass(
+                        //               input, ClassAllInput,
+                        //               ClassInputDict, AttrsAllInputDict,
+                        //               AttrsInputDict, property_name);
+
+                        SetMultiTagsAttrs(input, "input");
+                        SetSingleTagAttrs(input, property_name, "input");
                         form_group.InnerHtml.AppendHtml(label);
                         form_group.InnerHtml.AppendHtml(input);
                     }
@@ -627,11 +664,13 @@ namespace GenericTagHelper
                                             htmlAttributes: null);
 
 
-                    SetTagAttrsAndClass(
-                        span, ClassAllSpan,
-                        ClassSpanDict, AttrsAllSpanDict,
-                        AttrsSpanDict, property_name);
+                    //SetSingleTagAttrsAndClass(
+                    //    span, ClassAllSpan,
+                    //    ClassSpanDict, AttrsAllSpanDict,
+                    //    AttrsSpanDict, property_name);
 
+                    SetMultiTagsAttrs(span, "validation");
+                    SetSingleTagAttrs(span, property_name, "validation");
 
                     /*---------------End print your model----------------*/
 
@@ -1048,7 +1087,8 @@ namespace GenericTagHelper
 
         private void SetInputLocation(
             bool top, bool bottom, bool left,
-            TagBuilder label, TagBuilder input, TagBuilder group)
+            TagBuilder label, TagBuilder input, TagBuilder group,
+            string property_name, string row_num)
 
         {
             if (top &&
@@ -1057,6 +1097,7 @@ namespace GenericTagHelper
             {
                 group.InnerHtml.AppendHtml(input);
                 TagBuilder div = new TagBuilder("div");
+                SetSingleTagAttrs(div, property_name, "div", row_num);
                 div.InnerHtml.AppendHtml(label);
                 group.InnerHtml.AppendHtml(div);
             }
@@ -1065,6 +1106,7 @@ namespace GenericTagHelper
                 !left)
             {
                 TagBuilder div = new TagBuilder("div");
+                SetSingleTagAttrs(div, property_name, "div", row_num);
                 div.InnerHtml.AppendHtml(label);
                 group.InnerHtml.AppendHtml(div);
                 group.InnerHtml.AppendHtml(input);
@@ -1083,20 +1125,111 @@ namespace GenericTagHelper
             }
         }
 
-        private void SetTagAttrsAndClass(
-            TagBuilder tag, string classAll,
-            Dictionary<string, string> classDict,
-            Dictionary<string, string> attrsAllDict,
-            Dictionary<string, Dictionary<string, string>> attrsDict,
-            string property_name)
+
+
+        private void SetSingleTagAttrs(
+            TagBuilder tag,
+            string property_name,
+            string tag_name)
         {
-            tag.AddCssClass(classAll);
-            HtmlAttributesHelper.AddClass(
-                tag, classDict, property_name);
-            HtmlAttributesHelper.AddAttributes(
-                tag, attrsAllDict,
-                attrsDict, property_name);
+            var models = AttrsSingleTagDict.FirstOrDefault(
+                                modelName => modelName.Key.Equals(
+                                    property_name, StringComparison.OrdinalIgnoreCase)).Value;
+            if (AttrsSingleTagDict.Count != 0 &&
+                AttrsSingleTagDict.Keys.Any(modelName => modelName.Equals(property_name,
+                    StringComparison.OrdinalIgnoreCase)) &&
+                models.Keys.Any(prop => prop.Equals(tag_name,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                var attrs = models.FirstOrDefault(
+                    modelName => modelName.Key.Equals(
+                        tag_name, StringComparison.OrdinalIgnoreCase)).Value;
+
+                attrs.ToDictionary(attr =>
+                {
+                    try
+                    {
+                        tag.Attributes[attr.Key] = attr.Value;
+                    }
+                    catch (ArgumentException)
+                    {
+                        return tag;
+                    }
+                    return tag;
+                });
+            }
         }
+
+        private void SetSingleTagAttrs(
+            TagBuilder tag,
+            string property_name,
+            string tag_name,
+            string value_num)
+        {
+            var models = AttrsSingleTagDict.FirstOrDefault(
+                    modelName => modelName.Key.Equals(
+                        property_name, StringComparison.OrdinalIgnoreCase)).Value;
+            if (AttrsSingleTagDict.Count != 0 &&
+                AttrsSingleTagDict.Keys.Any(modelName => modelName.Equals(property_name, StringComparison.OrdinalIgnoreCase)) &&
+                models.Keys.Any(prop => prop.Equals(tag_name + value_num, StringComparison.OrdinalIgnoreCase)))
+            {
+                var attrs = models.FirstOrDefault(modelName => modelName.Key.Equals(
+                        tag_name + value_num, StringComparison.OrdinalIgnoreCase))
+                      .Value;
+                if (attrs != null)
+                {
+                    attrs.ToDictionary(attr =>
+                    {
+                        try
+                        {
+                            tag.Attributes[attr.Key] = attr.Value;
+                        }
+                        catch (ArgumentException)
+                        {
+                            return tag;
+                        }
+                        return tag;
+                    });
+                }
+            }
+        }
+
+        private void SetMultiTagsAttrs(
+            TagBuilder tag,
+            string tag_name)
+        {
+
+            if (AttrsMultiTagsDict.Count() != 0 &&
+                AttrsMultiTagsDict.Keys.Any(
+                    tagName => tagName.Equals(tag_name, StringComparison.OrdinalIgnoreCase)))
+            {
+                var fg_tag = AttrsMultiTagsDict.FirstOrDefault(
+                    fg => fg.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase))
+                    .Value;
+                if (fg_tag != null)
+                {
+                    fg_tag.ToDictionary(attr =>
+                    {
+                        tag.Attributes[attr.Key] = attr.Value;
+                        return tag;
+                    });
+                }
+            }
+        }
+        //private void SetSingleTagAttrsAndClass(
+        //    TagBuilder tag, string classAll,
+        //    Dictionary<string, string> classDict,
+        //    Dictionary<string, string> attrsAllDict,
+        //    Dictionary<string, Dictionary<string, string>> attrsDict,
+        //    string property_name)
+        //{
+        //    tag.AddCssClass(classAll);
+        //    HtmlAttributesHelper.AddClass(
+        //        tag, classDict, property_name);
+        //    HtmlAttributesHelper.AddAttributes(
+        //        tag, attrsAllDict,
+        //        attrsDict, property_name);
+        //}
         #endregion
     }
 }

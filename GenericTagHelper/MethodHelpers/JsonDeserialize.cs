@@ -28,6 +28,16 @@ namespace GenericTagHelper.MethodHelpers
             return new Dictionary<string, Dictionary<string, string>>();
         }
 
+        public static Dictionary<string,Dictionary<string,Dictionary<string,string>>> JsonDeserializeConvert_DsDssDss(
+            string attributeString)
+        {
+            if (!String.IsNullOrEmpty(attributeString))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<string, string>>>>(attributeString);
+            }
+            return new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+        }
+
         public static Dictionary<string, List<Dictionary<string, string>>> JsonDeserializeConvert_DLDss(
             string dataString)
         {
