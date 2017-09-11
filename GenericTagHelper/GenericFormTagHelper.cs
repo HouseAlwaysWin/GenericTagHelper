@@ -98,18 +98,7 @@ namespace GenericTagHelper
         public ModelExpression FormModel { get; set; }
 
         #region Title
-        public string FormTitle { get; set; } = "Form-Title";
-
-        public string ClassTitle { get; set; }
-
-        public string AttrsTitle { get; set; }
-        private Dictionary<string, string> AttrsTitleDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTitle);
-            }
-        }
+        public string FormTitle { get; set; }
         #endregion
 
         #region ValidationSummary
@@ -146,211 +135,54 @@ namespace GenericTagHelper
             }
         }
 
-        public string ClassValidationSummary { get; set; } = "";
+        //public string ClassValidationSummary { get; set; } = "";
 
-        public string AttrsValidationSummary { get; set; }
-        private Dictionary<string, string> AttrsValidationSummaryDict
+        //public string AttrsValidationSummary { get; set; }
+        //private Dictionary<string, string> AttrsValidationSummaryDict
+        //{
+        //    get
+        //    {
+        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsValidationSummary);
+        //    }
+        //}
+
+        //public string ClassValidationSummaryUl { get; set; }
+
+        //public string AttrsValidationSummaryUl { get; set; }
+        //private Dictionary<string, string> AttrsValidationSummaryUlDict
+        //{
+        //    get
+        //    {
+        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsValidationSummaryUl);
+        //    }
+        //}
+        #endregion
+
+        #region  Attributes
+
+        public string AttrsLocalTag { get; set; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsLocalTagDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsValidationSummary);
+                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsLocalTag);
             }
         }
 
-        public string ClassValidationSummaryUl { get; set; }
-
-        public string AttrsValidationSummaryUl { get; set; }
-        private Dictionary<string, string> AttrsValidationSummaryUlDict
+        public string AttrsGlobalTags { get; set; }
+        public Dictionary<string, Dictionary<string, string>> AttrsGlobalTagsDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsValidationSummaryUl);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsGlobalTags);
             }
         }
         #endregion
 
-        public string AttrsSingleTag { get; set; }
-        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsSingleTagDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsSingleTag);
-            }
-        }
-
-        public string AttrsMultiTags { get; set; }
-        public Dictionary<string, Dictionary<string, string>> AttrsMultiTagsDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsMultiTags);
-            }
-        }
-
-        #region FormGroup
-        public string ClassAllFormGroup { get; set; } = "form-group";
-
-        // Add Json string to match form-group class 
-        public string ClassFormGroup { get; set; }
-        private Dictionary<string, string> ClassFormGroupDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassFormGroup);
-            }
-        }
-
-        public string AttrsAllFormGroup { get; set; }
-        private Dictionary<string, string> AttrsAllFormGroupDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsAllFormGroup);
-            }
-        }
-
-        public string AttrsFormGroup { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttrsFormGroupDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsFormGroup);
-            }
-        }
-
-
-        #endregion
-
-        #region Label
-        public string ClassAllLabel { get; set; } = "";
-
-        // Add Json string to match label class
-        public string ClassLabel { get; set; }
-        private Dictionary<string, string> ClassLabelDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassLabel);
-            }
-        }
-
-        public string AttrsAllLabel { get; set; }
-        private Dictionary<string, string> AttrsAllLabelDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsAllLabel);
-            }
-        }
-
-        public string AttrsLabel { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttrsLabelDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsLabel);
-            }
-        }
-
-
-        #endregion
-
-        #region Input
-        public string ClassAllInput { get; set; } = "form-control";
-
-        // Add Json string to match input class
-        public string ClassInput { get; set; }
-        private Dictionary<string, string> ClassInputDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassInput);
-            }
-        }
-
-        public string AttrsAllInput { get; set; }
-        private Dictionary<string, string> AttrsAllInputDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsAllInput);
-            }
-        }
-
-        public string AttrsInput { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttrsInputDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsInput);
-            }
-        }
-        #endregion
-
-        #region Span
-        public string ClassAllSpan { get; set; } = "";
-
-        // Add Json string to match span class
-        public string ClassSpan { get; set; }
-        private Dictionary<string, string> ClassSpanDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassSpan);
-            }
-        }
-
-        public string AttrsAllSpan { get; set; }
-        private Dictionary<string, string> AttrsAllSpanDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsAllSpan);
-            }
-        }
-
-        public string AttrsSpan { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttrsSpanDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsSpan);
-            }
-        }
-        #endregion
-
-        #region Submit Button
-        public string SubmitBtnContent { get; set; } = "Submit";
-
-        public string ClassSubmitBtn { get; set; } = "btn btn-primary";
-
-        public string AttrsSubmitBtn { get; set; }
-        private Dictionary<string, string> AttrsSubmitBtnDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsSubmitBtn);
-            }
-        }
-        #endregion
-
-        #region Cancel Button
-        public string CancelBtnContent { get; set; } = "Cancel";
-
-        public string ClassCancelBtn { get; set; } = "btn btn-default";
-
-        public string AttrsCancelBtn { get; set; }
-        private Dictionary<string, string> AttrsCancelBtnDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsCancelBtn);
-            }
-        }
-
-        public string CancelLinkReturnAction { get; set; } = "";
-
-        public string CancelLinkReturnController { get; set; } = "";
+        #region ActiveTags
+        public bool ActiveValidationSummary { get; set; } = true;
+        public bool ActiveLabel { get; set; } = true;
+        public bool ActiveValidation { get; set; } = true;
         #endregion
 
         #region RadioButton 
@@ -368,26 +200,6 @@ namespace GenericTagHelper
                 return JsonDeserialize.JsonDeserializeConvert_DsDss(RadioButtonDataList);
             }
         }
-
-        public string ClassRadioBtnSpan { get; set; }
-        private Dictionary<string, string> ClassRadioBtnSpanDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(ClassRadioBtnSpan);
-            }
-        }
-
-        public string AttrsAllRadioBtnSpan { get; set; }
-        private Dictionary<string, Dictionary<string, string>> AttrsAllRadioBtnSpanDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(
-                    AttrsAllRadioBtnSpan);
-            }
-        }
-
         #endregion
 
         #region  SelectList
@@ -413,21 +225,21 @@ namespace GenericTagHelper
 
             // Apply Title class and attrs
             TagBuilder title = new TagBuilder("div");
-            title.InnerHtml.SetHtmlContent(FormTitle);
-            title.AddCssClass(ClassTitle);
-            title.Attributes["class"] = ClassTitle;
-            HtmlAttributesHelper.AddAttributes(title, AttrsTitleDict);
 
+            if (FormTitle != null)
+            {
+                title.InnerHtml.SetHtmlContent(FormTitle);
+                SetGlobalTagsAttrs(title, "title");
+                output.Content.AppendHtml(title);
+            }
 
             // Apply Validation Summary class and attrs
-            TagBuilder validation_sum = GenerateValidationSummary();
-            //validation_sum.AddCssClass(ClassValidationSummary);
-            HtmlAttributesHelper.AddAttributes(
-                validation_sum, AttrsValidationSummaryDict);
-
-            output.Content.AppendHtml(title);
-
-            output.Content.AppendHtml(validation_sum);
+            if (ActiveValidationSummary)
+            {
+                TagBuilder validation_sum = GenerateValidationSummary();
+                SetGlobalTagsAttrs(validation_sum, "validation_sum");
+                output.Content.AppendHtml(validation_sum);
+            }
 
             bool restart;
 
@@ -507,8 +319,8 @@ namespace GenericTagHelper
 
                     TagBuilder form_group = new TagBuilder("div");
                     form_group.Attributes["class"] = "form-group";
-                    SetSingleTagAttrs(form_group, "group", property_name);
-                    SetMultiTagsAttrs(form_group, "group");
+                    SetLocalTagAttrs(form_group, "group", property_name);
+                    SetGlobalTagsAttrs(form_group, "group");
 
                     TagBuilder label = Generator.GenerateLabel(
                         ViewContext,
@@ -518,8 +330,8 @@ namespace GenericTagHelper
                         htmlAttributes: null);
 
 
-                    SetMultiTagsAttrs(label, "label");
-                    SetSingleTagAttrs(label, property_name, "label");
+                    SetGlobalTagsAttrs(label, "label");
+                    SetLocalTagAttrs(label, property_name, "label");
 
                     TagBuilder input;
                     //if type is radio than use radio button
@@ -527,7 +339,7 @@ namespace GenericTagHelper
                     {
 
                         TagBuilder fieldset = new TagBuilder("fieldset");
-                        SetSingleTagAttrs(fieldset, property_name, "fieldset");
+                        SetLocalTagAttrs(fieldset, property_name, "fieldset");
 
                         // According RadioDict's key to match main radio property name
                         // then get the key value pair from Value
@@ -540,7 +352,6 @@ namespace GenericTagHelper
                                     .Value;
                             if (radioTag != null)
                             {
-
                                 RadioDict.LastOrDefault(
                                      prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
                                      .Value
@@ -549,7 +360,7 @@ namespace GenericTagHelper
                                          input = GenerateInputType(property, item.Key);
 
                                          TagBuilder value_span = new TagBuilder("span");
-                                         SetSingleTagAttrs(value_span, property_name, "span", item.Key);
+                                         SetLocalTagAttrs(value_span, property_name, "span", item.Key);
                                          value_span.InnerHtml.AppendHtml(item.Value);
 
                                          SetInputLocation(
@@ -557,7 +368,7 @@ namespace GenericTagHelper
                                              value_span, input, fieldset,
                                              property_name, item.Key);
 
-                                         SetSingleTagAttrs(input, property_name, "input", item.Key);
+                                         SetLocalTagAttrs(input, property_name, "input", item.Key);
                                          return input;
                                      });
                             }
@@ -571,7 +382,10 @@ namespace GenericTagHelper
                             fieldset.InnerHtml.AppendHtml(NoDataMsg);
                         }
 
-                        form_group.InnerHtml.AppendHtml(label);
+                        if (ActiveLabel)
+                        {
+                            form_group.InnerHtml.AppendHtml(label);
+                        }
                         form_group.InnerHtml.AppendHtml(fieldset);
                     }
                     else if (property.Metadata.DataTypeName == "CheckBox")
@@ -581,18 +395,13 @@ namespace GenericTagHelper
                             CheckBoxTop, CheckBoxBottom, CheckBoxLeft,
                             label, input, form_group, property_name, "");
 
-
-                        //SetSingleTagAttrsAndClass(
-                        //               input, ClassAllInput,
-                        //               ClassInputDict, AttrsAllInputDict,
-                        //               AttrsInputDict, property_name);
-
-                        SetMultiTagsAttrs(input, "input");
-                        SetSingleTagAttrs(input, property_name, "input");
+                        SetGlobalTagsAttrs(input, "input");
+                        SetLocalTagAttrs(input, property_name, "input");
                     }
                     else if (property.Metadata.DataTypeName == "Select")
                     {
                         input = GenerateInputType(property);
+                        input.Attributes["class"] = "form-control";
                         if (HtmlAttributesHelper.IsContainsKey(SelectListDict, property_name) &&
                             SelectListDict.Count() != 0)
                         {
@@ -607,27 +416,20 @@ namespace GenericTagHelper
                                     TagBuilder option = new TagBuilder("option");
                                     option.Attributes["value"] = item.Key;
                                     option.InnerHtml.SetHtmlContent(item.Value);
-                                    SetSingleTagAttrs(option, property_name, "option", item.Key);
+                                    SetLocalTagAttrs(option, property_name, "option", item.Key);
                                     input.InnerHtml.AppendHtml(option);
                                     return option;
                                 });
                             }
-                            //SelectListDict.Values.ToDictionary(items => items.ToDictionary(
-                            //    item =>
-                            //    {
-                            //        TagBuilder option = new TagBuilder("option");
-                            //        option.Attributes["value"] = item.Key;
-                            //        option.InnerHtml.SetHtmlContent(item.Value);
-                            //        input.InnerHtml.AppendHtml(option);
-                            //        return option;
-                            //    }));
 
-                            SetMultiTagsAttrs(input, "input");
-                            SetSingleTagAttrs(input, property_name, "input");
+                            SetGlobalTagsAttrs(input, "input");
+                            SetLocalTagAttrs(input, property_name, "input");
 
-                            form_group.InnerHtml.AppendHtml(label);
+                            if (ActiveLabel)
+                            {
+                                form_group.InnerHtml.AppendHtml(label);
+                            }
                             form_group.InnerHtml.AppendHtml(input);
-
                         }
                         else
                         {
@@ -635,7 +437,10 @@ namespace GenericTagHelper
                             NoDataMsg.MergeAttribute("style", "color:red;");
                             NoDataMsg.InnerHtml.SetHtmlContent(
                                 "No select list data,please give a data in your view");
-                            form_group.InnerHtml.AppendHtml(label);
+                            if (ActiveLabel)
+                            {
+                                form_group.InnerHtml.AppendHtml(label);
+                            }
                             form_group.InnerHtml.AppendHtml(NoDataMsg);
                         }
                     }
@@ -643,39 +448,34 @@ namespace GenericTagHelper
                     {
                         input = GenerateInputType(property);
 
-                        //SetSingleTagAttrsAndClass(
-                        //               input, ClassAllInput,
-                        //               ClassInputDict, AttrsAllInputDict,
-                        //               AttrsInputDict, property_name);
-
-                        SetMultiTagsAttrs(input, "input");
-                        SetSingleTagAttrs(input, property_name, "input");
-                        form_group.InnerHtml.AppendHtml(label);
+                        input.Attributes["class"] = "form-control";
+                        SetGlobalTagsAttrs(input, "input");
+                        SetLocalTagAttrs(input, property_name, "input");
+                        if (ActiveLabel)
+                        {
+                            form_group.InnerHtml.AppendHtml(label);
+                        }
                         form_group.InnerHtml.AppendHtml(input);
                     }
 
+                    if (ActiveValidation)
+                    {
+                        TagBuilder span = Generator.GenerateValidationMessage(
+                                                ViewContext,
+                                                property,
+                                                property.Metadata.PropertyName,
+                                                message: null,
+                                                tag: null,
+                                                htmlAttributes: null);
 
-                    TagBuilder span = Generator.GenerateValidationMessage(
-                                            ViewContext,
-                                            property,
-                                            property.Metadata.PropertyName,
-                                            message: null,
-                                            tag: null,
-                                            htmlAttributes: null);
+                        SetGlobalTagsAttrs(span, "validation");
+                        SetLocalTagAttrs(span, property_name, "validation");
 
 
-                    //SetSingleTagAttrsAndClass(
-                    //    span, ClassAllSpan,
-                    //    ClassSpanDict, AttrsAllSpanDict,
-                    //    AttrsSpanDict, property_name);
+                        /*---------------End print your model----------------*/
 
-                    SetMultiTagsAttrs(span, "validation");
-                    SetSingleTagAttrs(span, property_name, "validation");
-
-                    /*---------------End print your model----------------*/
-
-                    form_group.InnerHtml.AppendHtml(span);
-
+                        form_group.InnerHtml.AppendHtml(span);
+                    }
                     output.Content.AppendHtml(form_group);
 
                     // End loop according your number of properties
@@ -933,9 +733,10 @@ namespace GenericTagHelper
             var modelStates = ValidationHelpers.GetModelStateList(viewData, excludePropertyErrors);
 
             var validation_ul = new TagBuilder("ul");
-            validation_ul.AddCssClass(ClassValidationSummaryUl);
-            HtmlAttributesHelper.AddAttributes(
-                validation_ul, AttrsValidationSummaryUlDict);
+            //validation_ul.AddCssClass(ClassValidationSummaryUl);
+            SetGlobalTagsAttrs(validation_ul, "validation_sum_group");
+            //HtmlAttributesHelper.AddAttributes(
+            //    validation_ul, AttrsValidationSummaryUlDict);
 
             foreach (var modelState in modelStates)
             {
@@ -1097,7 +898,7 @@ namespace GenericTagHelper
             {
                 group.InnerHtml.AppendHtml(input);
                 TagBuilder div = new TagBuilder("div");
-                SetSingleTagAttrs(div, property_name, "div", row_num);
+                SetLocalTagAttrs(div, property_name, "div", row_num);
                 div.InnerHtml.AppendHtml(label);
                 group.InnerHtml.AppendHtml(div);
             }
@@ -1106,7 +907,7 @@ namespace GenericTagHelper
                 !left)
             {
                 TagBuilder div = new TagBuilder("div");
-                SetSingleTagAttrs(div, property_name, "div", row_num);
+                SetLocalTagAttrs(div, property_name, "div", row_num);
                 div.InnerHtml.AppendHtml(label);
                 group.InnerHtml.AppendHtml(div);
                 group.InnerHtml.AppendHtml(input);
@@ -1127,16 +928,16 @@ namespace GenericTagHelper
 
 
 
-        private void SetSingleTagAttrs(
+        private void SetLocalTagAttrs(
             TagBuilder tag,
             string property_name,
             string tag_name)
         {
-            var models = AttrsSingleTagDict.FirstOrDefault(
+            var models = AttrsLocalTagDict.FirstOrDefault(
                                 modelName => modelName.Key.Equals(
                                     property_name, StringComparison.OrdinalIgnoreCase)).Value;
-            if (AttrsSingleTagDict.Count != 0 &&
-                AttrsSingleTagDict.Keys.Any(modelName => modelName.Equals(property_name,
+            if (AttrsLocalTagDict.Count != 0 &&
+                AttrsLocalTagDict.Keys.Any(modelName => modelName.Equals(property_name,
                     StringComparison.OrdinalIgnoreCase)) &&
                 models.Keys.Any(prop => prop.Equals(tag_name,
                     StringComparison.OrdinalIgnoreCase)))
@@ -1160,17 +961,17 @@ namespace GenericTagHelper
             }
         }
 
-        private void SetSingleTagAttrs(
+        private void SetLocalTagAttrs(
             TagBuilder tag,
             string property_name,
             string tag_name,
             string value_num)
         {
-            var models = AttrsSingleTagDict.FirstOrDefault(
+            var models = AttrsLocalTagDict.FirstOrDefault(
                     modelName => modelName.Key.Equals(
                         property_name, StringComparison.OrdinalIgnoreCase)).Value;
-            if (AttrsSingleTagDict.Count != 0 &&
-                AttrsSingleTagDict.Keys.Any(modelName => modelName.Equals(property_name, StringComparison.OrdinalIgnoreCase)) &&
+            if (AttrsLocalTagDict.Count != 0 &&
+                AttrsLocalTagDict.Keys.Any(modelName => modelName.Equals(property_name, StringComparison.OrdinalIgnoreCase)) &&
                 models.Keys.Any(prop => prop.Equals(tag_name + value_num, StringComparison.OrdinalIgnoreCase)))
             {
                 var attrs = models.FirstOrDefault(modelName => modelName.Key.Equals(
@@ -1194,16 +995,16 @@ namespace GenericTagHelper
             }
         }
 
-        private void SetMultiTagsAttrs(
+        private void SetGlobalTagsAttrs(
             TagBuilder tag,
             string tag_name)
         {
 
-            if (AttrsMultiTagsDict.Count() != 0 &&
-                AttrsMultiTagsDict.Keys.Any(
+            if (AttrsGlobalTagsDict.Count() != 0 &&
+                AttrsGlobalTagsDict.Keys.Any(
                     tagName => tagName.Equals(tag_name, StringComparison.OrdinalIgnoreCase)))
             {
-                var fg_tag = AttrsMultiTagsDict.FirstOrDefault(
+                var fg_tag = AttrsGlobalTagsDict.FirstOrDefault(
                     fg => fg.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase))
                     .Value;
                 if (fg_tag != null)
@@ -1216,20 +1017,7 @@ namespace GenericTagHelper
                 }
             }
         }
-        //private void SetSingleTagAttrsAndClass(
-        //    TagBuilder tag, string classAll,
-        //    Dictionary<string, string> classDict,
-        //    Dictionary<string, string> attrsAllDict,
-        //    Dictionary<string, Dictionary<string, string>> attrsDict,
-        //    string property_name)
-        //{
-        //    tag.AddCssClass(classAll);
-        //    HtmlAttributesHelper.AddClass(
-        //        tag, classDict, property_name);
-        //    HtmlAttributesHelper.AddAttributes(
-        //        tag, attrsAllDict,
-        //        attrsDict, property_name);
-        //}
+
         #endregion
     }
 }

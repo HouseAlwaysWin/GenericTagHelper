@@ -76,32 +76,32 @@ namespace GenericTagHelperUnitTest
         [Fact]
         public void Process_FormGroupLabel_GenerateExceptedOutput()
         {
-            var metadataProvider = new EmptyModelMetadataProvider();
-            var htmlGenerator = new TestableHtmlGenerator(metadataProvider);
-            var viewContext = TestableHtmlGenerator.GetViewContext(
-                model: null,
-                htmlGenerator: htmlGenerator,
-                metadataProvider: metadataProvider);
-            var urlHelper = new Mock<IUrlHelper>();
-            urlHelper
-                .Setup(urlhelper => urlhelper.Content(It.IsAny<string>()))
-                .Returns(new Func<string, string>(url => url.Replace("~/", "virtualRoot/")));
-            var urlHelperFactory = new Mock<IUrlHelperFactory>();
-            urlHelperFactory
-                .Setup(f => f.GetUrlHelper(It.IsAny<ActionContext>()))
-                .Returns(urlHelper.Object);
+            //var metadataProvider = new EmptyModelMetadataProvider();
+            //var htmlGenerator = new TestableHtmlGenerator(metadataProvider);
+            //var viewContext = TestableHtmlGenerator.GetViewContext(
+            //    model: null,
+            //    htmlGenerator: htmlGenerator,
+            //    metadataProvider: metadataProvider);
+            //var urlHelper = new Mock<IUrlHelper>();
+            //urlHelper
+            //    .Setup(urlhelper => urlhelper.Content(It.IsAny<string>()))
+            //    .Returns(new Func<string, string>(url => url.Replace("~/", "virtualRoot/")));
+            //var urlHelperFactory = new Mock<IUrlHelperFactory>();
+            //urlHelperFactory
+            //    .Setup(f => f.GetUrlHelper(It.IsAny<ActionContext>()))
+            //    .Returns(urlHelper.Object);
 
-            var context = new TagHelperContext(
-                tagName: "label",
-                allAttributes: new TagHelperAttributeList(
-                    Enumerable.Empty<TagHelperAttribute>()),
-                items:new Dictionary<object,object>(),
-                uniqueId:"test");
+            //var context = new TagHelperContext(
+            //    tagName: "label",
+            //    allAttributes: new TagHelperAttributeList(
+            //        Enumerable.Empty<TagHelperAttribute>()),
+            //    items:new Dictionary<object,object>(),
+            //    uniqueId:"test");
 
-            GenericFormTagHelper formTaghelper = 
-                new GenericFormTagHelper(urlHelperFactory.Object,htmlGenerator);
+            //GenericFormTagHelper formTaghelper = 
+            //    new GenericFormTagHelper(urlHelperFactory.Object,htmlGenerator);
 
-            formTaghelper.AttrsAllFormGroup = "form-group";
+            //formTaghelper.AttrsAllFormGroup = "form-group";
             
           
         }

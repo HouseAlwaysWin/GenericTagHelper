@@ -3,19 +3,19 @@
 <br />
 
 <form generic form-model="@Model" asp-validation-summary="All"
-      form-title="<h1>FormModel</h1>"
-      class-input='{
-        checkbox:"",
-      }'
-      class-form-group='{
-          image:"test"
-      }'
+      form-title="<h1>Form Title</h1>"
       select-data-list='{
         selectlist:{
             1:"Bronze",
             2:"Silver",
             3:"Gold",
             4:"Patiunm"
+        },
+        selectlist2:{
+            1:"Bronze2",
+            2:"Silver2",
+            3:"Gold2",
+            4:"Patiunm2"
         }
       }'
       radio-button-data-list='{
@@ -24,53 +24,25 @@
             2:"female"
         }
       }'
-      attrs-single-tag="{
-            textbox:{
-               input:{
-                   class:'form-control'
-               }
-            },
-            id:{
-                div:{
-                    class:'form-control'
-                },
-                label:{
-                    id:'hello'
-                },
-                input:{
-                    class:'form-control'
-                }
-            },
-            selectradio:{
-                input1:{
-                    class:'form-control'
-                },
-                span1:{
-                    class:'hello'
-                },
-                span2:{
-                    class:'spn2'
-                }
-            },
-            complextype1id:{
-                input:{class:'form-control'}
-            },
-            selectlist:{
-                input:{class:'form-control'},
-                option1:{class:'form-control'}
-            },
-            levelselectlist:{
-                input:{class:'form-control'}
-            }
+      attrs-global-tags="{
+        validation:{
+            style:'color:red;'
+        },
+        title:{
+            style:'color:red;'
+        }
       }"
-      attrs-validation-summary='{
-        "class":"text-danger"
-      }'
-      attrs-validation-summary-ul='{
-      }'
+      attrs-local-tag="{
+        selectradio:{
+            span1:{style:'margin-right:5px;'},
+            span2:{style:'margin-right:5px;'},
+            input1:{style:'margin-right:5px;'}
+        },
+        selectlist2:{
+            option3:{style:'color:red;'}
+        }
+      }"
       method="post"
-      cancel-link-return-action="Index"
-      cancel-link-return-controller="Home"
       asp-action="CreateGenericForm"
       asp-antiforgery="true">
     <input class="btn btn-primary" type="submit" value="Sumit" />
