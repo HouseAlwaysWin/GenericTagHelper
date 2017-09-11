@@ -217,6 +217,15 @@ namespace GenericTagHelper
         public bool CheckBoxTop { get; set; }
         public bool CheckBoxBottom { get; set; }
         public bool CheckBoxLeft { get; set; }
+
+        public string CheckBoxDataList { get; set; }
+        private Dictionary<string, Dictionary<string, string>> CheckBoxDataListDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(CheckBoxDataList);
+            }
+        }
         #endregion
 
         public override async Task ProcessAsync(
@@ -344,34 +353,29 @@ namespace GenericTagHelper
                         // According RadioDict's key to match main radio property name
                         // then get the key value pair from Value
                         // and tnen feed key and value to radio button
-                        if (RadioDict.Count != 0)
+                        var radioTag = RadioDict.FirstOrDefault(
+                                                       prop => prop.Key.Equals(
+                                                           property_name, StringComparison.OrdinalIgnoreCase))
+                                                           .Value;
+                        if (RadioDict.Count != 0 &&
+                            radioTag != null)
                         {
-                            var radioTag = RadioDict.LastOrDefault(
-                                prop => prop.Key.Equals(
-                                    property_name, StringComparison.OrdinalIgnoreCase))
-                                    .Value;
-                            if (radioTag != null)
+                            radioTag.ToDictionary(item =>
                             {
-                                RadioDict.LastOrDefault(
-                                     prop => prop.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
-                                     .Value
-                                     .ToDictionary(item =>
-                                     {
-                                         input = GenerateInputType(property, item.Key);
+                                input = GenerateInputType(property, item.Key);
 
-                                         TagBuilder value_span = new TagBuilder("span");
-                                         SetLocalTagAttrs(value_span, property_name, "span", item.Key);
-                                         value_span.InnerHtml.AppendHtml(item.Value);
+                                TagBuilder value_span = new TagBuilder("span");
+                                SetLocalTagAttrs(value_span, property_name, "span", item.Key);
+                                value_span.InnerHtml.AppendHtml(item.Value);
 
-                                         SetInputLocation(
-                                             RadioTop, RadioBottom, RadioLeft,
-                                             value_span, input, fieldset,
-                                             property_name, item.Key);
+                                SetInputLocation(
+                                    RadioTop, RadioBottom, RadioLeft,
+                                    value_span, input, fieldset,
+                                    property_name, item.Key);
 
-                                         SetLocalTagAttrs(input, property_name, "input", item.Key);
-                                         return input;
-                                     });
-                            }
+                                SetLocalTagAttrs(input, property_name, "input", item.Key);
+                                return input;
+                            });
                         }
                         else
                         {
@@ -390,37 +394,73 @@ namespace GenericTagHelper
                     }
                     else if (property.Metadata.DataTypeName == "CheckBox")
                     {
-                        input = GenerateInputType(property);
-                        SetInputLocation(
-                            CheckBoxTop, CheckBoxBottom, CheckBoxLeft,
-                            label, input, form_group, property_name, "");
+                        TagBuilder fieldset = new TagBuilder("fieldset");
+                        SetLocalTagAttrs(fieldset, property_name, "fieldset");
 
-                        SetGlobalTagsAttrs(input, "input");
-                        SetLocalTagAttrs(input, property_name, "input");
+                        input = GenerateInputType(property);
+                        var checkBoxModel =
+                            CheckBoxDataListDict.FirstOrDefault(
+                                model => model.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
+                                .Value;
+                        if (checkBoxModel != null &&
+                           CheckBoxDataListDict.Count() != 0)
+                        {
+                            checkBoxModel.ToDictionary(item =>
+                            {
+                                input = GenerateInputType(property, item.Key);
+
+                                TagBuilder value_span = new TagBuilder("span");
+                                SetLocalTagAttrs(value_span, property_name, "span", item.Key);
+                                value_span.InnerHtml.AppendHtml(item.Value);
+
+                                SetInputLocation(
+                                    RadioTop, RadioBottom, RadioLeft,
+                                    value_span, input, fieldset,
+                                    property_name, item.Key);
+
+                                SetLocalTagAttrs(input, property_name, "input", item.Key);
+                                return input;
+                            });
+
+                            SetGlobalTagsAttrs(input, "input");
+                            SetLocalTagAttrs(input, property_name, "input");
+                        }
+                        else
+                        {
+                            form_group.InnerHtml.AppendHtml(label);
+                            form_group.InnerHtml.AppendHtml(input);
+                        }
+
+                        if (ActiveLabel)
+                        {
+                            form_group.InnerHtml.AppendHtml(label);
+                        }
+                        form_group.InnerHtml.AppendHtml(fieldset);
+
                     }
                     else if (property.Metadata.DataTypeName == "Select")
                     {
                         input = GenerateInputType(property);
                         input.Attributes["class"] = "form-control";
-                        if (HtmlAttributesHelper.IsContainsKey(SelectListDict, property_name) &&
-                            SelectListDict.Count() != 0)
-                        {
-                            var selectModel = SelectListDict.FirstOrDefault(
-                                model => model.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
-                                .Value;
 
-                            if (selectModel != null)
+                        var selectModel =
+                            SelectListDict.FirstOrDefault(
+                                model => model.Key.Equals(
+                                    property_name, StringComparison.OrdinalIgnoreCase))
+                                    .Value;
+
+                        if (selectModel != null &&
+                              SelectListDict.Count() != 0)
+                        {
+                            selectModel.ToDictionary(item =>
                             {
-                                selectModel.ToDictionary(item =>
-                                {
-                                    TagBuilder option = new TagBuilder("option");
-                                    option.Attributes["value"] = item.Key;
-                                    option.InnerHtml.SetHtmlContent(item.Value);
-                                    SetLocalTagAttrs(option, property_name, "option", item.Key);
-                                    input.InnerHtml.AppendHtml(option);
-                                    return option;
-                                });
-                            }
+                                TagBuilder option = new TagBuilder("option");
+                                option.Attributes["value"] = item.Key;
+                                option.InnerHtml.SetHtmlContent(item.Value);
+                                SetLocalTagAttrs(option, property_name, "option", item.Key);
+                                input.InnerHtml.AppendHtml(option);
+                                return option;
+                            });
 
                             SetGlobalTagsAttrs(input, "input");
                             SetLocalTagAttrs(input, property_name, "input");
