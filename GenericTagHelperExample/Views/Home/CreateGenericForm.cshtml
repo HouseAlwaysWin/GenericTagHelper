@@ -4,26 +4,36 @@
 
 <form generic form-model="@Model" asp-validation-summary="All"
       form-title="<h1>Form Title</h1>"
-      select-data-list='{
+      select-data-list="{
         selectlist:{
-            1:"Bronze",
-            2:"Silver",
-            3:"Gold",
-            4:"Patiunm"
+            1:'Bronze',
+            2:'Silver',
+            3:'Gold',
+            4:'Patiunm'
         },
         selectlist2:{
-            1:"Bronze2",
-            2:"Silver2",
-            3:"Gold2",
-            4:"Patiunm2"
+            1:'Bronze2',
+            2:'Silver2',
+            3:'Gold2',
+            4:'Patiunm2'
         }
-      }'
-      radio-button-data-list='{
+      }"
+      radio-button-data-list="{
         selectradio:{
-            1:"male",
-            2:"female"
+            1:'male',
+            2:'female'
         }
-      }'
+      }"
+      checkbox-data-list="{
+        checkbox:{
+            'checkbox label1': 'false',
+            'checkbox label2':'false'
+        }
+      }"
+      checkbox-cols-list="true"
+      radio-cols-list="true"
+      radio-left="true"
+
       attrs-global-tags="{
         validation:{
             style:'color:red;'
@@ -33,17 +43,26 @@
         }
       }"
       attrs-local-tag="{
+        id:{
+            label:{style:'color:green;'},
+            input:{ style:'border-color:green;'}
+        },
         selectradio:{
-            span1:{style:'margin-right:5px;'},
-            span2:{style:'margin-right:5px;'},
-            input1:{style:'margin-right:5px;'}
+            radio_label_1:{style:'margin-right:5px;color:red;font-weight:normal;'},
+            radio_label_2:{style:'color:red;font-weight:normal;'},
+            radio_input_1:{style:'margin-right:5px;'},
+            radio_input_2:{style:'margin-right:5px;'},
         },
         selectlist2:{
-            option3:{style:'color:red;'}
+            input:{style:'border-color:red;'},
+            option_3:{style:'color:red;'}
         },
         checkbox:{
-            checkbox:{class:''}
-         }
+            'checkbox_label_1':{
+                style:'color:red;font-weight:normal',
+
+            }
+        },
       }"
       method="post"
       asp-action="CreateGenericForm"
