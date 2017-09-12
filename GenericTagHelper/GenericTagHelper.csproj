@@ -6,6 +6,51 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="obj\Debug\netstandard1.0\GenericFormTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\netstandard1.0\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Debug\netstandard1.0\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Debug\netstandard1.0\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Debug\netstandard1.1\GenericFormTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\netstandard1.1\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Debug\netstandard1.1\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Debug\netstandard1.1\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Debug\netstandard1.6\GenericTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\netstandard1.6\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Debug\netstandard1.6\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Debug\netstandard1.6\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Debug\netstandard2.0\GenericFormTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\netstandard2.0\GenericTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Release\netstandard1.0\GenericTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Release\netstandard1.0\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Release\netstandard1.0\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Release\netstandard1.0\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Release\netstandard1.1\GenericTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Release\netstandard1.1\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Release\netstandard1.1\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Release\netstandard1.1\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Release\netstandard1.3\GenericTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Release\netstandard1.3\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Release\netstandard1.3\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Release\netstandard1.3\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Release\netstandard1.6\GenericTagHelper.AssemblyInfo.cs" />
+    <Compile Include="obj\Release\netstandard1.6\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Release\netstandard1.6\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Release\netstandard1.6\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="obj\Release\netstandard2.0\GenericTagHelper.AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="obj\Debug\netstandard1.0\GenericFormTagHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\netstandard1.1\GenericFormTagHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\netstandard1.6\GenericTagHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\netstandard2.0\GenericFormTagHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\netstandard2.0\GenericTagHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\project.assets.json" />
+    <Content Include="obj\Release\netstandard1.6\GenericTagHelper.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Release\netstandard2.0\GenericTagHelper.csproj.FileListAbsolute.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.0.0" />
@@ -15,6 +60,60 @@
   <ItemGroup>
     <Folder Include="lib\netstandard2.0\" />
     <Folder Include="lib\netstandard1.6\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="obj\Debug\netstandard1.0\GenericFormTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\netstandard1.0\GenericFormTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\netstandard1.0\GenericFormTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Debug\netstandard1.1\GenericFormTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\netstandard1.1\GenericFormTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\netstandard1.1\GenericFormTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.csproj.GenerateResource.Cache" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.dll" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.pdb" />
+    <None Include="obj\Debug\netstandard1.6\GenericTagHelper.Resources.resources" />
+    <None Include="obj\Debug\netstandard2.0\GenericFormTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericFormTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericFormTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericFormTagHelper.dll" />
+    <None Include="obj\Debug\netstandard2.0\GenericFormTagHelper.pdb" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.csproj.GenerateResource.Cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.dll" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.pdb" />
+    <None Include="obj\Debug\netstandard2.0\GenericTagHelper.Resources.resources" />
+    <None Include="obj\GenericFormTagHelper.csproj.nuget.cache" />
+    <None Include="obj\GenericFormTagHelper.csproj.nuget.g.props" />
+    <None Include="obj\GenericFormTagHelper.csproj.nuget.g.targets" />
+    <None Include="obj\GenericTagHelper.csproj.nuget.cache" />
+    <None Include="obj\GenericTagHelper.csproj.nuget.g.props" />
+    <None Include="obj\GenericTagHelper.csproj.nuget.g.targets" />
+    <None Include="obj\Release\netstandard1.0\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Release\netstandard1.0\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Release\netstandard1.1\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Release\netstandard1.1\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Release\netstandard1.3\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Release\netstandard1.3\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.csproj.GenerateResource.Cache" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.dll" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.pdb" />
+    <None Include="obj\Release\netstandard1.6\GenericTagHelper.Resources.resources" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.AssemblyInfoInputs.cache" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.csproj.GenerateResource.Cache" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.csprojResolveAssemblyReference.cache" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.dll" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.pdb" />
+    <None Include="obj\Release\netstandard2.0\GenericTagHelper.Resources.resources" />
   </ItemGroup>
 
   <ItemGroup>
