@@ -392,51 +392,25 @@ namespace GenericTagHelper
                         }
                         form_group.InnerHtml.AppendHtml(fieldset);
                     }
-                    else if (property.Metadata.DataTypeName == "CheckBox")
+                    // check if it's checkbox
+                    else if (property.ModelType.Name == "Boolean")
                     {
-                        TagBuilder fieldset = new TagBuilder("fieldset");
-                        SetLocalTagAttrs(fieldset, property_name, "fieldset");
-
-                        input = GenerateInputType(property);
-                        var checkBoxModel =
-                            CheckBoxDataListDict.FirstOrDefault(
-                                model => model.Key.Equals(property_name, StringComparison.OrdinalIgnoreCase))
-                                .Value;
-                        if (checkBoxModel != null &&
-                           CheckBoxDataListDict.Count() != 0)
+                        if (CheckBoxDataListDict.Count() != 0)
                         {
-                            checkBoxModel.ToDictionary(item =>
-                            {
-                                input = GenerateInputType(property, item.Key);
 
-                                TagBuilder value_span = new TagBuilder("span");
-                                SetLocalTagAttrs(value_span, property_name, "span", item.Key);
-                                value_span.InnerHtml.AppendHtml(item.Value);
-
-                                SetInputLocation(
-                                    RadioTop, RadioBottom, RadioLeft,
-                                    value_span, input, fieldset,
-                                    property_name, item.Key);
-
-                                SetLocalTagAttrs(input, property_name, "input", item.Key);
-                                return input;
-                            });
-
-                            SetGlobalTagsAttrs(input, "input");
-                            SetLocalTagAttrs(input, property_name, "input");
                         }
                         else
                         {
-                            form_group.InnerHtml.AppendHtml(label);
+                            input = GenerateInputType(property);
+
+                            if (ActiveLabel)
+                            {
+                                form_group.InnerHtml.AppendHtml(label);
+                            }
+
+                            SetLocalTagAttrs(input, property_name, "checkbox");
                             form_group.InnerHtml.AppendHtml(input);
                         }
-
-                        if (ActiveLabel)
-                        {
-                            form_group.InnerHtml.AppendHtml(label);
-                        }
-                        form_group.InnerHtml.AppendHtml(fieldset);
-
                     }
                     else if (property.Metadata.DataTypeName == "Select")
                     {
