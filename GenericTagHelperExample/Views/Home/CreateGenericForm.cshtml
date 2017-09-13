@@ -6,6 +6,7 @@
       form-title="<h1>Form Title</h1>"
       select-data-list="{
         selectlist:{
+            0:'None',
             1:'Bronze',
             2:'Silver',
             3:'Gold',
@@ -66,15 +67,24 @@
         },
         cols_list_group:{id:'eeee'}
       }"
-
       attrs-local-tag="{
         checkbox:{
             div_1:{id:'hello'},
             cols_list_group_1:{id:'world'},
             checkbox_group:{id:'aaa'}
         },
+        selectlist:{
+            label:{style:'color:gray;'},
+            select_input:{style:'border-color:green;'},
+            option_1:{style:'color:blue;'},
+            option_2:{style:'color:green;'},
+            option_3:{style:'color:yellow;'},
+            option_4:{style:'color:red;'},
+            option_5:{style:'color:black;'}
+        },
         selectradio:{
-            cols_list_group_1:{style:'color:red;'}
+            cols_list_group_1:{class:'form-control'},
+
         }
       }"
       method="post"
