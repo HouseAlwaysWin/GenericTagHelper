@@ -35,6 +35,8 @@ namespace GenericTagHelper.MethodHelpers
             }
         }
 
+
+
         public static void SetTagAttrsOfProp(
             Dictionary<string, Dictionary<string, Dictionary<string, string>>> attrsTagsOfPropDict,
             TagBuilder tag,
@@ -60,7 +62,8 @@ namespace GenericTagHelper.MethodHelpers
                         var attr = attrs.ElementAt(i);
                         if (attr.Value.EndsWith("*"))
                         {
-                            tag.Attributes[attr.Key] = attr.Value + index_num;
+                            var value = attr.Value.Replace("*", index_num);
+                            tag.Attributes[attr.Key] = value;
                         }
                         else
                         {
@@ -75,6 +78,7 @@ namespace GenericTagHelper.MethodHelpers
             Dictionary<string, Dictionary<string, string>> attrsTagsDict,
             TagBuilder tag,
             string tag_name)
+
         {
             if (attrsTagsDict.Count() != 0 &&
                 attrsTagsDict.Keys.Any(
@@ -95,6 +99,8 @@ namespace GenericTagHelper.MethodHelpers
                 }
             }
         }
+
+
 
         public static void SetTagAttrs(
             Dictionary<string, Dictionary<string, string>> attrsTagsDict,
@@ -119,7 +125,8 @@ namespace GenericTagHelper.MethodHelpers
                         var attr = attrs.ElementAt(i);
                         if (attr.Value.EndsWith("*"))
                         {
-                            tag.Attributes[attr.Key] = attr.Value + index_num;
+                            var value = attr.Value.Replace("*", index_num);
+                            tag.Attributes[attr.Key] = value;
                         }
                         else
                         {
@@ -130,6 +137,7 @@ namespace GenericTagHelper.MethodHelpers
             }
         }
 
+
         public static void SetTagAttrs(
            Dictionary<string, Dictionary<string, string>> attrsTagsDict,
            TagBuilder tag,
@@ -138,7 +146,7 @@ namespace GenericTagHelper.MethodHelpers
            string cols_num)
         {
             var tagKey = tag_name + "_" + rows_num + "_" + cols_num;
-            
+
             if (attrsTagsDict.Count() != 0 &&
                 attrsTagsDict.Keys.Any(
                     tagName => tagName.Equals(
@@ -155,7 +163,8 @@ namespace GenericTagHelper.MethodHelpers
                         var attr = attrs.ElementAt(i);
                         if (attr.Value.EndsWith("*"))
                         {
-                            tag.Attributes[attr.Key] = attr.Value + rows_num;
+                            var value = attr.Value.Replace("*", rows_num);
+                            tag.Attributes[attr.Key] = value;
                         }
                         else
                         {
@@ -165,6 +174,7 @@ namespace GenericTagHelper.MethodHelpers
                 }
             }
         }
+
 
         public static void SetTagContent(
             Dictionary<string, string> tagsDict,
@@ -182,17 +192,15 @@ namespace GenericTagHelper.MethodHelpers
 
                 if (content != null)
                 {
-                    if (content.EndsWith("*"))
-                    {
-                        tag.InnerHtml.AppendHtml(content);
-                    }
-                    else
-                    {
-                        tag.InnerHtml.Append(content);
-                    }
+                    tag.InnerHtml.AppendHtml(content);
+                }
+                else
+                {
+                    tag.InnerHtml.Append(content);
                 }
             }
         }
+
 
         public static void SetTagContent(
             Dictionary<string, string> tagsDict,
@@ -214,11 +222,44 @@ namespace GenericTagHelper.MethodHelpers
                 {
                     if (content.EndsWith("*"))
                     {
-                        tag.InnerHtml.AppendHtml(content + index_num);
+                        content = content.Replace("*", index_num);
+                        tag.InnerHtml.AppendHtml(content);
                     }
                     else
                     {
-                        tag.InnerHtml.Append(content + index_num);
+                        tag.InnerHtml.Append(content);
+                    }
+                }
+            }
+        }
+
+        public static void SetTagContent(
+          Dictionary<string, string> tagsDict,
+          TagBuilder tag,
+          string tag_name,
+          string rows_num,
+          string cols_num,
+          bool override_num)
+        {
+            var tagKey = tag_name + "_" + rows_num + "_" + cols_num;
+            if (tagsDict.Count != 0 &&
+                tagsDict.Any(
+                    t => t.Key.Equals(tagKey,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                var content = tagsDict.FirstOrDefault(
+                    t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
+
+                if (content != null)
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        content = content.Replace("*", rows_num);
+                        tag.InnerHtml.AppendHtml(content);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.Append(content);
                     }
                 }
             }

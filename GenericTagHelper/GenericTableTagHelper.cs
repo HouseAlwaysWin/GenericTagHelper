@@ -86,7 +86,7 @@ namespace GenericTagHelper
 
         #region Table Content
         public string ContentTag { get; set; }
-        public Dictionary<string, string> ContentTagDict
+        private Dictionary<string, string> ContentTagDict
         {
             get
             {
@@ -105,6 +105,7 @@ namespace GenericTagHelper
 
         public string TagTableBody { get; set; } = "body";
         public string TagTableBodyRow { get; set; } = "body_row";
+
         public string TagTableBodyData { get; set; } = "body_data";
         public string TagTableBodyDataRow { get; set; } = "body_data_row";
         public string TagTableBodyDataCol { get; set; } = "body_data_col";
@@ -114,13 +115,30 @@ namespace GenericTagHelper
         public string TagTablePanelHead { get; set; } = "panel_head";
         public string TagTablePanelBody { get; set; } = "panel_body";
 
+        public string TagTableData { get; set; } = "data";
+        public string TagTableDatatRow { get; set; } = "data_row";
+        public string TagTableDataCol { get; set; } = "data_col";
+
+        public string TagTableDataOverride { get; set; } = "data_override";
+        public string TagTableDataOverrideRow { get; set; } = "data_override_row";
+        public string TagTableDataOverrideCol { get; set; } = "data_override_col";
+
         #endregion
 
 
         #region Table Properties
+
+        public string TableSortData { get; set; }
+        public List<string> TableSortDataList
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Ls(TableSortData);
+            }
+        }
+
         // Show how many columns of table
         public int TableColsNumber { get; set; }
-
 
         public string TableHeadData { get; set; }
         private List<string> TableHeadDataList
@@ -299,9 +317,9 @@ namespace GenericTagHelper
                     }
 
                     // Start loop table columns
-                    for (int columns = 0; columns < TableColsNumber; columns++)
+                    for (int cols = 0; cols < TableColsNumber; cols++)
                     {
-                        var cols_index = (columns + 1).ToString();
+                        var cols_index = (cols + 1).ToString();
 
                         TagBuilder td = new TagBuilder("td");
 
@@ -318,38 +336,103 @@ namespace GenericTagHelper
                         // try to get value from 
                         try
                         {
-                            // Get hidden columns name
-                            var item_key = ItemsList[rows]
-                                .Keys.ElementAt(columns);
-
-                            // Skip hidden columns
-                            if (TableHiddenColumnsList.Contains(item_key))
+                            if (TableSortDataList.Count != 0)
                             {
-                                continue;
+                                var tableData = ItemsList[rows].FirstOrDefault(
+                                    d => d.Key.Equals(TableSortDataList[cols],
+                                    StringComparison.OrdinalIgnoreCase)).Value;
+                                if (tableData != null)
+                                {
+                                    td.InnerHtml.AppendHtml(tableData);
+                                }
+
                             }
 
-                            var item_value = ItemsList[rows]
-                                .Values.ElementAt(columns);
+                            //var hiddenCols = ItemsList[rows]
+                            //    .Keys.ElementAt(cols);
 
-                            td.InnerHtml.AppendHtml(item_value);
+                            //// Skip hidden columns
+                            //if (TableHiddenColumnsList.Contains(hiddenCols))
+                            //{
+                            //    continue;
+                            //}
+
+                            //var tableData = ItemsList[rows]
+                            //    .Values.ElementAt(cols);
+
+                            //td.InnerHtml.AppendHtml(tableData);
 
                             // Get your table list primary key value
-                            var row_Id = ItemsList[rows]
-                                .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
+                            //var row_Id = ItemsList[rows]
+                            //    .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            AddHtmlRowsAndCols(td, row_Id, cols_index);
-                            AddHtmlCols(td, row_Id, cols_index);
+                            //AddHtmlRowsAndCols(td, rows_index, cols_index);
+                            //AddHtmlCols(td, rows_index, cols_index);
+                            AttrsHelper.SetTagContent(
+                               ContentTagDict, td, TagTableData, rows_index,
+                               false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableData,
+                                rows_index, cols_index, false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDatatRow,
+                                rows_index, false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDataCol,
+                                cols_index, false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDataOverride,
+                                rows_index, cols_index, true);
+
+                            AttrsHelper.SetTagContent(
+                              ContentTagDict, td, TagTableDataOverrideRow,
+                              rows_index, true);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDataOverrideCol,
+                                cols_index, true);
 
                         }
                         // if out of index then catch exception to create new columns
                         catch (ArgumentOutOfRangeException)
                         {
-                            var row_Id = ItemsList[rows]
-                                .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
+                            //var row_Id = ItemsList[rows]
+                            //    .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            AddHtmlRowsAndCols(td, row_Id, cols_index);
-                            AddHtmlCols(td, row_Id, cols_index);
+                            //AddHtmlRowsAndCols(td, row_Id, cols_index);
+                            //AddHtmlCols(td, row_Id, cols_index);
 
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableData, rows_index,
+                                false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableData,
+                                rows_index, cols_index, false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDatatRow,
+                                rows_index, false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDataCol,
+                                cols_index, false);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDataOverride,
+                                rows_index, cols_index, true);
+
+                            AttrsHelper.SetTagContent(
+                              ContentTagDict, td, TagTableDataOverrideRow,
+                              rows_index, true);
+
+                            AttrsHelper.SetTagContent(
+                                ContentTagDict, td, TagTableDataOverrideCol,
+                                cols_index, true);
                         }
 
 

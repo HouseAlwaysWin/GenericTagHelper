@@ -25,17 +25,22 @@
        items="@Model.ItemsJson"
        item-per-page="@Model.ItemPerPage"
        current-page="@Model.Page"
-       table-head-data="['Id @Model.Id','Name @Model.Name','Gender']"
+       table-head-data="['Id @Model.Id','Name @Model.Name','Gender','Edit']"
+       table-sort-data="['Gender','Name','Id']"
+       table-hidden-columns="[]"
        table-primary-key="Id"
-       table-cols-number="3"
+       table-cols-number="5"
        table-show-index="true"
        active-panel="true"
        active-panel-heading="true"
        panel-heading-content="Customer"
+       content-tag="{
+            data_col_4:'hello*'
+       }"
        attrs-tag="{
         index_data:{style:'color:pink;'},
-        body_row_2:{style:'color:red;'},
-        body_data_col_2:{style:'color:red;'}
+        body_row_4:{style:'color:red;'},
+        body_data_col_3:{style:'color:green;'}
        }"></table>
 
 <pagination total-items="@Model.TotalItems"
