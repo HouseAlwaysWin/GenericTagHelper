@@ -190,7 +190,7 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (content != null)
+                if (override_num)
                 {
                     tag.InnerHtml.AppendHtml(content);
                 }
@@ -202,14 +202,15 @@ namespace GenericTagHelper.MethodHelpers
         }
 
 
-        public static void SetTagContent(
+        public static void SetTagColsContent(
             Dictionary<string, string> tagsDict,
             TagBuilder tag,
             string tag_name,
-            string index_num,
+            string rows_num,
+            string cols_num,
             bool override_num)
         {
-            var tagKey = tag_name + "_" + index_num;
+            var tagKey = tag_name + "_" + cols_num;
             if (tagsDict.Count != 0 &&
                 tagsDict.Any(
                     t => t.Key.Equals(tagKey,
@@ -218,16 +219,74 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (content != null)
+                if (override_num)
                 {
                     if (content.EndsWith("*"))
                     {
-                        content = content.Replace("*", index_num);
-                        tag.InnerHtml.AppendHtml(content);
+                        content = content.Replace("*", rows_num);
+                        tag.InnerHtml.Append(content);
                     }
                     else
                     {
                         tag.InnerHtml.Append(content);
+                    }
+                }
+                else
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        content = content.Replace("*", rows_num);
+                        tag.InnerHtml.AppendHtml(content);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.AppendHtml(content);
+                    }
+                }
+            }
+
+        }
+
+
+        public static void SetTagRowsContent(
+           Dictionary<string, string> tagsDict,
+           TagBuilder tag,
+           string tag_name,
+           string rows_num,
+           string cols_num,
+           bool override_num)
+        {
+            var tagKey = tag_name + "_" + rows_num;
+            if (tagsDict.Count != 0 &&
+                tagsDict.Any(
+                    t => t.Key.Equals(tagKey,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                var content = tagsDict.FirstOrDefault(
+                    t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
+
+                if (override_num)
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        content = content.Replace("*", cols_num);
+                        tag.InnerHtml.Append(content);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.Append(content);
+                    }
+                }
+                else
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        content = content.Replace("*", cols_num);
+                        tag.InnerHtml.AppendHtml(content);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.AppendHtml(content);
                     }
                 }
             }
@@ -250,7 +309,19 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (content != null)
+                if (override_num)
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        content = content.Replace("*", rows_num);
+                        tag.InnerHtml.Append(content);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.Append(content);
+                    }
+                }
+                else
                 {
                     if (content.EndsWith("*"))
                     {
@@ -259,7 +330,7 @@ namespace GenericTagHelper.MethodHelpers
                     }
                     else
                     {
-                        tag.InnerHtml.Append(content);
+                        tag.InnerHtml.AppendHtml(content);
                     }
                 }
             }
