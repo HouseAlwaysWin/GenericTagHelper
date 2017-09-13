@@ -8,17 +8,17 @@ namespace GenericTagHelper.MethodHelpers
 {
     public static class AttrsHelper
     {
-        private static void SetLocalTagAttrs(
-           Dictionary<string, Dictionary<string, Dictionary<string, string>>> attrsLocalTagDict,
+        public static void SetTagAttrsOfProp(
+           Dictionary<string, Dictionary<string, Dictionary<string, string>>> attrsTagsOfPropDict,
            TagBuilder tag,
            string property_name,
            string tag_name)
         {
-            var models = attrsLocalTagDict.FirstOrDefault(
+            var models = attrsTagsOfPropDict.FirstOrDefault(
                                 modelName => modelName.Key.Equals(
                                     property_name, StringComparison.OrdinalIgnoreCase)).Value;
-            if (attrsLocalTagDict.Count != 0 &&
-                attrsLocalTagDict.Keys.Any(modelName => modelName.Equals(property_name,
+            if (attrsTagsOfPropDict.Count != 0 &&
+                attrsTagsOfPropDict.Keys.Any(modelName => modelName.Equals(property_name,
                     StringComparison.OrdinalIgnoreCase)) &&
                 models.Keys.Any(prop => prop.Equals(tag_name,
                     StringComparison.OrdinalIgnoreCase)))
@@ -35,24 +35,56 @@ namespace GenericTagHelper.MethodHelpers
             }
         }
 
-        private static void SetLocalTagAttrs(
-            Dictionary<string, Dictionary<string, Dictionary<string, string>>> attrsLocalTagDict,
+        public static void SetTagAttrsOfProp(
+            Dictionary<string, Dictionary<string, Dictionary<string, string>>> attrsTagsOfPropDict,
             TagBuilder tag,
             string property_name,
             string tag_name,
-            string value_num)
+            string index_num)
         {
-            var models = attrsLocalTagDict.FirstOrDefault(
+            var models = attrsTagsOfPropDict.FirstOrDefault(
                     modelName => modelName.Key.Equals(
                         property_name, StringComparison.OrdinalIgnoreCase)).Value;
-            var tagkey = tag_name + "_" + value_num;
-            if (attrsLocalTagDict.Count != 0 &&
-                attrsLocalTagDict.Keys.Any(modelName => modelName.Equals(property_name, StringComparison.OrdinalIgnoreCase)) &&
-                models.Keys.Any(prop => prop.Equals(tagkey, StringComparison.OrdinalIgnoreCase)))
+            var tagKey = tag_name + "_" + index_num;
+            if (attrsTagsOfPropDict.Count != 0 &&
+                attrsTagsOfPropDict.Keys.Any(modelName => modelName.Equals(property_name, StringComparison.OrdinalIgnoreCase)) &&
+                models.Keys.Any(prop => prop.Equals(tagKey, StringComparison.OrdinalIgnoreCase)))
             {
                 var attrs = models.FirstOrDefault(modelName => modelName.Key.Equals(
-                        tagkey, StringComparison.InvariantCultureIgnoreCase))
+                        tagKey, StringComparison.InvariantCultureIgnoreCase))
                       .Value;
+                if (attrs != null)
+                {
+                    for (int i = 0; i < attrs.Count; i++)
+                    {
+                        var attr = attrs.ElementAt(i);
+                        if (attr.Value.EndsWith("*"))
+                        {
+                            tag.Attributes[attr.Key] = attr.Value + index_num;
+                        }
+                        else
+                        {
+                            tag.Attributes[attr.Key] = attr.Value;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void SetTagAttrs(
+            Dictionary<string, Dictionary<string, string>> attrsTagsDict,
+            TagBuilder tag,
+            string tag_name)
+        {
+            if (attrsTagsDict.Count() != 0 &&
+                attrsTagsDict.Keys.Any(
+                    tagName => tagName.Equals(
+                        tag_name, StringComparison.OrdinalIgnoreCase)))
+            {
+                var attrs = attrsTagsDict.FirstOrDefault(
+                    attr => attr.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase))
+                    .Value;
+
                 if (attrs != null)
                 {
                     for (int i = 0; i < attrs.Count; i++)
@@ -64,18 +96,20 @@ namespace GenericTagHelper.MethodHelpers
             }
         }
 
-        private static void SetGlobalTagsAttrs(
-            Dictionary<string, Dictionary<string, string>> attrsGlobalTagsDict,
+        public static void SetTagAttrs(
+            Dictionary<string, Dictionary<string, string>> attrsTagsDict,
             TagBuilder tag,
-            string tag_name)
+            string tag_name,
+            string index_num)
         {
-            if (attrsGlobalTagsDict.Count() != 0 &&
-                attrsGlobalTagsDict.Keys.Any(
+            var tagKey = tag_name + "_" + index_num;
+            if (attrsTagsDict.Count() != 0 &&
+                attrsTagsDict.Keys.Any(
                     tagName => tagName.Equals(
-                        tag_name, StringComparison.OrdinalIgnoreCase)))
+                        tagKey, StringComparison.OrdinalIgnoreCase)))
             {
-                var attrs = attrsGlobalTagsDict.FirstOrDefault(
-                    attr => attr.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase))
+                var attrs = attrsTagsDict.FirstOrDefault(
+                    attr => attr.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase))
                     .Value;
 
                 if (attrs != null)
@@ -83,7 +117,108 @@ namespace GenericTagHelper.MethodHelpers
                     for (int i = 0; i < attrs.Count; i++)
                     {
                         var attr = attrs.ElementAt(i);
-                        tag.Attributes[attr.Key] = attr.Value;
+                        if (attr.Value.EndsWith("*"))
+                        {
+                            tag.Attributes[attr.Key] = attr.Value + index_num;
+                        }
+                        else
+                        {
+                            tag.Attributes[attr.Key] = attr.Value;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void SetTagAttrs(
+           Dictionary<string, Dictionary<string, string>> attrsTagsDict,
+           TagBuilder tag,
+           string tag_name,
+           string rows_num,
+           string cols_num)
+        {
+            var tagKey = tag_name + "_" + rows_num + "_" + cols_num;
+            
+            if (attrsTagsDict.Count() != 0 &&
+                attrsTagsDict.Keys.Any(
+                    tagName => tagName.Equals(
+                        tagKey, StringComparison.OrdinalIgnoreCase)))
+            {
+                var attrs = attrsTagsDict.FirstOrDefault(
+                    attr => attr.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase))
+                    .Value;
+
+                if (attrs != null)
+                {
+                    for (int i = 0; i < attrs.Count; i++)
+                    {
+                        var attr = attrs.ElementAt(i);
+                        if (attr.Value.EndsWith("*"))
+                        {
+                            tag.Attributes[attr.Key] = attr.Value + rows_num;
+                        }
+                        else
+                        {
+                            tag.Attributes[attr.Key] = attr.Value;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void SetTagContent(
+            Dictionary<string, string> tagsDict,
+            TagBuilder tag,
+            string tag_name,
+            bool override_num)
+        {
+            if (tagsDict.Count != 0 &&
+                tagsDict.Any(
+                    t => t.Key.Equals(tag_name,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                var content = tagsDict.FirstOrDefault(
+                    t => t.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase)).Value;
+
+                if (content != null)
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        tag.InnerHtml.AppendHtml(content);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.Append(content);
+                    }
+                }
+            }
+        }
+
+        public static void SetTagContent(
+            Dictionary<string, string> tagsDict,
+            TagBuilder tag,
+            string tag_name,
+            string index_num,
+            bool override_num)
+        {
+            var tagKey = tag_name + "_" + index_num;
+            if (tagsDict.Count != 0 &&
+                tagsDict.Any(
+                    t => t.Key.Equals(tagKey,
+                    StringComparison.OrdinalIgnoreCase)))
+            {
+                var content = tagsDict.FirstOrDefault(
+                    t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
+
+                if (content != null)
+                {
+                    if (content.EndsWith("*"))
+                    {
+                        tag.InnerHtml.AppendHtml(content + index_num);
+                    }
+                    else
+                    {
+                        tag.InnerHtml.Append(content + index_num);
                     }
                 }
             }

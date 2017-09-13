@@ -23,15 +23,20 @@
 <table generic
        class="panel panel-primary"
        items="@Model.ItemsJson"
-       item-per-page="5"
+       item-per-page="@Model.ItemPerPage"
        current-page="@Model.Page"
-       table-heads="['Id @Model.Id','Name @Model.Name','Gender']"
+       table-head-data="['Id @Model.Id','Name @Model.Name','Gender']"
        table-primary-key="Id"
        table-cols-number="3"
        table-show-index="true"
        active-panel="true"
        active-panel-heading="true"
-       panel-heading-content="Customer"></table>
+       panel-heading-content="Customer"
+       attrs-tag="{
+        index_data:{style:'color:pink;'},
+        body_row_2:{style:'color:red;'},
+        body_data_col_2:{style:'color:red;'}
+       }"></table>
 
 <pagination total-items="@Model.TotalItems"
             current-page="@Model.Page"

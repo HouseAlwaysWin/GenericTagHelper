@@ -59,70 +59,77 @@ namespace GenericTagHelper
 
         public int CurrentPage { get; set; } = 1;
 
-        public int ItemPerPage { get; set; } = 5; 
+        public int ItemPerPage { get; set; } = 5;
         #endregion
 
+        #region Table Attributes
+
+
+        public string AttrsTagsOfProp { get; set; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagsOfPropDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsTagsOfProp);
+            }
+        }
+
+        public string AttrsTag { get; set; }
+        public Dictionary<string, Dictionary<string, string>> AttrsTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(AttrsTag);
+            }
+        }
+        #endregion
+
+        #region Table Content
+        public string ContentTag { get; set; }
+        public Dictionary<string, string> ContentTagDict
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Dss(ContentTag);
+            }
+        }
+        #endregion
+
+        #region AttrsTags
+        public string TagTable { get; set; } = "table";
+
+        public string TagTableTitle { get; set; } = "title";
+        public string TagTableHead { get; set; } = "head";
+        public string TagTableHeadRow { get; set; } = "head_row";
+        public string TagTableIndexHead { get; set; } = "index_head";
+
+        public string TagTableBody { get; set; } = "body";
+        public string TagTableBodyRow { get; set; } = "body_row";
+        public string TagTableBodyData { get; set; } = "body_data";
+        public string TagTableBodyDataRow { get; set; } = "body_data_row";
+        public string TagTableBodyDataCol { get; set; } = "body_data_col";
+        public string TagTableIndexData { get; set; } = "index_data";
+
+        public string TagTablePanel { get; set; } = "panel";
+        public string TagTablePanelHead { get; set; } = "panel_head";
+        public string TagTablePanelBody { get; set; } = "panel_body";
+
+        #endregion
+
+
         #region Table Properties
-        public string TableHeads { get; set; }
-        private List<string> TableHeadList
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Ls(TableHeads);
-            }
-        }
-
-
-
-        public string AttrsTable { get; set; }
-        private Dictionary<string, string> AttrsTableDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTable);
-            }
-        }
-
-
-        public string AttrsTableHead { get; set; }
-        private Dictionary<string, string> AttrsTableHeadDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableHead);
-            }
-        }
-
-        public string AttrsTableHeadTr { get; set; }
-        private Dictionary<string, string> AttrsTableHeadTrDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableHeadTr);
-            }
-        }
-
-        public string AttrsTableBody { get; set; }
-        private Dictionary<string, string> AttrsTableBodyDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableBody);
-            }
-        }
-
-        public string AttrsTableBodyTr { get; set; }
-        private Dictionary<string, string> AttrsTableBodyTrDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsTableBodyTr);
-            }
-        }
-
-
         // Show how many columns of table
         public int TableColsNumber { get; set; }
+
+
+        public string TableHeadData { get; set; }
+        private List<string> TableHeadDataList
+        {
+            get
+            {
+                return JsonDeserialize.JsonDeserializeConvert_Ls(TableHeadData);
+            }
+        }
 
         // Append Html string to  specific column
         public string TableAppendHtmlCols { get; set; }
@@ -205,20 +212,28 @@ namespace GenericTagHelper
         {
 
             TagBuilder thead = new TagBuilder("thead");
-            HtmlAttributesHelper.AddAttributes(thead, AttrsTableHeadDict);
+            AttrsHelper.SetTagAttrs(
+                AttrsTagDict, thead, TagTableHead);
+
+            //HtmlAttributesHelper.AddAttributes(thead, AttrsTableHeadDict);
 
             TagBuilder thead_tr = new TagBuilder("tr");
-            HtmlAttributesHelper.AddAttributes(thead_tr, AttrsTableHeadTrDict);
+            AttrsHelper.SetTagAttrs(
+                AttrsTagDict, thead_tr, TagTableHeadRow);
+            //HtmlAttributesHelper.AddAttributes(thead_tr, AttrsTableHeadTrDict);
 
             // Active Index
             if (TableShowIndex)
             {
                 TagBuilder th = new TagBuilder("th");
+                AttrsHelper.SetTagAttrs(
+                    AttrsTagDict, th, TagTableIndexHead);
+
                 th.InnerHtml.AppendHtml(TableIndexTitle);
                 thead_tr.InnerHtml.AppendHtml(th);
             }
 
-            foreach (var name in TableHeadList)
+            foreach (var name in TableHeadDataList)
             {
                 TagBuilder th = new TagBuilder("th");
                 th.InnerHtml.AppendHtml(name);
@@ -229,9 +244,11 @@ namespace GenericTagHelper
 
 
             TagBuilder tbody = new TagBuilder("tbody");
-            HtmlAttributesHelper.AddAttributes(tbody, AttrsTableBodyDict);
+            AttrsHelper.SetTagAttrs(
+                AttrsTagDict, tbody, TagTableBody);
+            //HtmlAttributesHelper.AddAttributes(tbody, AttrsTableBodyDict);
 
-            
+
 
             if (ItemsList.Count == 0)
             {
@@ -255,44 +272,48 @@ namespace GenericTagHelper
                 // Start loop table row 
                 for (int rows = 0; rows < ItemsList.Count; rows++)
                 {
+                    var rows_index =
+                        (rows + 1 + (ItemPerPage * (CurrentPage - 1))).ToString();
+
                     TagBuilder tbody_tr = new TagBuilder("tr");
+                    AttrsHelper.SetTagAttrs(
+                        AttrsTagDict, tbody_tr, TagTableBodyRow);
 
-                    try
-                    {
-                        AttrsTableBodyTrDict.ToDictionary(attr =>
-                        {
-                            if (attr.Value.EndsWith("_"))
-                            {
-                                var attrValue = attr.Value.TrimEnd('_');
-                                tbody_tr.Attributes[attr.Key] = attrValue + (rows + 1).ToString();
-
-                            }
-                            else
-                            {
-                                tbody_tr.Attributes[attr.Key] = attr.Value;
-                            }
-                            return tbody;
-                        });
-                    }
-                    catch (ArgumentException)
-                    {
-
-                    }
+                    AttrsHelper.SetTagAttrs(
+                        AttrsTagDict, tbody_tr,
+                        TagTableBodyRow, rows_index);
 
                     // Show index if true
                     if (TableShowIndex)
                     {
                         TagBuilder Index = new TagBuilder("td");
-                        Index.InnerHtml.AppendHtml(
-                            (rows + 1 + (ItemPerPage * (CurrentPage - 1)))
-                            .ToString());
+
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, Index, TagTableIndexData);
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, Index, TagTableIndexData, rows_index);
+
+                        Index.InnerHtml.AppendHtml(rows_index);
+
                         tbody_tr.InnerHtml.AppendHtml(Index);
                     }
 
                     // Start loop table columns
                     for (int columns = 0; columns < TableColsNumber; columns++)
                     {
+                        var cols_index = (columns + 1).ToString();
+
                         TagBuilder td = new TagBuilder("td");
+
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, td, TagTableBodyData);
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, td, TagTableBodyDataCol, cols_index);
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, td, TagTableBodyDataRow, rows_index);
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, td, TagTableBodyData, rows_index, cols_index);
+
 
                         // try to get value from 
                         try
@@ -300,6 +321,7 @@ namespace GenericTagHelper
                             // Get hidden columns name
                             var item_key = ItemsList[rows]
                                 .Keys.ElementAt(columns);
+
                             // Skip hidden columns
                             if (TableHiddenColumnsList.Contains(item_key))
                             {
@@ -315,8 +337,8 @@ namespace GenericTagHelper
                             var row_Id = ItemsList[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            AddHtmlRowsAndCols(td, row_Id, columns);
-                            AddHtmlCols(td, row_Id, columns);
+                            AddHtmlRowsAndCols(td, row_Id, cols_index);
+                            AddHtmlCols(td, row_Id, cols_index);
 
                         }
                         // if out of index then catch exception to create new columns
@@ -325,8 +347,8 @@ namespace GenericTagHelper
                             var row_Id = ItemsList[rows]
                                 .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
 
-                            AddHtmlRowsAndCols(td, row_Id, columns);
-                            AddHtmlCols(td, row_Id, columns);
+                            AddHtmlRowsAndCols(td, row_Id, cols_index);
+                            AddHtmlCols(td, row_Id, cols_index);
 
                         }
 
@@ -342,17 +364,19 @@ namespace GenericTagHelper
             if (ActivePanel)
             {
 
-                TagBuilder panel_heading = new TagBuilder("div");
-                HtmlAttributesHelper.AddAttributes(panel_heading, AttrsPanelHeadingDict);
+                TagBuilder panel_head = new TagBuilder("div");
+                AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelHead);
+                //HtmlAttributesHelper.AddAttributes(panel_heading, AttrsPanelHeadingDict);
 
                 TagBuilder panel_body = new TagBuilder("div");
-                HtmlAttributesHelper.AddAttributes(panel_body, AttrsPanelBodyDict);
+                AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelBody);
+                //HtmlAttributesHelper.AddAttributes(panel_body, AttrsPanelBodyDict);
 
                 if (ActivePanelHeading)
                 {
-                    output.Content.AppendHtml(panel_heading);
-                    panel_heading = SetPanelElement(
-                        panel_heading, "panel-heading",
+                    output.Content.AppendHtml(panel_head);
+                    panel_head = SetPanelElement(
+                        panel_head, "panel-heading",
                         AttrsPanelHeadingDict,
                         PanelHeadingContent);
                 }
@@ -388,8 +412,9 @@ namespace GenericTagHelper
             TagBuilder table = new TagBuilder("table");
             table.Attributes["class"] = "table table-primary";
 
-            HtmlAttributesHelper.AddAttributes(
-               table, AttrsTableDict);
+            AttrsHelper.SetTagAttrs(AttrsTagDict, table, TagTable);
+            //HtmlAttributesHelper.AddAttributes(
+            //   table, AttrsTableDict);
 
             table.InnerHtml.AppendHtml(thead);
             table.InnerHtml.AppendHtml(tbody);
@@ -404,70 +429,114 @@ namespace GenericTagHelper
             string appendContent)
         {
             panel_element.AddCssClass(elementClass);
-            HtmlAttributesHelper.AddAttributes(
-                panel_element, itemAttrsDict);
+            AttrsHelper.SetTagAttrs(AttrsTagDict, panel_element, TagTablePanel);
+            //HtmlAttributesHelper.AddAttributes(
+            //    panel_element, itemAttrsDict);
             panel_element.InnerHtml.AppendHtml(appendContent);
             return panel_element;
         }
 
-        private void AddHtmlRowsAndCols(TagBuilder td, string row_Id, int columns)
+        private void AddHtmlRowsAndCols(TagBuilder td, string row_Id, string cols_index)
         {
             // Add html content to specific row and cols
-            if (HtmlAttributesHelper.IsContainsKey(
-                TableAppendHtmlRowsColsDict, row_Id))
+            var rowsValue = TableAppendHtmlRowsColsDict.FirstOrDefault(
+                rows => rows.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase)).Value;
+            if (TableAppendHtmlRowsColsDict.Count != 0 &&
+                rowsValue != null)
             {
-                var htmlValue = TableAppendHtmlRowsColsDict.FirstOrDefault(
-                    rows => rows.Key.Equals(row_Id,
-                    StringComparison.OrdinalIgnoreCase))
-                    .Value.FirstOrDefault(
-                      cols => cols.Key.Equals((columns + 1).ToString(),
-                      StringComparison.OrdinalIgnoreCase)).Value;
+                var colsValue = rowsValue.FirstOrDefault(
+                    cols => cols.Key.Equals(cols_index,
+                    StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (htmlValue != null)
+                if (colsValue != null)
                 {
-                    htmlValue = htmlValue.Replace("*", row_Id);
+                    colsValue = colsValue.Replace("*", row_Id);
                 }
-
 
                 if (ActiveOverrideHtmlRowsCols)
                 {
-                    td.InnerHtml.SetHtmlContent(htmlValue);
+                    td.InnerHtml.SetHtmlContent(colsValue);
                 }
                 else
                 {
-                    td.InnerHtml.AppendHtml(htmlValue);
+                    td.InnerHtml.AppendHtml(colsValue);
                 }
             }
+            //if (HtmlAttributesHelper.IsContainsKey(
+            //    TableAppendHtmlRowsColsDict, row_Id))
+            //{
+            //    var htmlValue = TableAppendHtmlRowsColsDict.FirstOrDefault(
+            //        rows => rows.Key.Equals(row_Id,
+            //        StringComparison.OrdinalIgnoreCase))
+            //        .Value.FirstOrDefault(
+            //          cols => cols.Key.Equals((columns + 1).ToString(),
+            //          StringComparison.OrdinalIgnoreCase)).Value;
+
+            //    if (htmlValue != null)
+            //    {
+            //        htmlValue = htmlValue.Replace("*", row_Id);
+            //    }
+
+
+            //    if (ActiveOverrideHtmlRowsCols)
+            //    {
+            //        td.InnerHtml.SetHtmlContent(htmlValue);
+            //    }
+            //    else
+            //    {
+            //        td.InnerHtml.AppendHtml(htmlValue);
+            //    }
+            //}
         }
 
-        private void AddHtmlCols(TagBuilder td, string row_Id, int columns)
+        private void AddHtmlCols(TagBuilder td, string row_Id, string cols_index)
         {
-            if (HtmlAttributesHelper.IsContainsKey(
-                               TableAppendHtmlColsDict, (columns + 1).ToString()))
-            {
-                var htmlValue = TableAppendHtmlColsDict.FirstOrDefault(
+            var colsValue = TableAppendHtmlColsDict.FirstOrDefault(
                     cols => cols.Key.Equals(
-                        (columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
-                    .Value;
-
-
-                if (htmlValue != null)
+                            cols_index, StringComparison.OrdinalIgnoreCase)).Value;
+            if (colsValue != null &&
+                TableAppendHtmlColsDict.Count != 0)
+            {
+                if (colsValue != null)
                 {
-                    htmlValue = htmlValue.Replace("*", row_Id);
+                    colsValue = colsValue.Replace("*", row_Id);
                 }
 
-
-                if (ActiveOverrideHtmlCols)
+                if (ActiveOverrideHtmlRowsCols)
                 {
-                    td.InnerHtml.SetHtmlContent(htmlValue);
+                    td.InnerHtml.SetHtmlContent(colsValue);
                 }
                 else
                 {
-                    td.InnerHtml.AppendHtml(htmlValue);
+                    td.InnerHtml.AppendHtml(colsValue);
                 }
             }
+            //if (HtmlAttributesHelper.IsContainsKey(
+            //                   TableAppendHtmlColsDict, (columns + 1).ToString()))
+            //{
+            //    var htmlValue = TableAppendHtmlColsDict.FirstOrDefault(
+            //        cols => cols.Key.Equals(
+            //            (columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
+            //        .Value;
+
+
+            //    if (htmlValue != null)
+            //    {
+            //        htmlValue = htmlValue.Replace("*", row_Id);
+            //    }
+
+
+            //    if (ActiveOverrideHtmlCols)
+            //    {
+            //        td.InnerHtml.SetHtmlContent(htmlValue);
+            //    }
+            //    else
+            //    {
+            //        td.InnerHtml.AppendHtml(htmlValue);
+            //    }
+            //}
         }
 
-       
+
     }
 }
