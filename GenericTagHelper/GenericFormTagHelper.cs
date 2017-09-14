@@ -286,8 +286,9 @@ namespace GenericTagHelper
             {
                 title.InnerHtml.SetHtmlContent(FormTitle);
 
-                AttrsHelper.SetTagAttrs(AttrsTagDict, title, TagFormTitle);
-                AttrsHelper.SetTagContent(ContentTagDict, title, TagFormTitle, false);
+                SetAttrsAndContent(title, TagFormTitle);
+                //AttrsHelper.SetTagAttrs(AttrsTagDict, title, TagFormTitle);
+                //AttrsHelper.SetTagContent(ContentTagDict, title, TagFormTitle, false);
 
                 output.Content.AppendHtml(title);
             }
@@ -296,10 +297,11 @@ namespace GenericTagHelper
             if (ActiveValidationSummary)
             {
                 TagBuilder validation_sum = GenerateValidationSummary();
-                AttrsHelper.SetTagAttrs(
-                    AttrsTagDict, validation_sum, TagValidationSum);
-                AttrsHelper.SetTagContent(
-                    ContentTagDict, validation_sum, TagValidationSum, false);
+                //AttrsHelper.SetTagAttrs(
+                //    AttrsTagDict, validation_sum, TagValidationSum);
+                //AttrsHelper.SetTagContent(
+                //    ContentTagDict, validation_sum, TagValidationSum, false);
+                SetAttrsAndContent(validation_sum, TagValidationSum);
 
 
                 output.Content.AppendHtml(validation_sum);
@@ -385,14 +387,16 @@ namespace GenericTagHelper
                     TagBuilder form_group = new TagBuilder("div");
                     form_group.Attributes["class"] = "form-group";
 
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, form_group, TagFormGroup);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, form_group, TagFormGroup, property_name);
+                    SetAttrsAndContent(form_group, property_name, TagFormGroup);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, form_group, TagFormGroup, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, form_group, property_name, TagFormGroup, false);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, form_group, TagFormGroup);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, form_group, TagFormGroup, property_name);
+
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, form_group, TagFormGroup, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, form_group, property_name, TagFormGroup, false);
 
                     // Set label attributes and default value
                     TagBuilder label = Generator.GenerateLabel(
@@ -402,28 +406,30 @@ namespace GenericTagHelper
                         labelText: null,
                         htmlAttributes: null);
 
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, label, TagFormLabel);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, label, property_name, TagFormLabel);
+                    SetAttrsAndContent(label, property_name, TagFormLabel);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, label, TagFormLabel);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, label, property_name, TagFormLabel);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, label, TagFormLabel, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, form_group, property_name, TagFormLabel, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, label, TagFormLabel, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, form_group, property_name, TagFormLabel, false);
 
                     TagBuilder input;
                     // Set special input tag
                     if (property.Metadata.DataTypeName == "Radio")
                     {
                         TagBuilder radioFieldSet = new TagBuilder("fieldset");
-                        AttrsHelper.SetTagAttrs(AttrsTagDict, radioFieldSet, TagRadioFieldSet);
-                        AttrsHelper.SetTagAttrsOfProp(
-                            AttrsTagOfPropDict, radioFieldSet, property_name, TagRadioFieldSet);
+                        SetAttrsAndContent(radioFieldSet, property_name, TagRadioFieldSet);
+                        //AttrsHelper.SetTagAttrs(AttrsTagDict, radioFieldSet, TagRadioFieldSet);
+                        //AttrsHelper.SetTagAttrsOfProp(
+                        //    AttrsTagOfPropDict, radioFieldSet, property_name, TagRadioFieldSet);
 
-                        AttrsHelper.SetTagContent(
-                            ContentTagDict, radioFieldSet, TagRadioFieldSet, false);
-                        AttrsHelper.SetTagContentOfProp(
-                            ContentTagOfPropDict, radioFieldSet, property_name, TagRadioFieldSet, false);
+                        //AttrsHelper.SetTagContent(
+                        //    ContentTagDict, radioFieldSet, TagRadioFieldSet, false);
+                        //AttrsHelper.SetTagContentOfProp(
+                        //    ContentTagOfPropDict, radioFieldSet, property_name, TagRadioFieldSet, false);
 
                         var radioTag =
                             RadioDict.FirstOrDefault(
@@ -445,14 +451,17 @@ namespace GenericTagHelper
                                 TagBuilder radio_label = new TagBuilder("label");
                                 radio_label.Attributes["for"] = "radio_label" + tag_number;
                                 // set radio label attrs
-                                AttrsHelper.SetTagAttrs(AttrsTagDict, radio_label, TagRadioLabel);
-                                AttrsHelper.SetTagAttrsOfProp(
-                                    AttrsTagOfPropDict, radio_label, property_name, TagRadioLabel, tag_number);
+                                //AttrsHelper.SetTagAttrs(AttrsTagDict, radio_label, TagRadioLabel);
+                                //AttrsHelper.SetTagAttrsOfProp(
+                                //    AttrsTagOfPropDict, radio_label, property_name, TagRadioLabel, tag_number);
 
-                                AttrsHelper.SetTagContent(
-                                    ContentTagDict, radio_label, TagRadioLabel, false);
-                                AttrsHelper.SetTagContentOfProp(
-                                    ContentTagOfPropDict, radio_label, property_name, TagRadioLabel, tag_number, false);
+                                //AttrsHelper.SetTagContent(
+                                //    ContentTagDict, radio_label, TagRadioLabel, false);
+                                //AttrsHelper.SetTagContentOfProp(
+                                //    ContentTagOfPropDict, radio_label, property_name, TagRadioLabel, tag_number, false);
+
+                                SetAttrsAndContent(
+                                    radio_label, property_name, TagRadioLabel, tag_number);
 
                                 radio_label.InnerHtml.AppendHtml(item.Value);
 
@@ -502,15 +511,17 @@ namespace GenericTagHelper
                         {
                             TagBuilder checkboxFieldSet = new TagBuilder("fieldSet");
 
-                            AttrsHelper.SetTagAttrs(
-                                AttrsTagDict, checkboxFieldSet, TagCheckboxFieldSet);
-                            AttrsHelper.SetTagAttrsOfProp(
-                                AttrsTagOfPropDict, checkboxFieldSet, property_name, TagCheckboxFieldSet);
+                            //AttrsHelper.SetTagAttrs(
+                            //    AttrsTagDict, checkboxFieldSet, TagCheckboxFieldSet);
+                            //AttrsHelper.SetTagAttrsOfProp(
+                            //    AttrsTagOfPropDict, checkboxFieldSet, property_name, TagCheckboxFieldSet);
 
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, checkboxFieldSet, TagCheckboxFieldSet, false);
-                            AttrsHelper.SetTagContentOfProp(
-                                ContentTagOfPropDict, checkboxFieldSet, property_name, TagCheckboxFieldSet, false);
+                            //AttrsHelper.SetTagContent(
+                            //    ContentTagDict, checkboxFieldSet, TagCheckboxFieldSet, false);
+                            //AttrsHelper.SetTagContentOfProp(
+                            //    ContentTagOfPropDict, checkboxFieldSet, property_name, TagCheckboxFieldSet, false);
+                            SetAttrsAndContent(
+                                checkboxFieldSet, property_name, TagCheckboxFieldSet);
 
                             for (int i = 0; i < checkBoxTag.Count; i++)
                             {
@@ -521,16 +532,18 @@ namespace GenericTagHelper
                                 TagBuilder checkboxLabel = new TagBuilder("label");
                                 checkboxLabel.Attributes["for"] = "checkbox_label" + tag_number;
 
-                                AttrsHelper.SetTagAttrs(AttrsTagDict, checkboxLabel, TagCheckboxLabel);
-                                AttrsHelper.SetTagAttrsOfProp(
-                                    AttrsTagOfPropDict, checkboxLabel, property_name,
-                                    TagCheckboxLabel, tag_number);
+                                //AttrsHelper.SetTagAttrs(AttrsTagDict, checkboxLabel, TagCheckboxLabel);
+                                //AttrsHelper.SetTagAttrsOfProp(
+                                //    AttrsTagOfPropDict, checkboxLabel, property_name,
+                                //    TagCheckboxLabel, tag_number);
 
-                                AttrsHelper.SetTagContent(
-                                    ContentTagDict, checkboxLabel, TagCheckboxLabel, false);
-                                AttrsHelper.SetTagContentOfProp(
-                                    ContentTagOfPropDict, checkboxLabel, property_name,
-                                    TagCheckboxLabel, tag_number, false);
+                                //AttrsHelper.SetTagContent(
+                                //    ContentTagDict, checkboxLabel, TagCheckboxLabel, false);
+                                //AttrsHelper.SetTagContentOfProp(
+                                //    ContentTagOfPropDict, checkboxLabel, property_name,
+                                //    TagCheckboxLabel, tag_number, false);
+                                SetAttrsAndContent(
+                                    checkboxLabel, property_name, TagCheckboxLabel, tag_number);
 
                                 checkboxLabel.InnerHtml.AppendHtml(item.Key);
 
@@ -588,14 +601,16 @@ namespace GenericTagHelper
                         input = GenerateInputType(property);
                         input.Attributes["class"] = "form-control";
 
-                        AttrsHelper.SetTagAttrs(AttrsTagDict, input, TagSelectInput);
-                        AttrsHelper.SetTagAttrsOfProp(
-                            AttrsTagOfPropDict, input, property_name, TagSelectInput);
+                        //AttrsHelper.SetTagAttrs(AttrsTagDict, input, TagSelectInput);
+                        //AttrsHelper.SetTagAttrsOfProp(
+                        //    AttrsTagOfPropDict, input, property_name, TagSelectInput);
 
-                        AttrsHelper.SetTagContent(
-                            ContentTagDict, input, TagSelectInput, false);
-                        AttrsHelper.SetTagContentOfProp(
-                            ContentTagOfPropDict, input, property_name, TagSelectInput, false);
+                        //AttrsHelper.SetTagContent(
+                        //    ContentTagDict, input, TagSelectInput, false);
+                        //AttrsHelper.SetTagContentOfProp(
+                        //    ContentTagOfPropDict, input, property_name, TagSelectInput, false);
+
+                        SetAttrsAndContent(input, property_name, TagSelectInput);
 
                         var selectModel =
                             SelectListDict.FirstOrDefault(
@@ -616,17 +631,19 @@ namespace GenericTagHelper
                                 option.Attributes["value"] = item.Key;
                                 option.InnerHtml.SetHtmlContent(item.Value);
 
-                                AttrsHelper.SetTagAttrs(
-                                    AttrsTagDict, option, TagSelectOption);
-                                AttrsHelper.SetTagAttrsOfProp(
-                                    AttrsTagOfPropDict, option, property_name,
-                                    TagSelectOption, tag_number);
+                                //AttrsHelper.SetTagAttrs(
+                                //    AttrsTagDict, option, TagSelectOption);
+                                //AttrsHelper.SetTagAttrsOfProp(
+                                //    AttrsTagOfPropDict, option, property_name,
+                                //    TagSelectOption, tag_number);
 
-                                AttrsHelper.SetTagContent(
-                                    ContentTagDict, option, TagSelectOption, false);
-                                AttrsHelper.SetTagContentOfProp(
-                                    ContentTagOfPropDict, option, property_name,
-                                    TagSelectOption, tag_number, false);
+                                //AttrsHelper.SetTagContent(
+                                //    ContentTagDict, option, TagSelectOption, false);
+                                //AttrsHelper.SetTagContentOfProp(
+                                //    ContentTagOfPropDict, option, property_name,
+                                //    TagSelectOption, tag_number, false);
+                                SetAttrsAndContent(
+                                    option, property_name, TagSelectOption, tag_number);
 
                                 input.InnerHtml.AppendHtml(option);
                             }
@@ -707,14 +724,17 @@ namespace GenericTagHelper
                                                     message: null,
                                                     tag: null,
                                                     htmlAttributes: null);
-                            AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
-                            AttrsHelper.SetTagAttrsOfProp(
-                                AttrsTagOfPropDict, span, property_name, TagValidation);
+                            //AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
+                            //AttrsHelper.SetTagAttrsOfProp(
+                            //    AttrsTagOfPropDict, span, property_name, TagValidation);
 
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, span, TagValidation, false);
-                            AttrsHelper.SetTagContentOfProp(
-                                ContentTagOfPropDict, span, property_name, TagValidation, false);
+                            //AttrsHelper.SetTagContent(
+                            //    ContentTagDict, span, TagValidation, false);
+                            //AttrsHelper.SetTagContentOfProp(
+                            //    ContentTagOfPropDict, span, property_name, TagValidation, false);
+
+                            SetAttrsAndContent(
+                                span, property_name, TagValidation);
                             /*---------------End print your model----------------*/
 
                             form_group.InnerHtml.AppendHtml(span);
@@ -731,14 +751,17 @@ namespace GenericTagHelper
                                                     message: null,
                                                     tag: null,
                                                     htmlAttributes: null);
-                            AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
-                            AttrsHelper.SetTagAttrsOfProp(
-                                AttrsTagOfPropDict, span, property_name, TagValidation);
+                            //AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
+                            //AttrsHelper.SetTagAttrsOfProp(
+                            //    AttrsTagOfPropDict, span, property_name, TagValidation);
 
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, span, TagValidation, false);
-                            AttrsHelper.SetTagContentOfProp(
-                                ContentTagOfPropDict, span, property_name, TagValidation, false);
+                            //AttrsHelper.SetTagContent(
+                            //    ContentTagDict, span, TagValidation, false);
+                            //AttrsHelper.SetTagContentOfProp(
+                            //    ContentTagOfPropDict, span, property_name, TagValidation, false);
+
+                            SetAttrsAndContent(
+                                span, property_name, TagValidation);
 
                             /*---------------End print your model----------------*/
 
@@ -784,15 +807,16 @@ namespace GenericTagHelper
             {
                 case "hidden":
                     Input = GenerateHidden(modelExplorer);
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input, property_name, TagFormInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input, property_name, TagFormInput);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, Input, TagFormInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagFormInput, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, Input, TagFormInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagFormInput, false);
+                    SetAttrsAndContent(Input, property_name, TagFormInput);
 
                     break;
 
@@ -804,16 +828,17 @@ namespace GenericTagHelper
                         isChecked: null,
                         htmlAttributes: null);
 
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagCheckboxInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input,
-                        property_name, TagCheckboxInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagCheckboxInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input,
+                    //    property_name, TagCheckboxInput);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, Input, TagCheckboxInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagCheckboxInput, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, Input, TagCheckboxInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagCheckboxInput, false);
+                    SetAttrsAndContent(Input, property_name, TagCheckboxInput);
 
                     break;
 
@@ -824,16 +849,17 @@ namespace GenericTagHelper
                         modelExplorer.Metadata.PropertyName,
                         value: null,
                         htmlAttributes: null);
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input,
-                        property_name, TagFormInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input,
+                    //    property_name, TagFormInput);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, Input, TagFormInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagFormInput, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, Input, TagFormInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagFormInput, false);
+                    SetAttrsAndContent(Input, property_name, TagFormInput);
 
                     break;
 
@@ -845,30 +871,32 @@ namespace GenericTagHelper
                                            value: radioValue,
                                            isChecked: null,
                                            htmlAttributes: null);
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagRadioInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input,
-                        property_name, TagRadioInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagRadioInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input,
+                    //    property_name, TagRadioInput);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, Input, TagRadioInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagRadioInput, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, Input, TagRadioInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagRadioInput, false);
+                    SetAttrsAndContent(Input, property_name, TagRadioInput);
                     break;
 
                 case "select":
                     Input = GenerateSelectList(modelExplorer, inputTypeHint);
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagSelectInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input,
-                        property_name, TagSelectInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagSelectInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input,
+                    //    property_name, TagSelectInput);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, Input, TagSelectInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagSelectInput, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, Input, TagSelectInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagSelectInput, false);
+                    SetAttrsAndContent(Input, property_name, TagSelectInput);
 
                     break;
 
@@ -880,16 +908,17 @@ namespace GenericTagHelper
                         rows: 0,
                         columns: 0,
                         htmlAttributes: null);
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input,
-                        property_name, TagFormInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input,
+                    //    property_name, TagFormInput);
 
-                    AttrsHelper.SetTagContent(
-                        ContentTagDict, Input, TagFormInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagFormInput, false);
+                    //AttrsHelper.SetTagContent(
+                    //    ContentTagDict, Input, TagFormInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagFormInput, false);
+                    SetAttrsAndContent(Input, property_name, TagFormInput);
 
                     break;
 
@@ -900,15 +929,16 @@ namespace GenericTagHelper
                         inputTypeHint,
                         inputType);
 
-                    AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
-                    AttrsHelper.SetTagAttrsOfProp(
-                        AttrsTagOfPropDict, Input, property_name, TagFormInput);
+                    //AttrsHelper.SetTagAttrs(AttrsTagDict, Input, TagFormInput);
+                    //AttrsHelper.SetTagAttrsOfProp(
+                    //    AttrsTagOfPropDict, Input, property_name, TagFormInput);
 
-                    AttrsHelper.SetTagContent(
-                     ContentTagDict, Input, TagFormInput, false);
-                    AttrsHelper.SetTagContentOfProp(
-                        ContentTagOfPropDict, Input,
-                        property_name, TagFormInput, false);
+                    //AttrsHelper.SetTagContent(
+                    // ContentTagDict, Input, TagFormInput, false);
+                    //AttrsHelper.SetTagContentOfProp(
+                    //    ContentTagOfPropDict, Input,
+                    //    property_name, TagFormInput, false);
+                    SetAttrsAndContent(Input, property_name, TagFormInput);
 
                     break;
             }
@@ -1380,6 +1410,42 @@ namespace GenericTagHelper
                 group.InnerHtml.AppendHtml(input);
                 return group;
             }
+        }
+
+        private void SetAttrsAndContent(
+            TagBuilder tag, string tag_name)
+        {
+            AttrsHelper.SetTagAttrs(AttrsTagDict, tag, tag_name);
+            AttrsHelper.SetTagContent(ContentTagDict, tag, tag_name, false);
+        }
+
+        private void SetAttrsAndContent(
+            TagBuilder tag, string property_name, string tag_name)
+        {
+            AttrsHelper.SetTagAttrs(AttrsTagDict, tag, tag_name);
+            AttrsHelper.SetTagAttrsOfProp(
+                AttrsTagOfPropDict, tag, tag_name, property_name);
+
+            AttrsHelper.SetTagContent(
+                ContentTagDict, tag, tag_name, false);
+            AttrsHelper.SetTagContentOfProp(
+                ContentTagOfPropDict, tag, property_name, tag_name, false);
+        }
+
+        private void SetAttrsAndContent(
+            TagBuilder tag,
+            string property_name,
+            string tag_name,
+            string index)
+        {
+            AttrsHelper.SetTagAttrs(AttrsTagDict, tag, tag_name);
+            AttrsHelper.SetTagAttrsOfProp(
+                AttrsTagOfPropDict, tag, property_name, tag_name, index);
+
+            AttrsHelper.SetTagContent(
+                ContentTagDict, tag, tag_name, false);
+            AttrsHelper.SetTagContentOfProp(
+                ContentTagOfPropDict, tag, property_name, tag_name, index, false);
         }
         #endregion
     }
