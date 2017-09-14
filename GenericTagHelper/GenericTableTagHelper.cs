@@ -63,10 +63,8 @@ namespace GenericTagHelper
         #endregion
 
         #region Table Attributes
-
-
         public string AttrsTagsOfProp { get; set; }
-        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagsOfPropDict
+        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagsOfPropDict
         {
             get
             {
@@ -75,7 +73,7 @@ namespace GenericTagHelper
         }
 
         public string AttrsTag { get; set; }
-        public Dictionary<string, Dictionary<string, string>> AttrsTagDict
+        private Dictionary<string, Dictionary<string, string>> AttrsTagDict
         {
             get
             {
@@ -99,29 +97,28 @@ namespace GenericTagHelper
         public string TagTable { get; set; } = "table";
 
         public string TagTableTitle { get; set; } = "title";
-        public string TagTableHead { get; set; } = "head";
-        public string TagTableHeadRow { get; set; } = "head_row";
-        public string TagTableIndexHead { get; set; } = "index_head";
+        public string TagTableHead { get; set; } = "thead";
+        public string TagTableHeadRow { get; set; } = "thead_row";
+        public string TagTableHeadIndex { get; set; } = "thead_index";
 
-        public string TagTableBody { get; set; } = "body";
-        public string TagTableBodyRow { get; set; } = "body_row";
+        public string TagTableBody { get; set; } = "tbody";
+        public string TagTableBodyRow { get; set; } = "tbody_row";
 
-        public string TagTableBodyData { get; set; } = "body_data";
-        public string TagTableBodyDataRow { get; set; } = "body_data_row";
-        public string TagTableBodyDataCol { get; set; } = "body_data_col";
-        public string TagTableIndexData { get; set; } = "index_data";
+        public string TagTableBodyTd { get; set; } = "tbody_td";
+        public string TagTableBodyTdRow { get; set; } = "tbody_td_row";
+        public string TagTableBodyTdCol { get; set; } = "tbody_td_col";
+        public string TagTableTdIndex { get; set; } = "td_index";
+
+        public string TagTableBodyTdO { get; set; } = "tbody_td_o";
+        public string TagTableBodyTdRowO { get; set; } = "tbody_td_row_o";
+        public string TagTableBodyTdColO { get; set; } = "tbody_td_col_o";
+        public string TagTableTdIndexO { get; set; } = "td_index_o";
 
         public string TagTablePanel { get; set; } = "panel";
         public string TagTablePanelHead { get; set; } = "panel_head";
         public string TagTablePanelBody { get; set; } = "panel_body";
-
-        public string TagTableData { get; set; } = "data";
-        public string TagTableDatatRow { get; set; } = "data_row";
-        public string TagTableDataCol { get; set; } = "data_col";
-
-        public string TagTableDataOverride { get; set; } = "data_override";
-        public string TagTableDataOverrideRow { get; set; } = "data_override_row";
-        public string TagTableDataOverrideCol { get; set; } = "data_override_col";
+        public string TagTablePanelHeadO { get; set; } = "panel_head_o";
+        public string TagTablePanelBodyO { get; set; } = "panel_body_o";
 
         #endregion
 
@@ -147,38 +144,6 @@ namespace GenericTagHelper
                 return JsonDeserialize.JsonDeserializeConvert_Ls(TableHeadData);
             }
         }
-
-        //// Append Html string to  specific column
-        //public string TableAppendHtmlCols { get; set; }
-        //private Dictionary<string, string> TableAppendHtmlColsDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(TableAppendHtmlCols);
-        //    }
-        //}
-        //public bool ActiveOverrideHtmlCols { get; set; }
-
-        //// Append html string to specific td location
-        //public string TableAppendHtmlRowsCols { get; set; }
-        //private Dictionary<string, Dictionary<string, string>> TableAppendHtmlRowsColsDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_DsDss(TableAppendHtmlRowsCols);
-        //    }
-        //}
-        //public bool ActiveOverrideHtmlRowsCols { get; set; }
-
-        //public string TableHiddenColumns { get; set; }
-        //private List<string> TableHiddenColumnsList
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Ls(TableHiddenColumns);
-        //    }
-        //}
-
 
         public bool TableShowIndex { get; set; }
         public string TableIndexTitle { get; set; } = "Index";
@@ -228,25 +193,19 @@ namespace GenericTagHelper
             TagHelperContext context, TagHelperOutput output)
         {
 
-            TagBuilder thead = new TagBuilder("thead");
-            AttrsHelper.SetTagAttrs(
-                AttrsTagDict, thead, TagTableHead);
 
-            //HtmlAttributesHelper.AddAttributes(thead, AttrsTableHeadDict);
+            TagBuilder thead = new TagBuilder("thead");
+            SetAttrsAndContent(AttrsTagDict, ContentTagDict, thead, TagTableHead, false);
 
             TagBuilder thead_tr = new TagBuilder("tr");
-            AttrsHelper.SetTagAttrs(
-                AttrsTagDict, thead_tr, TagTableHeadRow);
-            //HtmlAttributesHelper.AddAttributes(thead_tr, AttrsTableHeadTrDict);
-
+            SetAttrsAndContent(AttrsTagDict, ContentTagDict, thead_tr, TagTableHeadRow, false);
             // Active Index
             if (TableShowIndex)
             {
                 TagBuilder th = new TagBuilder("th");
-                AttrsHelper.SetTagAttrs(
-                    AttrsTagDict, th, TagTableIndexHead);
-
                 th.InnerHtml.AppendHtml(TableIndexTitle);
+                SetAttrsAndContent(AttrsTagDict, ContentTagDict, th, TagTableHeadIndex, false);
+
                 thead_tr.InnerHtml.AppendHtml(th);
             }
 
@@ -259,19 +218,18 @@ namespace GenericTagHelper
 
             thead.InnerHtml.AppendHtml(thead_tr);
 
-
             TagBuilder tbody = new TagBuilder("tbody");
-            AttrsHelper.SetTagAttrs(
-                AttrsTagDict, tbody, TagTableBody);
-            //HtmlAttributesHelper.AddAttributes(tbody, AttrsTableBodyDict);
-
-
+            SetAttrsAndContent(AttrsTagDict, ContentTagDict, tbody, TagTableBody, false);
 
             if (ItemsList.Count == 0)
             {
                 TagBuilder tbody_tr = new TagBuilder("tr");
+                SetAttrsAndContent(
+                    AttrsTagDict, ContentTagDict, tbody_tr, TagTableBodyRow, false);
 
                 TagBuilder td = new TagBuilder("td");
+                SetAttrsAndContent(
+                    AttrsTagDict, ContentTagDict, td, TagTableBodyTd, false);
 
                 td.InnerHtml.AppendHtml(NoItemsMessage);
 
@@ -289,30 +247,43 @@ namespace GenericTagHelper
                 // Start loop table row 
                 for (int rows = 0; rows < ItemsList.Count; rows++)
                 {
+                    var primary_key = ItemsList[rows]
+                              .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
+
                     var rows_index =
                         (rows + 1 + (ItemPerPage * (CurrentPage - 1))).ToString();
 
                     TagBuilder tbody_tr = new TagBuilder("tr");
+
                     AttrsHelper.SetTagAttrs(
                         AttrsTagDict, tbody_tr, TagTableBodyRow);
-
                     AttrsHelper.SetTagAttrs(
                         AttrsTagDict, tbody_tr,
                         TagTableBodyRow, rows_index);
 
+                    AttrsHelper.SetTagContent(
+                        ContentTagDict, tbody_tr, TagTableBodyRow, false);
+                    AttrsHelper.SetTagContent(
+                        ContentTagDict, tbody_tr, TagTableBodyRow, rows_index, false);
+
                     // Show index if true
                     if (TableShowIndex)
                     {
-                        TagBuilder Index = new TagBuilder("td");
+                        TagBuilder index = new TagBuilder("td");
 
                         AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, Index, TagTableIndexData);
+                            AttrsTagDict, index, TagTableTdIndex);
                         AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, Index, TagTableIndexData, rows_index);
+                            AttrsTagDict, index, TagTableTdIndex, rows_index);
 
-                        Index.InnerHtml.AppendHtml(rows_index);
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, index, TagTableTdIndex, false);
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, index, TagTableTdIndex, rows_index, false);
 
-                        tbody_tr.InnerHtml.AppendHtml(Index);
+                        index.InnerHtml.AppendHtml(rows_index);
+
+                        tbody_tr.InnerHtml.AppendHtml(index);
                     }
 
                     // Start loop table columns
@@ -323,13 +294,31 @@ namespace GenericTagHelper
                         TagBuilder td = new TagBuilder("td");
 
                         AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, td, TagTableBodyData);
+                            AttrsTagDict, td, TagTableBodyTd);
+                        AttrsHelper.SetTagRowsOrColsAttrs(
+                            AttrsTagDict, td, TagTableBodyTdRow, primary_key, rows_index);
+                        AttrsHelper.SetTagRowsOrColsAttrs(
+                            AttrsTagDict, td, TagTableBodyTdCol, primary_key, cols_index);
                         AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, td, TagTableBodyDataCol, cols_index);
-                        AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, td, TagTableBodyDataRow, rows_index);
-                        AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, td, TagTableBodyData, rows_index, cols_index);
+                            AttrsTagDict, td, TagTableBodyTd, rows_index, cols_index);
+
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTd, false);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdCol, primary_key, cols_index, false);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdRow, primary_key, rows_index, false);
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTd, rows_index, cols_index, false);
+
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTdO, true);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdColO, primary_key, cols_index, true);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdRowO, primary_key, rows_index, true);
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTdO, rows_index, cols_index, true);
 
 
                         // try to get value from 
@@ -344,107 +333,15 @@ namespace GenericTagHelper
                                 {
                                     td.InnerHtml.AppendHtml(tableData);
                                 }
-
                             }
-
-                            //var hiddenCols = ItemsList[rows]
-                            //    .Keys.ElementAt(cols);
-
-                            //// Skip hidden columns
-                            //if (TableHiddenColumnsList.Contains(hiddenCols))
-                            //{
-                            //    continue;
-                            //}
-
-                            //var tableData = ItemsList[rows]
-                            //    .Values.ElementAt(cols);
-
-                            //td.InnerHtml.AppendHtml(tableData);
-
-                            // Get your table list primary key value
-                            //var row_Id = ItemsList[rows]
-                            //    .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
-
-                            //AddHtmlRowsAndCols(td, rows_index, cols_index);
-                            //AddHtmlCols(td, rows_index, cols_index);
-                            var primaryKey = ItemsList[rows]
-                               .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
-
-                            // Append
-                            AttrsHelper.SetTagContent(
-                               ContentTagDict, td, TagTableData, false);
-
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, td, TagTableData,
-                                rows_index, cols_index, false);
-
-                            AttrsHelper.SetTagRowsContent(
-                                ContentTagDict, td, TagTableDatatRow,
-                                rows_index, cols_index, false);
-
-                            AttrsHelper.SetTagColsContent(
-                                ContentTagDict, td, TagTableDataCol,
-                                primaryKey, cols_index, false);
-
-
-                            // Override
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, td, TagTableDataOverride, true);
-
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, td, TagTableDataOverride,
-                                rows_index, cols_index, true);
-
-                            AttrsHelper.SetTagRowsContent(
-                                ContentTagDict, td, TagTableDataOverrideRow,
-                                rows_index, cols_index, true);
-
-                            AttrsHelper.SetTagColsContent(
-                                ContentTagDict, td, TagTableDataOverrideCol,
-                                primaryKey, cols_index, true);
-
+                            else
+                            {
+                                var tableData = ItemsList[rows].Values.ElementAt(cols);
+                                td.InnerHtml.AppendHtml(tableData);
+                            }
                         }
-                        // if out of index then catch exception to create new columns
                         catch (ArgumentOutOfRangeException)
                         {
-                            var primaryKey = ItemsList[rows]
-                                .FirstOrDefault(k => k.Key == TablePrimaryKey).Value;
-
-                            //AddHtmlRowsAndCols(td, row_Id, cols_index);
-                            //AddHtmlCols(td, row_Id, cols_index);
-
-                            // Append
-                            AttrsHelper.SetTagContent(
-                               ContentTagDict, td, TagTableData, false);
-
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, td, TagTableData,
-                                rows_index, cols_index, false);
-
-                            AttrsHelper.SetTagRowsContent(
-                                ContentTagDict, td, TagTableDatatRow,
-                                rows_index, cols_index, false);
-
-                            AttrsHelper.SetTagColsContent(
-                                ContentTagDict, td, TagTableDataCol,
-                                primaryKey, cols_index, false);
-
-
-                            // Override
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, td, TagTableDataOverride, true);
-
-                            AttrsHelper.SetTagContent(
-                                ContentTagDict, td, TagTableDataOverride,
-                                rows_index, cols_index, true);
-
-                            AttrsHelper.SetTagRowsContent(
-                                ContentTagDict, td, TagTableDataOverrideRow,
-                                rows_index, cols_index, true);
-
-                            AttrsHelper.SetTagColsContent(
-                                ContentTagDict, td, TagTableDataOverrideCol,
-                                primaryKey, cols_index, true);
                         }
 
 
@@ -459,35 +356,32 @@ namespace GenericTagHelper
             {
 
                 TagBuilder panel_head = new TagBuilder("div");
+                panel_head.Attributes["class"] = "panel-heading";
+
                 AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelHead);
-                //HtmlAttributesHelper.AddAttributes(panel_heading, AttrsPanelHeadingDict);
+                AttrsHelper.SetTagContent(ContentTagDict, panel_head, TagTablePanelHead, false);
+                AttrsHelper.SetTagContent(ContentTagDict, panel_head, TagTablePanelHeadO, true);
 
                 TagBuilder panel_body = new TagBuilder("div");
+                panel_body.Attributes["class"] = "panel-body";
+
                 AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelBody);
-                //HtmlAttributesHelper.AddAttributes(panel_body, AttrsPanelBodyDict);
+                AttrsHelper.SetTagContent(ContentTagDict, panel_body, TagTablePanelBody, false);
+                AttrsHelper.SetTagContent(ContentTagDict, panel_body, TagTablePanelBodyO, true);
 
                 if (ActivePanelHeading)
                 {
                     output.Content.AppendHtml(panel_head);
-                    //panel_head = SetPanelElement(
-                    //    panel_head, "panel-heading",
-                    //    AttrsPanelHeadingDict,
-                    //    PanelHeadingContent);
                 }
                 if (ActivePanelBody)
                 {
                     output.Content.AppendHtml(panel_body);
-                    //panel_body = SetPanelElement(
-                    //     panel_body, "panel-body",
-                    //     AttrsPanelBodyDict,
-                    //     PanelBodyContent);
                 }
 
                 output.TagName = "div";
                 output.TagMode = TagMode.StartTagAndEndTag;
                 output.Content.AppendHtml(
-                    SetTableOutput(output, thead, tbody)
-                    );
+                    SetTableOutput(output, thead, tbody));
             }
             else
             {
@@ -500,6 +394,17 @@ namespace GenericTagHelper
 
         }
 
+        private void SetAttrsAndContent(
+            Dictionary<string, Dictionary<string, string>> attrDict,
+            Dictionary<string, string> contentDict,
+            TagBuilder tag, string tag_name, bool isOverride)
+        {
+            AttrsHelper.SetTagAttrs(
+                    attrDict, tag, tag_name);
+            AttrsHelper.SetTagContent(
+                contentDict, tag, tag_name, isOverride);
+        }
+
         private TagBuilder SetTableOutput(
             TagHelperOutput output, TagBuilder thead, TagBuilder tbody)
         {
@@ -507,130 +412,10 @@ namespace GenericTagHelper
             table.Attributes["class"] = "table table-primary";
 
             AttrsHelper.SetTagAttrs(AttrsTagDict, table, TagTable);
-            //HtmlAttributesHelper.AddAttributes(
-            //   table, AttrsTableDict);
-
             table.InnerHtml.AppendHtml(thead);
             table.InnerHtml.AppendHtml(tbody);
 
             return table;
         }
-
-        //private TagBuilder SetPanelElement(
-        //    TagBuilder panel_element,
-        //    string elementClass,
-        //    Dictionary<string, string> itemAttrsDict,
-        //    string appendContent)
-        //{
-        //    panel_element.AddCssClass(elementClass);
-        //    AttrsHelper.SetTagAttrs(AttrsTagDict, panel_element, TagTablePanel);
-        //    //HtmlAttributesHelper.AddAttributes(
-        //    //    panel_element, itemAttrsDict);
-        //    panel_element.InnerHtml.AppendHtml(appendContent);
-        //    return panel_element;
-        //}
-
-        //private void AddHtmlRowsAndCols(TagBuilder td, string row_Id, string cols_index)
-        //{
-        //    // Add html content to specific row and cols
-        //    var rowsValue = TableAppendHtmlRowsColsDict.FirstOrDefault(
-        //        rows => rows.Key.Equals(row_Id, StringComparison.OrdinalIgnoreCase)).Value;
-        //    if (TableAppendHtmlRowsColsDict.Count != 0 &&
-        //        rowsValue != null)
-        //    {
-        //        var colsValue = rowsValue.FirstOrDefault(
-        //            cols => cols.Key.Equals(cols_index,
-        //            StringComparison.OrdinalIgnoreCase)).Value;
-
-        //        if (colsValue != null)
-        //        {
-        //            colsValue = colsValue.Replace("*", row_Id);
-        //        }
-
-        //        if (ActiveOverrideHtmlRowsCols)
-        //        {
-        //            td.InnerHtml.SetHtmlContent(colsValue);
-        //        }
-        //        else
-        //        {
-        //            td.InnerHtml.AppendHtml(colsValue);
-        //        }
-        //    }
-            //if (HtmlAttributesHelper.IsContainsKey(
-            //    TableAppendHtmlRowsColsDict, row_Id))
-            //{
-            //    var htmlValue = TableAppendHtmlRowsColsDict.FirstOrDefault(
-            //        rows => rows.Key.Equals(row_Id,
-            //        StringComparison.OrdinalIgnoreCase))
-            //        .Value.FirstOrDefault(
-            //          cols => cols.Key.Equals((columns + 1).ToString(),
-            //          StringComparison.OrdinalIgnoreCase)).Value;
-
-            //    if (htmlValue != null)
-            //    {
-            //        htmlValue = htmlValue.Replace("*", row_Id);
-            //    }
-
-
-            //    if (ActiveOverrideHtmlRowsCols)
-            //    {
-            //        td.InnerHtml.SetHtmlContent(htmlValue);
-            //    }
-            //    else
-            //    {
-            //        td.InnerHtml.AppendHtml(htmlValue);
-            //    }
-            //}
-        //}
-
-        //private void AddHtmlCols(TagBuilder td, string row_Id, string cols_index)
-        //{
-        //    var colsValue = TableAppendHtmlColsDict.FirstOrDefault(
-        //            cols => cols.Key.Equals(
-        //                    cols_index, StringComparison.OrdinalIgnoreCase)).Value;
-        //    if (colsValue != null &&
-        //        TableAppendHtmlColsDict.Count != 0)
-        //    {
-        //        if (colsValue != null)
-        //        {
-        //            colsValue = colsValue.Replace("*", row_Id);
-        //        }
-
-        //        if (ActiveOverrideHtmlRowsCols)
-        //        {
-        //            td.InnerHtml.SetHtmlContent(colsValue);
-        //        }
-        //        else
-        //        {
-        //            td.InnerHtml.AppendHtml(colsValue);
-        //        }
-        //    }
-            //if (HtmlAttributesHelper.IsContainsKey(
-            //                   TableAppendHtmlColsDict, (columns + 1).ToString()))
-            //{
-            //    var htmlValue = TableAppendHtmlColsDict.FirstOrDefault(
-            //        cols => cols.Key.Equals(
-            //            (columns + 1).ToString(), StringComparison.OrdinalIgnoreCase))
-            //        .Value;
-
-
-            //    if (htmlValue != null)
-            //    {
-            //        htmlValue = htmlValue.Replace("*", row_Id);
-            //    }
-
-
-            //    if (ActiveOverrideHtmlCols)
-            //    {
-            //        td.InnerHtml.SetHtmlContent(htmlValue);
-            //    }
-            //    else
-            //    {
-            //        td.InnerHtml.AppendHtml(htmlValue);
-            //    }
-            //}
-        //}
-
-
     }
 }

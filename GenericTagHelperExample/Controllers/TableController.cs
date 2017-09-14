@@ -30,12 +30,13 @@ namespace GenericTagHelperExample.Controllers
 
             customers = customers.ToOrderByList(model.SortType, model.IsSortDescending);
 
+            customers = customers.ToSearchByList(model.SearchType, model.SearchItem);
 
             model.ItemPerPage = 10;
 
             var customersPagingList = customers.ToPageList(model.Page, model.ItemPerPage);
 
-            var jsonData = JsonConvert.SerializeObject(customersPagingList);
+            var itemsJsonData = JsonConvert.SerializeObject(customersPagingList);
 
             string sortId = Sorting(model, "Id");
             string sortName = Sorting(model, "Name");
@@ -49,7 +50,7 @@ namespace GenericTagHelperExample.Controllers
 
                 ItemPerPage = model.ItemPerPage,
                 Page = model.Page,
-                ItemsJson = jsonData,
+                ItemsJson = itemsJsonData,
                 TotalItems = customers.Count(),
 
                 Id = sortId,

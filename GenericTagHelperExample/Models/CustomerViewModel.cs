@@ -13,6 +13,7 @@ namespace GenericTagHelperExample.Models
         public string SearchItem { get; set; }
         public string SortType { get; set; }
         public bool IsSortDescending { get; set; }
+        public string QueryOptions { get; set; }
 
         public int Page { get; set; } = 1;
         public int ItemPerPage { get; set; }
@@ -23,6 +24,7 @@ namespace GenericTagHelperExample.Models
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public SearchBarViewModel SearchBar { get; set; }
+        [DataType("Select")]
+        public SearchBarViewModel SearchSelectList { get; set; }
     }
 }

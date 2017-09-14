@@ -1,17 +1,19 @@
 ﻿@model CustomerViewModel
 <br />
-<form generic form-model="@Model.SearchBar"
-      form-title=""
-      asp-controller="Table"
-      asp-action="Index"
+
+<form generic form-model="@Model.SearchSelectList" class="input-group"
+      asp-controller="Table" asp-action="Index" method="get"
+      active-label="false" active-validation="false" active-group="false"
       select-data-list="{
-        searchselectlist:{
-            1:'Id',
-            2:'Email'
-        }, 
+        SearchSelectList:{Id:'Id',Name:'Name'},
       }"
-      method="get"
-      class="input-group">
+      attrs-tag-of-prop="{
+        SearchSelectList:{select:{name:'searchtype',class:'selectpicker','data-width':'5%','data-style':'btn-success'}
+        },
+        SearchInput:{
+            input:{ class:'form-control',name:'searchItem',placeholder:'Search...',id:'search_key',value:'',style:'max-width:100%;'}
+        }
+      }">
     <span class="input-group-btn">
         <button class="btn btn-default" type="submit">
             <span class="glyphicon glyphicon-search"></span>
@@ -19,29 +21,36 @@
     </span>
 </form>
 
+<br />
+
 
 <table generic
        class="panel panel-primary"
        items="@Model.ItemsJson"
        item-per-page="@Model.ItemPerPage"
        current-page="@Model.Page"
+       query-options=""
        table-head-data="['Id @Model.Id','Name @Model.Name','Gender','Edit']"
-       table-sort-data="['Gender','Name','Id']"
-       table-hidden-columns="[]"
        table-primary-key="Id"
        table-cols-number="5"
        table-show-index="true"
        active-panel="true"
        active-panel-heading="true"
+       active-panel-body="true"
        panel-heading-content="Customer"
-       content-tag="{
-            data_col_4:'hello*'
-       }"
        attrs-tag="{
         index_data:{style:'color:pink;'},
-        body_row_4:{style:'color:red;'},
+        tbody_td_col_1:{style:'color:red;'},
         body_data_col_3:{style:'color:green;'}
-       }"></table>
+       }"
+       content-tag="{
+       panel_head: '<h1 class=\' text-center\'>
+    Customer</h1>',
+    panel_body: '
+    <h1 class=\'text-center\'>This is Customer</h1>'
+    }"
+    >
+</table>
 
 <pagination total-items="@Model.TotalItems"
             current-page="@Model.Page"

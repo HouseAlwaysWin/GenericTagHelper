@@ -183,6 +183,7 @@ namespace GenericTagHelper
         public bool ActiveValidationSummary { get; set; } = true;
         public bool ActiveLabel { get; set; } = true;
         public bool ActiveValidation { get; set; } = true;
+        public bool ActiveGroup { get; set; } = true;
         #endregion
 
         #region AttrsTags
@@ -195,20 +196,20 @@ namespace GenericTagHelper
         public string TagFormLabel { get; set; } = "label";
         public string TagFormInput { get; set; } = "input";
 
-        public string TagCheckboxFieldSet { get; set; } = "checkbox_group";
-        public string TagCheckboxLabel { get; set; } = "checkbox_label";
-        public string TagCheckboxInput { get; set; } = "checkbox_input";
+        public string TagCheckboxFieldSet { get; set; } = "group";
+        public string TagCheckboxLabel { get; set; } = "label";
+        public string TagCheckboxInput { get; set; } = "input";
 
-        public string TagRadioFieldSet { get; set; } = "radio_group";
-        public string TagRadioLabel { get; set; } = "radio_label";
-        public string TagRadioInput { get; set; } = "radio_input";
+        public string TagRadioFieldSet { get; set; } = "group";
+        public string TagRadioLabel { get; set; } = "label";
+        public string TagRadioInput { get; set; } = "input";
 
 
         public string TagSelectOption { get; set; } = "option";
-        public string TagSelectInput { get; set; } = "select_input";
+        public string TagSelectInput { get; set; } = "select";
 
         public string TagColsListGroup { get; set; } = "cols_list_group";
-        public string TagLocationDiv { get; set; } = "div";
+        public string TagLabelDiv { get; set; } = "label_div";
         #endregion
 
         #region RadioButton 
@@ -438,11 +439,22 @@ namespace GenericTagHelper
                             radioFieldSet.InnerHtml.AppendHtml(NoDataMsg);
                         }
 
-                        if (ActiveLabel)
+                        if (ActiveGroup)
                         {
-                            form_group.InnerHtml.AppendHtml(label);
+                            if (ActiveLabel)
+                            {
+                                form_group.InnerHtml.AppendHtml(label);
+                            }
+                            form_group.InnerHtml.AppendHtml(radioFieldSet);
                         }
-                        form_group.InnerHtml.AppendHtml(radioFieldSet);
+                        else
+                        {
+                            if (ActiveLabel)
+                            {
+                                output.Content.AppendHtml(label);
+                            }
+                            output.Content.AppendHtml(radioFieldSet);
+                        }
                     }
                     // check if it's checkbox
                     else if (property.ModelType.Name == "Boolean")
@@ -474,24 +486,11 @@ namespace GenericTagHelper
                                 AttrsHelper.SetTagAttrsOfProp(
                                     AttrsTagOfPropDict, checkboxLabel, property_name,
                                     TagCheckboxLabel, tag_number);
-                                //SetGlobalTagsAttrs(checkboxLabel, TagCheckboxLabel);
-                                //SetLocalTagAttrs(
-                                //    checkboxLabel, property_name,
-                                //    TagCheckboxLabel, tag_number);
+
                                 checkboxLabel.InnerHtml.AppendHtml(item.Key);
 
-                                //TagBuilder checkboxInput = Generator.GenerateCheckBox(
-                                //            ViewContext,
-                                //            property,
-                                //            property.Metadata.PropertyName,
-                                //            isChecked: item.Value,
-                                //            htmlAttributes: null);
                                 input = GenerateInputType(property);
 
-                                //SetGlobalTagsAttrs(checkboxInput, TagCheckboxInput);
-                                //SetLocalTagAttrs(
-                                //    input, property_name,
-                                //    TagCheckboxInput, tag_number);
                                 input.Attributes["id"] = "checkbox_label" + tag_number;
 
                                 checkboxFieldSet = SetInputLocation(
@@ -500,24 +499,43 @@ namespace GenericTagHelper
                                      property_name, tag_number, CheckboxColsList);
                             }
 
-                            if (ActiveLabel)
+                            if (ActiveGroup)
                             {
-                                form_group.InnerHtml.AppendHtml(label);
+                                if (ActiveLabel)
+                                {
+                                    form_group.InnerHtml.AppendHtml(label);
+                                }
+                                form_group.InnerHtml.AppendHtml(checkboxFieldSet);
                             }
-                            form_group.InnerHtml.AppendHtml(checkboxFieldSet);
+                            else
+                            {
+                                if (ActiveLabel)
+                                {
+                                    output.Content.AppendHtml(label);
+                                }
+                                output.Content.AppendHtml(checkboxFieldSet);
+                            }
                         }
                         else
                         {
                             input = GenerateInputType(property);
 
-                            if (ActiveLabel)
+                            if (ActiveGroup)
                             {
-                                form_group.InnerHtml.AppendHtml(label);
+                                if (ActiveLabel)
+                                {
+                                    form_group.InnerHtml.AppendHtml(label);
+                                }
+                                form_group.InnerHtml.AppendHtml(input);
                             }
-
-                            //SetGlobalTagsAttrs(input, TagCheckboxInput);
-                            //SetLocalTagAttrs(input, property_name, TagCheckboxInput);
-                            form_group.InnerHtml.AppendHtml(input);
+                            else
+                            {
+                                if (ActiveLabel)
+                                {
+                                    output.Content.AppendHtml(label);
+                                }
+                                output.Content.AppendHtml(input);
+                            }
                         }
                     }
                     else if (property.Metadata.DataTypeName == "Select")
@@ -525,8 +543,8 @@ namespace GenericTagHelper
                         input = GenerateInputType(property);
                         input.Attributes["class"] = "form-control";
 
-                        //SetGlobalTagsAttrs(input, TagSelectInput);
-                        //SetLocalTagAttrs(input, property_name, TagSelectInput);
+                        AttrsHelper.SetTagAttrs(AttrsTagDict, input, TagSelectInput);
+                        AttrsHelper.SetTagAttrsOfProp(AttrsTagOfPropDict, input, property_name, TagSelectInput);
 
                         var selectModel =
                             SelectListDict.FirstOrDefault(
@@ -557,11 +575,22 @@ namespace GenericTagHelper
                                 input.InnerHtml.AppendHtml(option);
                             }
 
-                            if (ActiveLabel)
+                            if (ActiveGroup)
                             {
-                                form_group.InnerHtml.AppendHtml(label);
+                                if (ActiveLabel)
+                                {
+                                    form_group.InnerHtml.AppendHtml(label);
+                                }
+                                form_group.InnerHtml.AppendHtml(input);
                             }
-                            form_group.InnerHtml.AppendHtml(input);
+                            else
+                            {
+                                if (ActiveLabel)
+                                {
+                                    output.Content.AppendHtml(label);
+                                }
+                                output.Content.AppendHtml(input);
+                            }
                         }
                         else
                         {
@@ -569,11 +598,22 @@ namespace GenericTagHelper
                             NoDataMsg.MergeAttribute("style", "color:red;");
                             NoDataMsg.InnerHtml.SetHtmlContent(
                                 "No select list data,please give a data in your view");
-                            if (ActiveLabel)
+                            if (ActiveGroup)
                             {
-                                form_group.InnerHtml.AppendHtml(label);
+                                if (ActiveLabel)
+                                {
+                                    form_group.InnerHtml.AppendHtml(label);
+                                }
+                                form_group.InnerHtml.AppendHtml(NoDataMsg);
                             }
-                            form_group.InnerHtml.AppendHtml(NoDataMsg);
+                            else
+                            {
+                                if (ActiveLabel)
+                                {
+                                    output.Content.AppendHtml(label);
+                                }
+                                output.Content.AppendHtml(NoDataMsg);
+                            }
                         }
                     }
                     else
@@ -582,35 +622,67 @@ namespace GenericTagHelper
 
                         input.Attributes["class"] = "form-control";
 
-                        if (ActiveLabel)
+                        if (ActiveGroup)
                         {
-                            form_group.InnerHtml.AppendHtml(label);
+                            if (ActiveLabel)
+                            {
+                                form_group.InnerHtml.AppendHtml(label);
+                            }
+                            form_group.InnerHtml.AppendHtml(input);
                         }
-                        form_group.InnerHtml.AppendHtml(input);
+                        else
+                        {
+                            if (ActiveLabel)
+                            {
+                                output.Content.AppendHtml(label);
+                            }
+                            output.Content.AppendHtml(input);
+                        }
                     }
 
-                    if (ActiveValidation)
+                    if (ActiveGroup)
                     {
-                        TagBuilder span = Generator.GenerateValidationMessage(
-                                                ViewContext,
-                                                property,
-                                                property.Metadata.PropertyName,
-                                                message: null,
-                                                tag: null,
-                                                htmlAttributes: null);
-                        AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
-                        AttrsHelper.SetTagAttrsOfProp(
-                            AttrsTagOfPropDict, span, property_name, TagValidation);
-                        //SetGlobalTagsAttrs(span, TagValidation);
-                        //SetLocalTagAttrs(span, property_name, TagValidation);
+                        if (ActiveValidation)
+                        {
+                            TagBuilder span = Generator.GenerateValidationMessage(
+                                                    ViewContext,
+                                                    property,
+                                                    property.Metadata.PropertyName,
+                                                    message: null,
+                                                    tag: null,
+                                                    htmlAttributes: null);
+                            AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
+                            AttrsHelper.SetTagAttrsOfProp(
+                                AttrsTagOfPropDict, span, property_name, TagValidation);
+                            /*---------------End print your model----------------*/
 
+                            form_group.InnerHtml.AppendHtml(span);
+                        }
+                    }
+                    else
+                    {
+                        if (ActiveValidation)
+                        {
+                            TagBuilder span = Generator.GenerateValidationMessage(
+                                                    ViewContext,
+                                                    property,
+                                                    property.Metadata.PropertyName,
+                                                    message: null,
+                                                    tag: null,
+                                                    htmlAttributes: null);
+                            AttrsHelper.SetTagAttrs(AttrsTagDict, span, TagValidation);
+                            AttrsHelper.SetTagAttrsOfProp(
+                                AttrsTagOfPropDict, span, property_name, TagValidation);
+                            /*---------------End print your model----------------*/
 
-                        /*---------------End print your model----------------*/
-
-                        form_group.InnerHtml.AppendHtml(span);
+                            output.Content.AppendHtml(span);
+                        }
                     }
 
-                    output.Content.AppendHtml(form_group);
+                    if (ActiveGroup)
+                    {
+                        output.Content.AppendHtml(form_group);
+                    }
 
                     // End loop according your number of properties
                     if (complex_type_prop_counter > FormModel.Metadata.Properties.Count() - 1)
@@ -1070,10 +1142,10 @@ namespace GenericTagHelper
                 !left)
             {
                 TagBuilder top_div = new TagBuilder("div");
-                AttrsHelper.SetTagAttrs(AttrsTagDict, top_div, TagLocationDiv);
+                AttrsHelper.SetTagAttrs(AttrsTagDict, top_div, TagLabelDiv);
                 AttrsHelper.SetTagAttrsOfProp(
                     AttrsTagOfPropDict, top_div, property_name,
-                    TagLocationDiv, value_num);
+                    TagLabelDiv, value_num);
                 //SetGlobalTagsAttrs(top_div, TagLocationDiv);
                 //SetLocalTagAttrs(
                 //    top_div, property_name,
