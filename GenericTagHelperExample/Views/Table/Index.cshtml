@@ -23,7 +23,6 @@
 
 <br />
 
-
 <table generic
        class="panel panel-primary"
        items="@Model.ItemsJson"
@@ -44,12 +43,9 @@
         body_data_col_3:{style:'color:green;'}
        }"
        content-tag="{
-       panel_head: '<h1 class=\' text-center\'>
-    Customer</h1>',
-    panel_body: '
-    <h1 class=\'text-center\'>This is Customer</h1>'
-    }"
-    >
+       panel_head: '<h1 class=\' text-center\'>Customer</h1>',
+       panel_body: '<h1 class=\'text-center\'>This is Customer</h1>'
+    }">
 </table>
 
 <pagination total-items="@Model.TotalItems"
