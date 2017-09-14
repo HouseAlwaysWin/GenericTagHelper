@@ -405,6 +405,8 @@ namespace GenericTagHelper
                 contentDict, tag, tag_name, isOverride);
         }
 
+
+
         private TagBuilder SetTableOutput(
             TagHelperOutput output, TagBuilder thead, TagBuilder tbody)
         {

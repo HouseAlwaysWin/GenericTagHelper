@@ -1424,7 +1424,7 @@ namespace GenericTagHelper
         {
             AttrsHelper.SetTagAttrs(AttrsTagDict, tag, tag_name);
             AttrsHelper.SetTagAttrsOfProp(
-                AttrsTagOfPropDict, tag, tag_name, property_name);
+                AttrsTagOfPropDict, tag, property_name, tag_name);
 
             AttrsHelper.SetTagContent(
                 ContentTagDict, tag, tag_name, false);
