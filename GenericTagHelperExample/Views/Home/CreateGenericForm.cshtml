@@ -21,21 +21,56 @@
       }"
       radio-button-data-list="{
         selectradio:{
-            1:'male',
+            3:'male',
             2:'female'
         }
       }"
       checkbox-data-list="{
         checkbox:{
             'hello': 'true',
-            'world': 'false'
+            'world' : 'true'
         }
       }"
-      checkbox-cols-list="true"
-      radio-cols-list="true"
+      attrs-tag="{
+        label:{style:'color:blue;'}
+      }"
       checkbox-top="true"
-     
+      content-tag-of-prop="{
+        id:{
+            label:' hello',
+            input:'fuck me',
+            validation:'hello'
+        },
+        LevelSelectList:{
+            option_1:'hello',
+            option_2:'world'
+        },
+        checkbox:{
+            label:'this is checkbox default'
+        }
 
+      }"
+      attrs-tag-of-prop="{
+       id:{
+            label:{class:'form-control'},
+            input:{style:'border-color:red;'},
+            validation:{ style:'color:green;'}
+       },
+       levelselectlist:{
+            option_2:{style:'color:red;'}
+       },
+       selectList:{
+            option_4:{ style:'color:blue;'}
+       },
+        selectradio:{
+            label_1:{
+               style:'color:red;'
+            },
+            label_2:{
+                style:'color:pink;'
+            }
+        }
+      }"
       method="post"
       asp-action="CreateGenericForm"
       asp-antiforgery="true">

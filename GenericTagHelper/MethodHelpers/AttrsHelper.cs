@@ -301,7 +301,7 @@ namespace GenericTagHelper.MethodHelpers
             Dictionary<string, string> tagsDict,
             TagBuilder tag,
             string tag_name,
-            bool override_num)
+            bool is_override)
         {
             if (tagsDict.Count != 0 &&
                 tagsDict.Any(
@@ -311,7 +311,7 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tag_name, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (override_num)
+                if (is_override)
                 {
                     tag.InnerHtml.SetHtmlContent(content);
                 }
@@ -328,7 +328,7 @@ namespace GenericTagHelper.MethodHelpers
           TagBuilder tag,
           string tag_name,
           string index,
-          bool override_num)
+          bool is_override)
         {
             var tagKey = tag_name + "_" + index;
             if (tagsDict.Count != 0 &&
@@ -339,7 +339,7 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (override_num)
+                if (is_override)
                 {
                     if (content.EndsWith("*"))
                     {
@@ -372,7 +372,7 @@ namespace GenericTagHelper.MethodHelpers
             string tag_name,
             string rows_cols_index,
             string primary_key,
-            bool override_num)
+            bool is_override)
         {
             var tagKey = tag_name + "_" + rows_cols_index;
             if (tagsDict.Count != 0 &&
@@ -383,7 +383,7 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (override_num)
+                if (is_override)
                 {
                     if (content.EndsWith("*"))
                     {
@@ -418,7 +418,7 @@ namespace GenericTagHelper.MethodHelpers
           string tag_name,
           string rows_num,
           string cols_num,
-          bool override_num)
+          bool is_override)
         {
             var tagKey = tag_name + "_" + rows_num + "_" + cols_num;
             if (tagsDict.Count != 0 &&
@@ -429,7 +429,7 @@ namespace GenericTagHelper.MethodHelpers
                 var content = tagsDict.FirstOrDefault(
                     t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
 
-                if (override_num)
+                if (is_override)
                 {
                     if (content.EndsWith("*"))
                     {
