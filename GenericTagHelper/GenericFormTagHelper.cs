@@ -850,7 +850,7 @@ namespace GenericTagHelper
                                            ViewContext,
                                            modelExplorer,
                                            modelExplorer.Metadata.PropertyName,
-                                           value: property_name,
+                                           value: null,
                                            isChecked: null,
                                            htmlAttributes: null);
 
@@ -858,6 +858,7 @@ namespace GenericTagHelper
 
                     if (RadioDict.Count != 0)
                     {
+
                         var radioTag =
                             RadioDict.FirstOrDefault(
                                 prop => prop.Key.Equals(property_name,
@@ -874,29 +875,47 @@ namespace GenericTagHelper
                                 // set tag key value number of sequence
                                 var tag_number = (i + 1).ToString();
 
-                                input = Generator.GenerateRadioButton(
-                                           ViewContext,
-                                           modelExplorer,
-                                           modelExplorer.Metadata.PropertyName,
-                                           value: item.Key,
-                                           isChecked: null,
-                                           htmlAttributes: null);
 
-                                input.Attributes["id"] = "radio_label" + tag_number;
+
 
                                 TagBuilder radio_label = new TagBuilder("label");
-                                radio_label.Attributes["for"] = "radio_label" + tag_number;
+                                radio_label.Attributes["for"] = "radio" + tag_number;
                                 SetAttrsAndContent(
                                     radio_label, property_name,
                                     TagRadioLabel, tag_number);
 
                                 radio_label.InnerHtml.AppendHtml(item.Value);
 
+                                if (i == 0)
+                                {
+                                    input.Attributes["id"] = "radio" + tag_number;
+                                    input.Attributes["value"] = item.Key;
+                                    radioFieldSet = SetInputLocation(
+                                        RadioTop, RadioBottom, RadioLeft,
+                                        radio_label, input, radioFieldSet,
+                                        property_name, tag_number, RadioColsList);
+
+                                }
+                                else
+                                {
+                                    input = Generator.GenerateRadioButton(
+                                           ViewContext,
+                                           modelExplorer,
+                                           modelExplorer.Metadata.PropertyName,
+                                           value: item.Key,
+                                           isChecked: null,
+                                           htmlAttributes: null);
+                                    input.Attributes["id"] = "radio" + tag_number;
+                                    radioFieldSet = SetInputLocation(
+                                        RadioTop, RadioBottom, RadioLeft,
+                                        radio_label, input, radioFieldSet,
+                                        property_name, tag_number, RadioColsList);
+                                }
                                 // set radio input location
-                                radioFieldSet = SetInputLocation(
-                                    RadioTop, RadioBottom, RadioLeft,
-                                    radio_label, input, radioFieldSet,
-                                    property_name, tag_number, RadioColsList);
+                                //radioFieldSet = SetInputLocation(
+                                //    RadioTop, RadioBottom, RadioLeft,
+                                //    radio_label, input, radioFieldSet,
+                                //    property_name, tag_number, RadioColsList);
 
                             }
                             input = radioFieldSet;
@@ -906,6 +925,8 @@ namespace GenericTagHelper
 
                 case "select":
                     input = GenerateSelectList(modelExplorer, inputTypeHint);
+
+                    input.Attributes["class"] = "form-control";
 
                     SetAttrsAndContent(input, property_name, TagSelectInput);
 
