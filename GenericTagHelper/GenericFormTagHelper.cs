@@ -197,7 +197,7 @@ namespace GenericTagHelper
         }
         #endregion
 
-        #region ActiveTags with properties
+        #region DisableTags with properties
 
         public string DisableTagsOfProp { get; set; }
         private Dictionary<string, Dictionary<string, bool>> DisableTagsOfPropDict
