@@ -28,7 +28,7 @@ namespace GenericTagHelper.MethodHelpers
             return new Dictionary<string, Dictionary<string, string>>();
         }
 
-        public static Dictionary<string,Dictionary<string,bool>> JsonDeserializeConvert_DsDsb(
+        public static Dictionary<string, Dictionary<string, bool>> JsonDeserializeConvert_DsDsb(
             string attributeString)
         {
             if (!String.IsNullOrEmpty(attributeString))
@@ -38,7 +38,7 @@ namespace GenericTagHelper.MethodHelpers
             return new Dictionary<string, Dictionary<string, bool>>();
         }
 
-        public static Dictionary<string,Dictionary<string,Dictionary<string,string>>> JsonDeserializeConvert_DsDssDss(
+        public static Dictionary<string, Dictionary<string, Dictionary<string, string>>> JsonDeserializeConvert_DsDssDss(
             string attributeString)
         {
             if (!String.IsNullOrEmpty(attributeString))
@@ -132,6 +132,16 @@ namespace GenericTagHelper.MethodHelpers
                 return JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(propertyString);
             }
             return new List<Dictionary<string, string>>();
+        }
+
+        public static Dictionary<string, bool> JsonDeserializeConvert_Dsb(
+            string propertyString)
+        {
+            if (!String.IsNullOrEmpty(propertyString))
+            {
+                return JsonConvert.DeserializeObject<Dictionary<string, bool>>(propertyString);
+            }
+            return new Dictionary<string, bool>();
         }
 
         public static List<string> JsonDeserializeConvert_Ls(

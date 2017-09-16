@@ -3,7 +3,10 @@
 <br />
 
 <form generic form-model="@Model" asp-validation-summary="All"
-      form-title="<h1>Form Title</h1>"
+      form-title="This is form"
+      
+      disable-tags-of-prop="{
+      }"
       select-data-list="{
         selectlist:{
             0:'None',
@@ -22,7 +25,9 @@
       radio-button-data-list="{
         selectradio:{
             1:'male',
-            2:'female'
+            2:'female',
+            3:'aaaa',
+            4:'hello'
         }
       }"
       checkbox-data-list="{
@@ -32,43 +37,15 @@
         }
       }"
       radio-left="true"
-      attrs-tag="{
-        label:{style:'color:blue;'}
-      }"
-      content-tag-of-prop="{
-        id:{
-            label:' hello',
-            input:'fuck me',
-            validation:'hello'
-        },
-        LevelSelectList:{
-            option_1:'hello',
-            option_2:'world'
-        },
-        checkbox:{
-            label:'this is checkbox default'
-        }
-
-      }"
+      
       attrs-tag-of-prop="{
-       id:{
-            label:{class:'form-control'},
-            input:{style:'border-color:red;'},
-            validation:{ style:'color:green;'}
-       },
-       levelselectlist:{
+        LevelSelectList:{
+            select:{class:'form-control'},
             option_2:{style:'color:red;'}
-       },
-       selectList:{
-            option_4:{ style:'color:blue;'}
-       },
-        selectradio:{
-            label_1:{
-               style:'color:red;'
-            },
-            label_2:{
-                style:'color:pink;'
-            }
+        },
+        checkBox:{
+            checkbox_input_1:{class:'form-control'},
+            checkbox_label_1:{style:'color:blue;'}
         }
       }"
       method="post"
