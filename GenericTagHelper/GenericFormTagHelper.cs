@@ -407,9 +407,6 @@ namespace GenericTagHelper
 
                     TagBuilder input = GenerateInputType(property);
 
-
-
-
                     TagBuilder span = Generator.GenerateValidationMessage(
                                                     ViewContext,
                                                     property,
