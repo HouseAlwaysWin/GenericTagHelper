@@ -50,7 +50,6 @@ namespace GenericTagHelperExample.Models
 
         [Required]
         public bool CheckBox { get; set; }
-
         [DataType(DataType.Password)]
         public string PasswordTextBox { get; set; }
 

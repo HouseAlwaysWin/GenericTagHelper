@@ -135,27 +135,6 @@ namespace GenericTagHelper
             }
         }
 
-        //public string ClassValidationSummary { get; set; } = "";
-
-        //public string AttrsValidationSummary { get; set; }
-        //private Dictionary<string, string> AttrsValidationSummaryDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsValidationSummary);
-        //    }
-        //}
-
-        //public string ClassValidationSummaryUl { get; set; }
-
-        //public string AttrsValidationSummaryUl { get; set; }
-        //private Dictionary<string, string> AttrsValidationSummaryUlDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsValidationSummaryUl);
-        //    }
-        //}
         #endregion
 
         #region  Attributes
@@ -300,7 +279,6 @@ namespace GenericTagHelper
             if (FormTitle != null)
             {
                 title.InnerHtml.SetHtmlContent(FormTitle);
-
                 SetAttrsAndContent(title, TagFormTitle);
                 output.Content.AppendHtml(title);
             }
@@ -310,8 +288,6 @@ namespace GenericTagHelper
             {
                 TagBuilder validation_sum = GenerateValidationSummary();
                 SetAttrsAndContent(validation_sum, TagValidationSum);
-
-
                 output.Content.AppendHtml(validation_sum);
             }
 
@@ -320,7 +296,7 @@ namespace GenericTagHelper
             // Temporary counter for complex type and primary type
             int property_counter = 0;
 
-            // Store main model for use in the future
+            // Store main model for using in the future
             ModelExpression form_model = FormModel;
             // Store main model current counter
             int main_model_prop_counter = 0;
@@ -333,23 +309,25 @@ namespace GenericTagHelper
                 // each complex type prop counter start from 0
                 int complex_type_prop_counter = 0;
 
+                // Get all properties from model
+                var properties = FormModel.ModelExplorer.Properties;
+
                 // Loop your Form Model 
-                for (int p = property_counter; p < FormModel.ModelExplorer.Properties.Count(); p++)
+                for (int prop_index = property_counter; prop_index < properties.Count(); ++prop_index)
                 {
                     if (start_complex_type_loop)
                         complex_type_prop_counter++;
                     // Get model property's name
-                    var property_name = FormModel.Metadata.Properties[p].PropertyName;
+                    var property_name = FormModel.Metadata.Properties[prop_index].PropertyName;
                     // Get model property
-                    var property = FormModel.ModelExplorer.Properties.SingleOrDefault(
+                    var property = properties.SingleOrDefault(
                         n => n.Metadata.PropertyName == property_name);
 
 
 
-                    if ((property.Metadata.IsEnumerableType ||
-                        (property.Metadata.IsCollectionType)) &&
-                        complex_type_prop_counter ==
-                        FormModel.ModelExplorer.Properties.Count())
+
+                    if (property.Metadata.IsCollectionType &&
+                        complex_type_prop_counter == properties.Count())
                     {
                         // close complex type loop,because end of complex type's properties
                         start_complex_type_loop = false;
@@ -383,7 +361,7 @@ namespace GenericTagHelper
                         start_complex_type_loop = true;
 
                         // Save Main model counter
-                        main_model_prop_counter = p;
+                        main_model_prop_counter = prop_index;
 
                         restart = true;
                         break;
