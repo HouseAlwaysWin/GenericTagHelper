@@ -115,7 +115,7 @@ namespace GenericTagHelper
         #region Table Properties
 
         public string TableSortData { get; set; }
-        public List<string> TableSortDataList
+        private List<string> TableSortDataList
         {
             get
             {
@@ -124,14 +124,14 @@ namespace GenericTagHelper
         }
 
         // Show how many columns of table
-        public int TableColsNumber { get; set; }
+        public int TableColsNumbers { get; set; }
 
-        public string TableHeadData { get; set; }
+        public string TableHeadDatas { get; set; }
         private List<string> TableHeadDataList
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_Ls(TableHeadData);
+                return JsonDeserialize.JsonDeserializeConvert_Ls(TableHeadDatas);
             }
         }
 
@@ -143,10 +143,9 @@ namespace GenericTagHelper
         #endregion
 
         #region Table Panel
-        public bool DisablePanel { get; set; } 
-        public bool DisablePanelHeading { get; set; } 
+        public bool DisablePanel { get; set; }
+        public bool DisablePanelHead { get; set; }
         public bool DisablePanelBody { get; set; }
-
         #endregion
 
         public override void Process(
@@ -198,9 +197,9 @@ namespace GenericTagHelper
             }
             else
             {
-                if (TableColsNumber == 0)
+                if (TableColsNumbers == 0)
                 {
-                    TableColsNumber = ItemsList[0].Values.Count;
+                    TableColsNumbers = ItemsList[0].Values.Count;
                 }
 
                 // Start loop table row 
@@ -246,7 +245,7 @@ namespace GenericTagHelper
                     }
 
                     // Start loop table columns
-                    for (int cols = 0; cols < TableColsNumber; cols++)
+                    for (int cols = 0; cols < TableColsNumbers; cols++)
                     {
                         var cols_index = (cols + 1).ToString();
 
@@ -311,7 +310,7 @@ namespace GenericTagHelper
             if (!DisablePanel)
             {
 
-                if (!DisablePanelHeading)
+                if (!DisablePanelHead)
                 {
                     TagBuilder panel_head = new TagBuilder("div");
 

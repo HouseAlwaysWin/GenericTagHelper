@@ -28,10 +28,8 @@ namespace GenericTagHelper.Extensions
             tagBuilder.InnerHtml.AppendHtml(tagContent);
             foreach (var attr in attributes)
             {
-
                 tagBuilder.Attributes[attr.Key] = attr.Value;
             }
-
             return tagBuilder.ToHtmlString();
         }
 
@@ -43,11 +41,10 @@ namespace GenericTagHelper.Extensions
             tagBuilder.InnerHtml.AppendHtml(tagContent);
             foreach (var attr in attributes)
             {
-
                 tagBuilder.Attributes[attr.Key] = attr.Value;
             }
-
             return tagBuilder.ToHtmlString();
         }
+
     }
 }
