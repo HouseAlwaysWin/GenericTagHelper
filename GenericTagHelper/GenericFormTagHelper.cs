@@ -43,6 +43,7 @@ namespace GenericTagHelper
                 { "HiddenInput", InputType.Hidden.ToString().ToLowerInvariant() },
                 { "Password", InputType.Password.ToString().ToLowerInvariant() },
                 { "Text", InputType.Text.ToString().ToLowerInvariant() },
+                { "Radio" ,InputType.Radio.ToString().ToLowerInvariant() },
                 { "PhoneNumber", "tel" },
                 { "Url", "url" },
                 { "EmailAddress", "email" },
@@ -50,7 +51,6 @@ namespace GenericTagHelper
                 { "DateTime", "datetime-local" },
                 { "DateTime-local", "datetime-local" },
                 { "Time", "time" },
-                { "Radio" ,"radio" },
                 { "Select","select" },
                 { "TextArea","textarea"},
                 { nameof(Byte), "number" },
@@ -139,12 +139,12 @@ namespace GenericTagHelper
 
         #region  Attributes
 
-        public string AttrsTagOfProp { get; set; }
-        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagOfPropDict
+        public string AttrsTagFromModel { get; set; }
+        public Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagFromModelDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsTagOfProp);
+                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsTagFromModel);
             }
         }
 
@@ -166,35 +166,34 @@ namespace GenericTagHelper
             }
         }
 
-        public string ContentTagOfProp { get; set; }
-        private Dictionary<string, Dictionary<string, string>> ContentTagOfPropDict
+        public string ContentTagFromModel { get; set; }
+        private Dictionary<string, Dictionary<string, string>> ContentTagFromModelDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsDss(ContentTagOfProp);
+                return JsonDeserialize.JsonDeserializeConvert_DsDss(ContentTagFromModel);
             }
         }
         #endregion
 
         #region DisableTags with properties
 
-        public string DisableTagsOfProp { get; set; }
-        private Dictionary<string, Dictionary<string, bool>> DisableTagsOfPropDict
+        public string DisableTagsFromModel { get; set; }
+        private Dictionary<string, Dictionary<string, bool>> DisableTagsFromModelDict
         {
             get
             {
-                return JsonDeserialize.JsonDeserializeConvert_DsDsb(DisableTagsOfProp);
+                return JsonDeserialize.JsonDeserializeConvert_DsDsb(DisableTagsFromModel);
             }
         }
 
         #endregion
 
         #region DisableTags
-        public bool DisableTitle { get; set; }
         public bool DisableValidationSummary { get; set; }
-        public bool DisableLabel { get; set; }
-        public bool DisableValidation { get; set; }
-        public bool DisableGroup { get; set; }
+        public bool DisableLabels { get; set; }
+        public bool DisableValidations { get; set; }
+        public bool DisableGroups { get; set; }
         public bool DisableOverride { get; set; }
         #endregion
 
@@ -225,8 +224,6 @@ namespace GenericTagHelper
         #endregion
 
         #region RadioButton 
-
-        //public bool RadioRight { get; set; }
         public bool RadioLeft { get; set; }
         public bool RadioTop { get; set; }
         public bool RadioBottom { get; set; }
@@ -371,7 +368,6 @@ namespace GenericTagHelper
 
                     // Set form group attributes and default value
                     TagBuilder form_group = new TagBuilder("div");
-
                     SetAttrsAndContent(form_group, property_name, TagFormGroup);
 
                     TagBuilder label = Generator.GenerateLabel(
@@ -380,7 +376,6 @@ namespace GenericTagHelper
                         property.Metadata.PropertyName,
                         labelText: null,
                         htmlAttributes: null);
-
                     SetAttrsAndContent(label, property_name, TagFormLabel);
 
                     TagBuilder input = GenerateInputType(property);
@@ -397,18 +392,17 @@ namespace GenericTagHelper
 
                     var disableGroupProp =
                         AttrsHelper.SetTagDisable(
-                            DisableTagsOfPropDict, property_name, TagFormGroup);
+                            DisableTagsFromModelDict, property_name, TagFormGroup);
                     var disableLabelProp =
                         AttrsHelper.SetTagDisable(
-                            DisableTagsOfPropDict, property_name, TagFormLabel);
-
+                            DisableTagsFromModelDict, property_name, TagFormLabel);
                     var disableValidationProp =
                         AttrsHelper.SetTagDisable(
-                            DisableTagsOfPropDict, property_name, TagValidation);
+                            DisableTagsFromModelDict, property_name, TagValidation);
 
-                    if (DisableGroup || disableGroupProp)
+                    if (DisableGroups || disableGroupProp)
                     {
-                        if (!DisableLabel)
+                        if (!DisableLabels)
                         {
                             if (!disableLabelProp)
                             {
@@ -416,7 +410,7 @@ namespace GenericTagHelper
                             }
                         }
                         output.Content.AppendHtml(input);
-                        if (!DisableValidation)
+                        if (!DisableValidations)
                         {
                             if (!disableValidationProp)
                             {
@@ -426,7 +420,7 @@ namespace GenericTagHelper
                     }
                     else
                     {
-                        if (!DisableLabel)
+                        if (!DisableLabels)
                         {
                             if (!disableLabelProp)
                             {
@@ -434,7 +428,7 @@ namespace GenericTagHelper
                             }
                         }
                         form_group.InnerHtml.AppendHtml(input);
-                        if (!DisableValidation)
+                        if (!DisableValidations)
                         {
                             if (!disableValidationProp)
                             {
@@ -521,14 +515,12 @@ namespace GenericTagHelper
                                 var tag_number = (i + 1).ToString();
 
                                 TagBuilder checkbox_label = new TagBuilder("label");
+
                                 checkbox_label.Attributes["for"] = "checkbox" + tag_number;
+                                checkbox_label.InnerHtml.AppendHtml(item.Key);
                                 SetAttrsAndContent(
                                     checkbox_label, property_name,
                                     TagCheckboxLabel, tag_number);
-
-                                checkbox_label.InnerHtml.AppendHtml(item.Key);
-
-                                //input = GenerateInputType(modelExplorer);
 
                                 if (i == 0)
                                 {
@@ -542,7 +534,7 @@ namespace GenericTagHelper
                                     checkboxFieldSet = SetInputLocation(
                                         CheckboxTop, CheckboxBottom, CheckboxLeft,
                                         checkbox_label, input, checkboxFieldSet,
-                                        property_name, tag_number, CheckboxColsList);
+                                        property_name, TagCheckboxLabel, tag_number, CheckboxColsList);
 
                                 }
                                 else
@@ -562,7 +554,7 @@ namespace GenericTagHelper
                                     checkboxFieldSet = SetInputLocation(
                                         CheckboxTop, CheckboxBottom, CheckboxLeft,
                                         checkbox_label, input, checkboxFieldSet,
-                                        property_name, tag_number, CheckboxColsList);
+                                        property_name, TagCheckboxLabel, tag_number, CheckboxColsList);
                                 }
                             }
                             input = checkboxFieldSet;
@@ -606,11 +598,10 @@ namespace GenericTagHelper
 
                                 TagBuilder radio_label = new TagBuilder("label");
                                 radio_label.Attributes["for"] = "radio" + tag_number;
+                                radio_label.InnerHtml.AppendHtml(item.Value);
                                 SetAttrsAndContent(
                                     radio_label, property_name,
                                     TagRadioLabel, tag_number);
-
-                                radio_label.InnerHtml.AppendHtml(item.Value);
 
                                 if (i == 0)
                                 {
@@ -623,7 +614,7 @@ namespace GenericTagHelper
                                     radioFieldSet = SetInputLocation(
                                         RadioTop, RadioBottom, RadioLeft,
                                         radio_label, input, radioFieldSet,
-                                        property_name, tag_number, RadioColsList);
+                                        property_name, TagRadioLabel, tag_number, RadioColsList);
 
                                 }
                                 else
@@ -643,7 +634,7 @@ namespace GenericTagHelper
                                     radioFieldSet = SetInputLocation(
                                         RadioTop, RadioBottom, RadioLeft,
                                         radio_label, input, radioFieldSet,
-                                        property_name, tag_number, RadioColsList);
+                                        property_name, TagRadioLabel, tag_number, RadioColsList);
                                 }
                             }
                             input = radioFieldSet;
@@ -658,7 +649,7 @@ namespace GenericTagHelper
                 case "select":
                     input = GenerateSelectList(modelExplorer, inputTypeHint);
 
-                    if (SelectDataList.Count() != 0)
+                    if (SelectDataList != null)
                     {
                         SetAttrsAndContent(input, property_name, TagSelectInput);
                         var selectModel =
@@ -1045,20 +1036,24 @@ namespace GenericTagHelper
         private TagBuilder SetInputLocation(
             bool top, bool bottom, bool left,
             TagBuilder label, TagBuilder input, TagBuilder group,
-            string property_name, string index, bool column)
+            string property_name, string tag_name, string index, bool column)
 
         {
+            var disableLabel = AttrsHelper.SetTagDisable(
+                              DisableTagsFromModelDict, property_name, tag_name, index);
             if (top &&
                 !bottom &&
                 !left)
             {
                 TagBuilder top_div = new TagBuilder("div");
 
-
-
                 SetAttrsAndContent(top_div, property_name, TagLabelDiv, index);
 
-                top_div.InnerHtml.AppendHtml(label);
+
+                if (!disableLabel)
+                {
+                    top_div.InnerHtml.AppendHtml(label);
+                }
 
                 if (column)
                 {
@@ -1067,9 +1062,9 @@ namespace GenericTagHelper
                     SetAttrsAndContent(
                         cols_list_div, property_name, TagColsListGroup, index);
 
-
                     cols_list_div.InnerHtml.AppendHtml(input);
                     cols_list_div.InnerHtml.AppendHtml(top_div);
+
                     group.InnerHtml.AppendHtml(cols_list_div);
                     return group;
                 }
@@ -1084,7 +1079,10 @@ namespace GenericTagHelper
                 TagBuilder bottom_div = new TagBuilder("div");
                 SetAttrsAndContent(bottom_div, property_name, property_name, index);
 
-                bottom_div.InnerHtml.AppendHtml(label);
+                if (!disableLabel)
+                {
+                    bottom_div.InnerHtml.AppendHtml(label);
+                }
 
                 if (column)
                 {
@@ -1113,12 +1111,18 @@ namespace GenericTagHelper
                         cols_list_div, property_name, TagColsListGroup, index);
 
                     cols_list_div.InnerHtml.AppendHtml(input);
-                    cols_list_div.InnerHtml.AppendHtml(label);
+                    if (!disableLabel)
+                    {
+                        cols_list_div.InnerHtml.AppendHtml(label);
+                    }
                     group.InnerHtml.AppendHtml(cols_list_div);
                     return group;
                 }
                 group.InnerHtml.AppendHtml(input);
-                group.InnerHtml.AppendHtml(label);
+                if (!disableLabel)
+                {
+                    group.InnerHtml.AppendHtml(label);
+                }
                 return group;
             }
             else
@@ -1130,12 +1134,18 @@ namespace GenericTagHelper
                     SetAttrsAndContent(
                        cols_list_div, property_name, TagColsListGroup, index);
 
-                    cols_list_div.InnerHtml.AppendHtml(label);
+                    if (!disableLabel)
+                    {
+                        cols_list_div.InnerHtml.AppendHtml(label);
+                    }
                     cols_list_div.InnerHtml.AppendHtml(input);
                     group.InnerHtml.AppendHtml(cols_list_div);
                     return group;
                 }
-                group.InnerHtml.AppendHtml(label);
+                if (!disableLabel)
+                {
+                    group.InnerHtml.AppendHtml(label);
+                }
                 group.InnerHtml.AppendHtml(input);
                 return group;
             }
@@ -1153,12 +1163,12 @@ namespace GenericTagHelper
         {
             AttrsHelper.SetTagAttrs(AttrsTagDict, tag, tag_name);
             AttrsHelper.SetTagAttrsOfProp(
-                AttrsTagOfPropDict, tag, property_name, tag_name);
+                AttrsTagFromModelDict, tag, property_name, tag_name);
 
             AttrsHelper.SetTagContent(
                 ContentTagDict, tag, tag_name, DisableOverride);
             AttrsHelper.SetTagContentOfProp(
-                ContentTagOfPropDict, tag, property_name, tag_name, DisableOverride);
+                ContentTagFromModelDict, tag, property_name, tag_name, DisableOverride);
 
         }
 
@@ -1170,15 +1180,14 @@ namespace GenericTagHelper
         {
             AttrsHelper.SetTagAttrs(AttrsTagDict, tag, tag_name);
             AttrsHelper.SetTagAttrsOfProp(
-                AttrsTagOfPropDict, tag, property_name, tag_name, index);
+                AttrsTagFromModelDict, tag, property_name, tag_name, index);
 
             AttrsHelper.SetTagContent(
                 ContentTagDict, tag, tag_name, DisableOverride);
             AttrsHelper.SetTagContentOfProp(
-                ContentTagOfPropDict, tag, property_name, tag_name, index, DisableOverride);
+                ContentTagFromModelDict, tag, property_name, tag_name, index, DisableOverride);
 
         }
         #endregion
     }
 }
-

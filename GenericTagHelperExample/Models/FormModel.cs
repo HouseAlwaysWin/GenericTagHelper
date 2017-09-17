@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +19,7 @@ namespace GenericTagHelperExample.Models
     public class FormModel
     {
         [Required]
+        [DataType("HiddenInput")]
         public int Id { get; set; }
 
         [Required]

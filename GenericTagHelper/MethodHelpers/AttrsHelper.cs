@@ -214,7 +214,7 @@ namespace GenericTagHelper.MethodHelpers
         TagBuilder tag,
         string property_name,
         string tag_name,
-        bool is_override)
+        bool disable_override)
         {
             if (contentDict != null)
             {
@@ -229,13 +229,13 @@ namespace GenericTagHelper.MethodHelpers
 
                     if (content != null)
                     {
-                        if (is_override)
+                        if (disable_override)
                         {
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                         else
                         {
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace GenericTagHelper.MethodHelpers
             string property_name,
             string tag_name,
             string index,
-            bool is_override)
+            bool disable_override)
         {
             if (contentDict != null)
             {
@@ -265,16 +265,16 @@ namespace GenericTagHelper.MethodHelpers
 
                     if (content != null)
                     {
-                        if (is_override)
+                        if (disable_override)
                         {
                             if (content.EndsWith("*"))
                             {
                                 content = content.Replace("*", index);
-                                tag.InnerHtml.SetHtmlContent(content);
+                                tag.InnerHtml.AppendHtml(content);
                             }
                             else
                             {
-                                tag.InnerHtml.SetHtmlContent(content);
+                                tag.InnerHtml.AppendHtml(content);
                             }
                         }
                         else
@@ -282,12 +282,13 @@ namespace GenericTagHelper.MethodHelpers
                             if (content.EndsWith("*"))
                             {
                                 content = content.Replace("*", index);
-                                tag.InnerHtml.AppendHtml(content);
+                                tag.InnerHtml.SetHtmlContent(content);
                             }
                             else
                             {
-                                tag.InnerHtml.AppendHtml(content);
+                                tag.InnerHtml.SetHtmlContent(content);
                             }
+
                         }
                     }
                 }
@@ -300,7 +301,7 @@ namespace GenericTagHelper.MethodHelpers
             Dictionary<string, string> tagsDict,
             TagBuilder tag,
             string tag_name,
-            bool is_override)
+            bool disable_override)
         {
             if (tagsDict != null)
             {
@@ -309,13 +310,13 @@ namespace GenericTagHelper.MethodHelpers
 
                 if (content != null)
                 {
-                    if (is_override)
+                    if (disable_override)
                     {
-                        tag.InnerHtml.SetHtmlContent(content);
+                        tag.InnerHtml.AppendHtml(content);
                     }
                     else
                     {
-                        tag.InnerHtml.AppendHtml(content);
+                        tag.InnerHtml.SetHtmlContent(content);
                     }
                 }
             }
@@ -327,7 +328,7 @@ namespace GenericTagHelper.MethodHelpers
           TagBuilder tag,
           string tag_name,
           string index,
-          bool is_override)
+          bool disable_override)
         {
             var tagKey = tag_name + "_" + index;
             if (tagsDict != null)
@@ -338,16 +339,16 @@ namespace GenericTagHelper.MethodHelpers
 
                 if (content != null)
                 {
-                    if (is_override)
+                    if (disable_override)
                     {
                         if (content.EndsWith("*"))
                         {
                             content = content.Replace("*", index);
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                         else
                         {
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                     }
                     else
@@ -355,11 +356,11 @@ namespace GenericTagHelper.MethodHelpers
                         if (content.EndsWith("*"))
                         {
                             content = content.Replace("*", index);
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
                         else
                         {
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
                     }
                 }
@@ -372,7 +373,7 @@ namespace GenericTagHelper.MethodHelpers
             string tag_name,
             string rows_cols_index,
             string primary_key,
-            bool is_override)
+            bool disable_override)
         {
             var tagKey = tag_name + "_" + rows_cols_index;
             if (tagsDict != null)
@@ -382,16 +383,16 @@ namespace GenericTagHelper.MethodHelpers
 
                 if (content != null)
                 {
-                    if (is_override)
+                    if (disable_override)
                     {
                         if (content.EndsWith("*"))
                         {
                             content = content.Replace("*", primary_key);
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                         else
                         {
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                     }
                     else
@@ -399,12 +400,13 @@ namespace GenericTagHelper.MethodHelpers
                         if (content.EndsWith("*"))
                         {
                             content = content.Replace("*", primary_key);
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
                         else
                         {
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
+
                     }
                 }
             }
@@ -418,7 +420,7 @@ namespace GenericTagHelper.MethodHelpers
           string tag_name,
           string rows_num,
           string cols_num,
-          bool is_override)
+          bool disable_override)
         {
             var tagKey = tag_name + "_" + rows_num + "_" + cols_num;
             if (tagsDict != null)
@@ -428,16 +430,16 @@ namespace GenericTagHelper.MethodHelpers
 
                 if (content != null)
                 {
-                    if (is_override)
+                    if (disable_override)
                     {
                         if (content.EndsWith("*"))
                         {
                             content = content.Replace("*", rows_num);
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                         else
                         {
-                            tag.InnerHtml.SetHtmlContent(content);
+                            tag.InnerHtml.AppendHtml(content);
                         }
                     }
                     else
@@ -445,11 +447,11 @@ namespace GenericTagHelper.MethodHelpers
                         if (content.EndsWith("*"))
                         {
                             content = content.Replace("*", rows_num);
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
                         else
                         {
-                            tag.InnerHtml.AppendHtml(content);
+                            tag.InnerHtml.SetHtmlContent(content);
                         }
                     }
                 }
@@ -474,6 +476,34 @@ namespace GenericTagHelper.MethodHelpers
                 {
                     bool disableLabel = models.FirstOrDefault(
                          tag => tag.Key.Equals(tag_name,
+                         StringComparison.OrdinalIgnoreCase))
+                        .Value;
+
+                    return disableLabel;
+                }
+            }
+            return false;
+        }
+
+        public static bool SetTagDisable(
+           Dictionary<string, Dictionary<string, bool>> disableTagDict,
+           string property_name,
+           string tag_name,
+           string index)
+        {
+            if (disableTagDict != null)
+            {
+                var models = disableTagDict.FirstOrDefault(
+                    prop => prop.Key.Equals(property_name,
+                    StringComparison.OrdinalIgnoreCase))
+                    .Value;
+
+                var tagKey = tag_name + "_" + index;
+
+                if (models != null)
+                {
+                    bool disableLabel = models.FirstOrDefault(
+                         tag => tag.Key.Equals(tagKey,
                          StringComparison.OrdinalIgnoreCase))
                         .Value;
 
