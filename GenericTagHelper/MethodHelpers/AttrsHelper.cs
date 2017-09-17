@@ -179,7 +179,7 @@ namespace GenericTagHelper.MethodHelpers
            string rows_index,
            string cols_index)
         {
-            var tagKey = tag_name + "_" + cols_index + "_" + rows_index;
+            var tagKey = tag_name + "_" + rows_index + "_" + cols_index;
 
             if (attrsTagsDict != null)
 
@@ -371,15 +371,16 @@ namespace GenericTagHelper.MethodHelpers
             Dictionary<string, string> tagsDict,
             TagBuilder tag,
             string tag_name,
-            string rows_cols_index,
             string primary_key,
+            string rows_cols_index,
             bool disable_override)
         {
             var tagKey = tag_name + "_" + rows_cols_index;
             if (tagsDict != null)
             {
                 var content = tagsDict.FirstOrDefault(
-                    t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
+                    attr => attr.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase))
+                    .Value;
 
                 if (content != null)
                 {
@@ -410,6 +411,41 @@ namespace GenericTagHelper.MethodHelpers
                     }
                 }
             }
+            //var tagKey = tag_name + "_" + rows_cols_index;
+            //if (tagsDict != null)
+            //{
+            //    var content = tagsDict.FirstOrDefault(
+            //        t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
+
+            //    if (content != null)
+            //    {
+            //        if (disable_override)
+            //        {
+            //            if (content.EndsWith("*"))
+            //            {
+            //                content = content.Replace("*", primary_key);
+            //                tag.InnerHtml.AppendHtml(content);
+            //            }
+            //            else
+            //            {
+            //                tag.InnerHtml.AppendHtml(content);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            if (content.EndsWith("*"))
+            //            {
+            //                content = content.Replace("*", primary_key);
+            //                tag.InnerHtml.SetHtmlContent(content);
+            //            }
+            //            else
+            //            {
+            //                tag.InnerHtml.SetHtmlContent(content);
+            //            }
+
+            //        }
+            //    }
+            //}
 
         }
 

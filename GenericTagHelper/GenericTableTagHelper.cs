@@ -63,14 +63,14 @@ namespace GenericTagHelper
         #endregion
 
         #region Table Attributes
-        public string AttrsTagsOfProp { get; set; }
-        private Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagsOfPropDict
-        {
-            get
-            {
-                return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsTagsOfProp);
-            }
-        }
+        //public string AttrsTagFromModel { get; set; }
+        //private Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagFromModelDict
+        //{
+        //    get
+        //    {
+        //        return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsTagFromModel);
+        //    }
+        //}
 
         public string AttrsTag { get; set; }
         private Dictionary<string, Dictionary<string, string>> AttrsTagDict
@@ -104,14 +104,14 @@ namespace GenericTagHelper
         public string TagTableBody { get; set; } = "tbody";
         public string TagTableBodyRow { get; set; } = "tbody_row";
 
-        public string TagTableBodyTd { get; set; } = "tbody_td";
-        public string TagTableBodyTdRow { get; set; } = "tbody_td_row";
-        public string TagTableBodyTdCol { get; set; } = "tbody_td_col";
+        public string TagTableBodyTd { get; set; } = "td";
+        public string TagTableBodyTdRow { get; set; } = "td_row";
+        public string TagTableBodyTdCol { get; set; } = "td_col";
         public string TagTableTdIndex { get; set; } = "td_index";
 
-        public string TagTableBodyTdO { get; set; } = "tbody_td_o";
-        public string TagTableBodyTdRowO { get; set; } = "tbody_td_row_o";
-        public string TagTableBodyTdColO { get; set; } = "tbody_td_col_o";
+        public string TagTableBodyTdO { get; set; } = "td_o";
+        public string TagTableBodyTdRowO { get; set; } = "td_row_o";
+        public string TagTableBodyTdColO { get; set; } = "td_col_o";
         public string TagTableTdIndexO { get; set; } = "td_index_o";
 
         public string TagTablePanel { get; set; } = "panel";
@@ -156,34 +156,6 @@ namespace GenericTagHelper
         public bool ActivePanel { get; set; } = true;
         public bool ActivePanelHeading { get; set; } = true;
         public bool ActivePanelBody { get; set; }
-
-
-        //public string AttrsPanel { get; set; }
-        //private Dictionary<string, string> AttrsPanelDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsPanel);
-        //    }
-        //}
-
-        //public string AttrsPanelHeading { get; set; }
-        //private Dictionary<string, string> AttrsPanelHeadingDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsPanelHeading);
-        //    }
-        //}
-
-        //public string AttrsPanelBody { get; set; }
-        //private Dictionary<string, string> AttrsPanelBodyDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_Dss(AttrsPanelBody);
-        //    }
-        //}
 
         public string PanelHeadingContent { get; set; }
         public string PanelBodyContent { get; set; }
@@ -292,35 +264,7 @@ namespace GenericTagHelper
                         var cols_index = (cols + 1).ToString();
 
                         TagBuilder td = new TagBuilder("td");
-
-                        AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, td, TagTableBodyTd);
-                        AttrsHelper.SetTagRowsOrColsAttrs(
-                            AttrsTagDict, td, TagTableBodyTdRow, primary_key, rows_index);
-                        AttrsHelper.SetTagRowsOrColsAttrs(
-                            AttrsTagDict, td, TagTableBodyTdCol, primary_key, cols_index);
-                        AttrsHelper.SetTagAttrs(
-                            AttrsTagDict, td, TagTableBodyTd, rows_index, cols_index);
-
-                        AttrsHelper.SetTagContent(
-                            ContentTagDict, td, TagTableBodyTd, false);
-                        AttrsHelper.SetTagRowsOrColsContent(
-                            ContentTagDict, td, TagTableBodyTdCol, primary_key, cols_index, false);
-                        AttrsHelper.SetTagRowsOrColsContent(
-                            ContentTagDict, td, TagTableBodyTdRow, primary_key, rows_index, false);
-                        AttrsHelper.SetTagContent(
-                            ContentTagDict, td, TagTableBodyTd, rows_index, cols_index, false);
-
-                        AttrsHelper.SetTagContent(
-                            ContentTagDict, td, TagTableBodyTdO, true);
-                        AttrsHelper.SetTagRowsOrColsContent(
-                            ContentTagDict, td, TagTableBodyTdColO, primary_key, cols_index, true);
-                        AttrsHelper.SetTagRowsOrColsContent(
-                            ContentTagDict, td, TagTableBodyTdRowO, primary_key, rows_index, true);
-                        AttrsHelper.SetTagContent(
-                            ContentTagDict, td, TagTableBodyTdO, rows_index, cols_index, true);
-
-
+                      
                         // try to get value from 
                         try
                         {
@@ -344,7 +288,32 @@ namespace GenericTagHelper
                         {
                         }
 
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, td, TagTableBodyTd);
+                        AttrsHelper.SetTagRowsOrColsAttrs(
+                            AttrsTagDict, td, TagTableBodyTdRow, primary_key, rows_index);
+                        AttrsHelper.SetTagRowsOrColsAttrs(
+                            AttrsTagDict, td, TagTableBodyTdCol, primary_key, cols_index);
+                        AttrsHelper.SetTagAttrs(
+                            AttrsTagDict, td, TagTableBodyTd, rows_index, cols_index);
 
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTd, true);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdRow, primary_key, rows_index, true);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdCol, primary_key, cols_index, true);
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTd, rows_index, cols_index, true);
+
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTdO, false);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdRowO, primary_key, rows_index, false);
+                        AttrsHelper.SetTagRowsOrColsContent(
+                            ContentTagDict, td, TagTableBodyTdColO, primary_key, cols_index, false);
+                        AttrsHelper.SetTagContent(
+                            ContentTagDict, td, TagTableBodyTdO, rows_index, cols_index, false);
                         tbody_tr.InnerHtml.AppendHtml(td);
                     }
                     tbody.InnerHtml.AppendHtml(tbody_tr);
