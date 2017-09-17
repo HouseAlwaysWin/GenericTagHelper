@@ -41,6 +41,14 @@ namespace GenericTagHelperExample.Controllers
             string sortId = Sorting(model, "Id");
             string sortName = Sorting(model, "Name");
 
+            TagBuilder editLink = new TagBuilder("a");
+            string editLinkString = editLink.ToGeneralTagHtmlString(
+                "Edit", new Dictionary<string, string>
+                {
+                    ["href"] = Url.Action("Index","table",new { id="*" }),
+                    ["class"] = "btn btn-primary"
+                });
+
             var customerList = new CustomerViewModel
             {
                 IsSortDescending = model.IsSortDescending,
@@ -52,6 +60,8 @@ namespace GenericTagHelperExample.Controllers
                 Page = model.Page,
                 ItemsJson = itemsJsonData,
                 TotalItems = customers.Count(),
+
+                EditLink = editLinkString,
 
                 Id = sortId,
                 Name = sortName

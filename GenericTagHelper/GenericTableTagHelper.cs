@@ -63,15 +63,6 @@ namespace GenericTagHelper
         #endregion
 
         #region Table Attributes
-        //public string AttrsTagFromModel { get; set; }
-        //private Dictionary<string, Dictionary<string, Dictionary<string, string>>> AttrsTagFromModelDict
-        //{
-        //    get
-        //    {
-        //        return JsonDeserialize.JsonDeserializeConvert_DsDssDss(AttrsTagFromModel);
-        //    }
-        //}
-
         public string AttrsTag { get; set; }
         private Dictionary<string, Dictionary<string, string>> AttrsTagDict
         {
@@ -114,7 +105,6 @@ namespace GenericTagHelper
         public string TagTableBodyTdColO { get; set; } = "td_col_o";
         public string TagTableTdIndexO { get; set; } = "td_index_o";
 
-        public string TagTablePanel { get; set; } = "panel";
         public string TagTablePanelHead { get; set; } = "panel_head";
         public string TagTablePanelBody { get; set; } = "panel_body";
         public string TagTablePanelHeadO { get; set; } = "panel_head_o";
@@ -153,18 +143,15 @@ namespace GenericTagHelper
         #endregion
 
         #region Table Panel
-        public bool ActivePanel { get; set; } = true;
-        public bool ActivePanelHeading { get; set; } = true;
-        public bool ActivePanelBody { get; set; }
+        public bool DisablePanel { get; set; } 
+        public bool DisablePanelHeading { get; set; } 
+        public bool DisablePanelBody { get; set; }
 
-        public string PanelHeadingContent { get; set; }
-        public string PanelBodyContent { get; set; }
         #endregion
 
         public override void Process(
             TagHelperContext context, TagHelperOutput output)
         {
-
 
             TagBuilder thead = new TagBuilder("thead");
             SetAttrsAndContent(AttrsTagDict, ContentTagDict, thead, TagTableHead, false);
@@ -264,7 +251,7 @@ namespace GenericTagHelper
                         var cols_index = (cols + 1).ToString();
 
                         TagBuilder td = new TagBuilder("td");
-                      
+
                         // try to get value from 
                         try
                         {
@@ -321,29 +308,27 @@ namespace GenericTagHelper
 
             }
 
-            if (ActivePanel)
+            if (!DisablePanel)
             {
 
-                TagBuilder panel_head = new TagBuilder("div");
-                panel_head.Attributes["class"] = "panel-heading";
-
-                AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelHead);
-                AttrsHelper.SetTagContent(ContentTagDict, panel_head, TagTablePanelHead, false);
-                AttrsHelper.SetTagContent(ContentTagDict, panel_head, TagTablePanelHeadO, true);
-
-                TagBuilder panel_body = new TagBuilder("div");
-                panel_body.Attributes["class"] = "panel-body";
-
-                AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelBody);
-                AttrsHelper.SetTagContent(ContentTagDict, panel_body, TagTablePanelBody, false);
-                AttrsHelper.SetTagContent(ContentTagDict, panel_body, TagTablePanelBodyO, true);
-
-                if (ActivePanelHeading)
+                if (!DisablePanelHeading)
                 {
+                    TagBuilder panel_head = new TagBuilder("div");
+
+                    AttrsHelper.SetTagAttrs(AttrsTagDict, panel_head, TagTablePanelHead);
+                    AttrsHelper.SetTagContent(ContentTagDict, panel_head, TagTablePanelHead, false);
+                    AttrsHelper.SetTagContent(ContentTagDict, panel_head, TagTablePanelHeadO, true);
+
                     output.Content.AppendHtml(panel_head);
                 }
-                if (ActivePanelBody)
+                if (!DisablePanelBody)
                 {
+                    TagBuilder panel_body = new TagBuilder("div");
+
+                    AttrsHelper.SetTagAttrs(AttrsTagDict, panel_body, TagTablePanelBody);
+                    AttrsHelper.SetTagContent(ContentTagDict, panel_body, TagTablePanelBody, false);
+                    AttrsHelper.SetTagContent(ContentTagDict, panel_body, TagTablePanelBodyO, true);
+
                     output.Content.AppendHtml(panel_body);
                 }
 
@@ -366,12 +351,12 @@ namespace GenericTagHelper
         private void SetAttrsAndContent(
             Dictionary<string, Dictionary<string, string>> attrDict,
             Dictionary<string, string> contentDict,
-            TagBuilder tag, string tag_name, bool isOverride)
+            TagBuilder tag, string tag_name, bool disable_override)
         {
             AttrsHelper.SetTagAttrs(
                     attrDict, tag, tag_name);
             AttrsHelper.SetTagContent(
-                contentDict, tag, tag_name, isOverride);
+                contentDict, tag, tag_name, disable_override);
         }
 
 

@@ -33,18 +33,18 @@
        table-head-data="['Id @Model.Id','Name @Model.Name','Gender','Edit']"
        table-primary-key="Id"
        table-cols-number="5"
-       table-show-index="true"
-       active-panel="true"
-       active-panel-heading="true"
-       active-panel-body="true"
-       panel-heading-content="Customer"
        attrs-tag="{
-        td_1_2:{style:'color:red;'} 
+        panel_head:{class:'panel-heading',style:''},
+        panel_body:{class:'panel-body',style:'color:green;'},
+        thead:{style:'color:blue'},
+        td_1_2:{style:'color:red;'},
        }"
        content-tag="{
-        td_2_2:'  hello'
-       }">
-</table>
+        td_2_2:' hello',
+        panel_head:'Customer',
+        panel_body:'hello',
+        td_col_4:'@Model.EditLink'
+       }"></table>
 
 <pagination total-items="@Model.TotalItems"
             current-page="@Model.Page"

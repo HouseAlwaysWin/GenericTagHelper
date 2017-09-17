@@ -24,6 +24,8 @@ namespace GenericTagHelperExample.Models
         public string Id { get; set; }
         public string Name { get; set; }
 
+        public string EditLink { get; set; }
+
         [DataType("Select")]
         public SearchBarViewModel SearchSelectList { get; set; }
     }

@@ -65,7 +65,7 @@ namespace GenericTagHelper.MethodHelpers
                         for (int i = 0; i < attrs.Count; i++)
                         {
                             var attr = attrs.ElementAt(i);
-                            if (attr.Value.EndsWith("*"))
+                            if (attr.Value.Contains("*"))
                             {
                                 var value = attr.Value.Replace("*", index_num);
                                 tag.Attributes[attr.Key] = value;
@@ -125,7 +125,7 @@ namespace GenericTagHelper.MethodHelpers
                     for (int i = 0; i < attrs.Count; i++)
                     {
                         var attr = attrs.ElementAt(i);
-                        if (attr.Value.EndsWith("*"))
+                        if (attr.Value.Contains("*"))
                         {
                             var value = attr.Value.Replace("*", index);
                             tag.Attributes[attr.Key] = value;
@@ -158,7 +158,7 @@ namespace GenericTagHelper.MethodHelpers
                     for (int i = 0; i < attrs.Count; i++)
                     {
                         var attr = attrs.ElementAt(i);
-                        if (attr.Value.EndsWith("*"))
+                        if (attr.Value.Contains("*"))
                         {
                             var value = attr.Value.Replace("*", primary_key);
                             tag.Attributes[attr.Key] = value;
@@ -193,7 +193,7 @@ namespace GenericTagHelper.MethodHelpers
                     for (int i = 0; i < attrs.Count; i++)
                     {
                         var attr = attrs.ElementAt(i);
-                        if (attr.Value.EndsWith("*"))
+                        if (attr.Value.Contains("*"))
                         {
                             var value = attr.Value.Replace("*", rows_index);
                             tag.Attributes[attr.Key] = value;
@@ -267,7 +267,7 @@ namespace GenericTagHelper.MethodHelpers
                     {
                         if (disable_override)
                         {
-                            if (content.EndsWith("*"))
+                            if (content.Contains("*"))
                             {
                                 content = content.Replace("*", index);
                                 tag.InnerHtml.AppendHtml(content);
@@ -279,7 +279,7 @@ namespace GenericTagHelper.MethodHelpers
                         }
                         else
                         {
-                            if (content.EndsWith("*"))
+                            if (content.Contains("*"))
                             {
                                 content = content.Replace("*", index);
                                 tag.InnerHtml.SetHtmlContent(content);
@@ -322,7 +322,6 @@ namespace GenericTagHelper.MethodHelpers
             }
         }
 
-
         public static void SetTagContent(
           Dictionary<string, string> tagsDict,
           TagBuilder tag,
@@ -341,7 +340,7 @@ namespace GenericTagHelper.MethodHelpers
                 {
                     if (disable_override)
                     {
-                        if (content.EndsWith("*"))
+                        if (content.Contains("*"))
                         {
                             content = content.Replace("*", index);
                             tag.InnerHtml.AppendHtml(content);
@@ -353,7 +352,7 @@ namespace GenericTagHelper.MethodHelpers
                     }
                     else
                     {
-                        if (content.EndsWith("*"))
+                        if (content.Contains("*"))
                         {
                             content = content.Replace("*", index);
                             tag.InnerHtml.SetHtmlContent(content);
@@ -386,7 +385,7 @@ namespace GenericTagHelper.MethodHelpers
                 {
                     if (disable_override)
                     {
-                        if (content.EndsWith("*"))
+                        if (content.Contains("*"))
                         {
                             content = content.Replace("*", primary_key);
                             tag.InnerHtml.AppendHtml(content);
@@ -398,7 +397,7 @@ namespace GenericTagHelper.MethodHelpers
                     }
                     else
                     {
-                        if (content.EndsWith("*"))
+                        if (content.Contains("*"))
                         {
                             content = content.Replace("*", primary_key);
                             tag.InnerHtml.SetHtmlContent(content);
@@ -411,42 +410,6 @@ namespace GenericTagHelper.MethodHelpers
                     }
                 }
             }
-            //var tagKey = tag_name + "_" + rows_cols_index;
-            //if (tagsDict != null)
-            //{
-            //    var content = tagsDict.FirstOrDefault(
-            //        t => t.Key.Equals(tagKey, StringComparison.OrdinalIgnoreCase)).Value;
-
-            //    if (content != null)
-            //    {
-            //        if (disable_override)
-            //        {
-            //            if (content.EndsWith("*"))
-            //            {
-            //                content = content.Replace("*", primary_key);
-            //                tag.InnerHtml.AppendHtml(content);
-            //            }
-            //            else
-            //            {
-            //                tag.InnerHtml.AppendHtml(content);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            if (content.EndsWith("*"))
-            //            {
-            //                content = content.Replace("*", primary_key);
-            //                tag.InnerHtml.SetHtmlContent(content);
-            //            }
-            //            else
-            //            {
-            //                tag.InnerHtml.SetHtmlContent(content);
-            //            }
-
-            //        }
-            //    }
-            //}
-
         }
 
 
@@ -468,7 +431,7 @@ namespace GenericTagHelper.MethodHelpers
                 {
                     if (disable_override)
                     {
-                        if (content.EndsWith("*"))
+                        if (content.Contains("*"))
                         {
                             content = content.Replace("*", rows_num);
                             tag.InnerHtml.AppendHtml(content);
@@ -480,7 +443,7 @@ namespace GenericTagHelper.MethodHelpers
                     }
                     else
                     {
-                        if (content.EndsWith("*"))
+                        if (content.Contains("*"))
                         {
                             content = content.Replace("*", rows_num);
                             tag.InnerHtml.SetHtmlContent(content);
